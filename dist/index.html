@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="utf-8">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+		<title>Hockey Dek</title>
+</head>
+<body>
+<style>
+	body{
+		margin:0;
+		padding: 0;
+		background: #f7f9ff;
+	}
+	.active{
+		color:red;
+		background: blue;
+	}
+	.content-wrapper{
+		width: 80%;
+		position: absolute;
+		left:20%;
+		transition:width 300ms, left 300ms;
+	}
+	.content-wrapper-expanded{
+		position: absolute;
+		left: 0;
+		width:100%;
+		transition:width 300ms, left 300ms;
+	}
+</style>
+	<div id="root"></div>
+	<script type="text/javascript" src="bundle.js"></script>
+</body>
+</html>
