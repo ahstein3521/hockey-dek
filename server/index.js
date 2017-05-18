@@ -56,7 +56,7 @@ app.use('/team', Routes.team);
 app.use('/season', Routes.season);
 
 app.get("*", function(req,res){
-	res.send("redirected");
+	res.redirect("/");
 })
 
 
