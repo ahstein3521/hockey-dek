@@ -19,7 +19,7 @@ const style = {
 
 export default function(ComposedComponent){
 
-  class loadState extends Component{
+  class LoadState extends Component{
     
     renderSpinner(){
       return (
@@ -34,6 +34,7 @@ export default function(ComposedComponent){
 
     componentWillMount(){
       this.props.initAuthState();
+
     }
 
     render(){
@@ -58,7 +59,7 @@ export default function(ComposedComponent){
     return bindActionCreators({ initAuthState }, dispatch);
   }
   
-  return connect(mapStateToProps, mapDispatchToProps)(loadState);
+  return connect(mapStateToProps, mapDispatchToProps)(LoadState);
 }
 
 

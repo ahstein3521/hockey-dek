@@ -14,12 +14,17 @@ export function initTeamList(){
 export function submitTeamSearch({ _id, currentSeason, ...reqBody}){
 	
 	const url = `${ROOT_URL}/team/search/${currentSeason}/${_id}`;
-
+	const {name, hockeyType} = reqBody;
 	return dispatch => {
-		axios.post(url, reqBody)
+		axios.get(url)
 			.then(({data}) => {
-				return dispatch({type: FETCH_TEAM_ROSTER, payload: data})
+				const { seasons, team:[teamInfo] } = data;
+				const payload = {seasons, team:{name,hockeyType,...teamInfo}};
+
+				return dispatch({type: FETCH_TEAM_ROSTER, payload })
 			})
 			.catch(err => console.log(err));
 	}
 }
+
+///USE RESELECT TO COMBINE PLAYERS ont TEAM REDUCER

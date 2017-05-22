@@ -14,6 +14,7 @@ export function fetchPlayerNames(){
 	return dispatch => {
 		axios.get(url)
 			.then(({data}) => dispatch({type: FETCH_PLAYER_LIST, payload: data}) )
+			.catch(err => console.log(err))
 	}
 }
 
@@ -36,7 +37,7 @@ export function updatePlayer(body){
 	const url = `${ROOT_URL}/player/update/${body._id}`;
 	
 	return dispatch => {
-		axios.post(url, body)
+		axios.put(url, body)
 			.then(({data})=> {
 				dispatch({ type: UPDATE_PLAYER_INFO, payload:data })
 				return data

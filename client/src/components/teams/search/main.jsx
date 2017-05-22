@@ -41,6 +41,7 @@ const TeamMenu = ({onNewRequest, teamList}) => (
 				fullWidth={true}
 				floatingLabelText="Team Name:"
 				name="name"
+				maxSearchResults={5}
 				floatingLabelStyle={styles.label}
 	  		inputStyle={styles.input}
 	  		underlineStyle={styles.input}

@@ -25,7 +25,7 @@ const LeftMenu = props => {
     const {open, dispatch} = props;
  
     return (
-      <Drawer open={open}>
+      <Drawer open={true}>
         <List style={{marginTop:70}}>
           
           <ListItem 

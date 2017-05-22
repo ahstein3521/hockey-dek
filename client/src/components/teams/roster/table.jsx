@@ -1,60 +1,28 @@
 import React from 'react';
-import {Table, TableBody, TableRow, TableHeader,TableRowColumn, TableFooter} from 'material-ui/Table';
-import TableHeaderColumns from './thead.jsx';
-import Checkbox from 'material-ui/svg-icons/action/done';
-import {random} from 'lodash';
-import Chip from 'material-ui/Chip';
-import FontIcon from 'material-ui/svg-icons/content/clear';
-import EditIcon from 'material-ui/svg-icons/content/create';
-import IconButton from 'material-ui/IconButton';
-import {Link} from 'react-router-dom';
+import { Table, TableBody, TableHeader, TableFooter } from 'material-ui/Table';
 
-const TeamRoster = ({selected:{team}, onSelect, onSort}) => (
+import ColumnTotals from './tfooter.jsx';
+import renderBody from './tbody.jsx';
+import TableHeaderColumns from './thead.jsx';
+
+
+
+
+const TeamRoster = ({selected:{team}, onSelect, onSort, ...props}) => (
   <div style={{marginBottom:20}}>
     <Table style={{background:'#fafafa'}}>    
       <TableHeader style={{background:'#ff9e40'}}>
-        <TableHeaderColumns onClick={onSort}/>
+        <TableHeaderColumns {...props} onClick={onSort}/>
       </TableHeader>
       <TableBody 
+        prescanRows={false}
         showRowHover={true}
         displayRowCheckbox={false}
       >
-      {
-        team.players.map(player => {
-          const {firstName, lastName,jerseyNumber, _id, checkIns } = player;
-          const fullName = `${firstName} ${lastName}`;  
-            return (
-            <TableRow key={_id} >
-              <TableRowColumn style={{width:150}}>
-                <b style={{cursor:"pointer"}} onClick={()=> onSelect(player)}>{fullName}</b>
-              </TableRowColumn>
-              <TableRowColumn>{jerseyNumber}</TableRowColumn>
-              <TableRowColumn>
-                <Chip>{checkIns}</Chip>
-              </TableRowColumn>
-              <TableRowColumn>$0.00</TableRowColumn>
-              <TableRowColumn>$0.00</TableRowColumn>
-              <TableRowColumn>
-                <FontIcon/>
-              </TableRowColumn>
-              <TableRowColumn>
-                <Checkbox/>
-              </TableRowColumn>         
-            </TableRow>
-          )
-        })
-        } 
+        { renderBody(team, onSelect) }
       </TableBody>
-        <TableFooter>       
-        <TableRow style={{background:'#ff6d00', verticalAlign:'middle'}}>
-          <TableRowColumn/>
-          <TableRowColumn/>
-          <TableRowColumn><b>Totals:</b></TableRowColumn>
-          <TableRowColumn>$0.00</TableRowColumn>
-          <TableRowColumn>$0.00</TableRowColumn>
-          <TableRowColumn/>
-          <TableRowColumn/>  
-      </TableRow>     
+      <TableFooter>       
+        <ColumnTotals {...team}/>
       </TableFooter> 
     </Table>
   </div>

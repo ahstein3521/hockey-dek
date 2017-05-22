@@ -16,6 +16,7 @@ class TeamPage extends Component{
 
   onSubmit = ({teamData}) => {
     const { submitTeamSearch } = this.props;
+    if(!teamData) return;
     submitTeamSearch(teamData);
   }
   

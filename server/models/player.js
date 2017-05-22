@@ -1,14 +1,9 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
-const waiverSchema = new Schema({ year:String },{timestamp:true})
+const paymentSchema = require('./payment');
 
-const paymentSchema = new Schema({
-	payment_type:String,
-	amount:Number,
-	comped:Number,
-	season:Schema.Types.ObjectId
-}, {timestamp:true});
+const waiverSchema = new Schema({ year:String },{timestamp:true})
 
 const suspensionSchema = new Schema({
 	from:Date,
@@ -40,8 +35,7 @@ const playerSchema = new Schema({
 	},  
 	payments:[paymentSchema],
 	waivers:[waiverSchema], 
-	suspensions:[suspensionSchema],
-	seasons:[{type:Schema.Types.ObjectId, ref:'season'}]
+	suspensions:[suspensionSchema]
 })
 
 module.exports = mongoose.model('player',playerSchema)

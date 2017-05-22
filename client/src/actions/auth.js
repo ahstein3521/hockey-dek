@@ -12,6 +12,7 @@ export function initAuthState(){
 					payload: {...data, loading:false} 
 				});
 			})
+			.catch(err => console.log(err));
 	}
 }
 

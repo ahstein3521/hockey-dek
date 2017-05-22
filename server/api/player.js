@@ -5,8 +5,6 @@ const Player = mongoose.model('player');
 const getCheckins = require("./aggregations/player-checkin-history");
 const _ = require('lodash');
 
-
-
 //Fetch detailed player info regarding game checkin history
 Router.route('/fetch/:_id')
   .get((req, res) => {
@@ -14,7 +12,9 @@ Router.route('/fetch/:_id')
     const {_id} = req.params;
 
     Promise.all([
-      Player.findOne({_id}).exec(),
+      Player.findOne({_id})
+        .select("-payments")
+        .exec(),
       getCheckins(_id)
     ])
     .then(data => {
@@ -34,7 +34,7 @@ Router.route('/names')
 
 //Save updated player info to the db
 Router.route('/update/:_id')    
-  .post((req,res) => {
+  .put((req,res) => {
     const {_id} = req.params;
       
     Player.findByIdAndUpdate(_id, req.body )
