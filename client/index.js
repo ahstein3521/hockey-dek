@@ -11,6 +11,8 @@ import reducers from './src/reducers/index';
 
 import App from './src/app.jsx';
 
+import './style/main.scss';
+
 injectTapEventPlugin()
 
 const Root = () => {

@@ -43,6 +43,7 @@ class PlayerPage extends Component{
   }//get basic team info list from database when this component loads
 
   onSubmit = ({playerData}) => {
+    //console.log(playerData)
     this.props.submitPlayerSearch(playerData);
   }
   
@@ -50,7 +51,7 @@ class PlayerPage extends Component{
     const { playerList, selected, error, updatePlayer } = this.props;
 
     return(
-      <div>
+      <div style={{marginBottom:20}}>
         <PlayerMenu
           onNewRequest={this.onSubmit}
           playerList={playerList}
@@ -91,7 +92,7 @@ class PlayerPage extends Component{
 }
 
 function mapState({player: { list, selected }}){
-
+  
   return {playerList:list, selected }
 }
 

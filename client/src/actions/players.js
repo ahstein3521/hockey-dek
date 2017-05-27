@@ -28,7 +28,15 @@ export function submitPlayerSearch(player){
 	return dispatch => {
 		axios.get(`${ROOT_URL}/player/fetch/${_id}`)
 			.then(({data}) => {
-				dispatch({type: SELECT_PLAYER, payload: data})
+				
+				const {paymentInfo: {payments, ...rest}, games } = data;
+				
+				let payload = { payments, games, basicInfo: {...player}}
+				
+				if(!player.checkIns){
+					payload.basicInfo = {...rest};
+				}
+				dispatch({type: SELECT_PLAYER, payload })
 			})
 	}
 }
@@ -60,13 +68,21 @@ export function updatePlayer(body){
 }
 
 export function fetchPlayerDetails(player, done){
-	const {_id, checkIns} = player;
+	const {_id} = player;
+	console.log('clicked')
 	return dispatch => {
 		axios.get(`${ROOT_URL}/player/fetch/${_id}`)
 			.then(({data}) => {
-				data.basicInfo.checkIns = checkIns;
+				console.log(data)
+				const {paymentInfo: {payments, ...rest}, games } = data;
+				
+				let payload = { payments, games, basicInfo: {...player}}
+				
+				if(!player.checkIns){
+					payload.basicInfo = {...rest};
+				}
+				dispatch({type: SELECT_PLAYER, payload })
 
-				dispatch({type: SELECT_PLAYER, payload:data})
 			})
 			.then(() => done())
 	}

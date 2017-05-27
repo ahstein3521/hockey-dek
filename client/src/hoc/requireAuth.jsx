@@ -1,26 +1,75 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import CircularProgress from 'material-ui/CircularProgress';
+import { initAuthState } from '../actions/index';
 import { Redirect } from 'react-router-dom';
 
-/*
-	A higher order component that extends the 'handleLoading' one.
-	It kicks the user out of their current view if no longer authenticated.
-*/
+const style = {
+  position:'absolute',
+  top:0,
+  left:0,
+  width:'100%',
+  height: '100%',
+  background:'white',
+  zIndex:2001,
+  display:'flex',
+  justifyContent: 'center',
+  alignItems:'center',
+};
 
-export default function(ComposedComponent) {
 
-	return class extends Component {
-		render() {
-			const { loggedIn, history, location, match } = this.props;
-			const routerProps = {location, history, match};
+export default function(ComposedComponent){
 
-			if (loggedIn) {
-				return <ComposedComponent {...routerProps} />
-			}
-			else {
-				return <Redirect to="/login"/>
-			}
-		}
-	}
+  class loadState extends Component{
+    
+    renderSpinner(){
+      return (
+        <div style={style}>
+          <CircularProgress 
+            size={80} 
+            thickness={3.5}
+          />
+        </div>
+      )
+    }
+
+    componentWillMount(){
+      //Get authentication status from the server
+      //This switches off the loading state as long as a success response is received
+      
+      this.props.initAuthState();
+    }
+
+    render(){
+  
+      const { initAuthState, loggedIn, ...props } = this.props;
+     
+      if(props.loading){
+        return this.renderSpinner();
+      }
+      //Redirect instantly if the user is not logged in 
+      else if(!loggedIn){
+        return <Redirect to="/login"/>
+      }
+      //Render the desired content
+      else{
+        return <ComposedComponent {...props}/>;
+      }
+    }
+  };
+  
+  function mapStateToProps({ auth, menu }){
+
+    const { loggedIn, loading } = auth;
+    return { loggedIn, loading, menuOpen: menu.open };
+  }
+  
+  function mapDispatchToProps(dispatch){
+    return bindActionCreators({ initAuthState }, dispatch);
+  }
+  
+  return connect(mapStateToProps, mapDispatchToProps)(loadState);
 }
+
+

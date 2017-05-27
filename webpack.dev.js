@@ -16,6 +16,14 @@ module.exports = {
         exclude: /node_modules/
       },
       {
+        test: /\.scss$/,
+          use: [
+            {loader: "style-loader"}, 
+            {loader: "css-loader" }, 
+            {loader: "sass-loader"}
+          ]
+      },      
+      {
         test: /\.(jpe?g|png|gif|svg)$/i,
         include : path.join(__dirname, 'icons'),
         loader  : 'url-loader?limit=30000&name=icons/[name].[ext]'

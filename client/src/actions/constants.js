@@ -23,4 +23,5 @@ export const UPDATE_PLAYER_INFO = 'UPDATE_PLAYER_INFO';
 export const UPDATE_PLAYER_GAMES = 'UPDATE_PLAYER_GAMES';
 
  	//UI
-export const TOGGLE_MENU = 'TOGGLE_MENU'; 	
+export const TOGGLE_MENU = 'TOGGLE_MENU'; 
+export const SET_LOAD_STATE = 'SET_LOAD_STATE';	

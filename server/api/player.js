@@ -5,22 +5,26 @@ const Player = mongoose.model('player');
 const getCheckins = require("./aggregations/player-checkin-history");
 const _ = require('lodash');
 
+
 //Fetch detailed player info regarding game checkin history
 Router.route('/fetch/:_id')
   .get((req, res) => {
     
-    const {_id} = req.params;
+    const _id = req.params._id;
 
     Promise.all([
       Player.findOne({_id})
-        .select("-payments")
+        .populate({
+          path:'payments.season',
+          select:'-players -id'
+        })
         .exec(),
       getCheckins(_id)
     ])
     .then(data => {
       const [player, games] = data;
-      
-      res.send({ basicInfo: player, games})
+    
+      res.send({ paymentInfo: player, games})
     })
   })
 

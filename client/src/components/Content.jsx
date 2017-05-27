@@ -2,7 +2,9 @@ import React,{Component} from 'react';
 import Paper from 'material-ui/Paper';
 import { connect } from 'react-redux';
 import Nav from './nav/index.jsx';
-import TeamPage from './teams/index.jsx';
+
+import TeamTable from './teams/roster/index.jsx';
+import TeamMenu from './teams/search/main.jsx';
 import PlayerPage from './players/index.jsx';
 import SnackBar from './snackbar.jsx';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
@@ -22,11 +24,12 @@ class Content extends Component{
 		const { menuOpen} = this.props
 
 		return(
-			<div>
+			<div style={{paddingBottom:20}}>
 				<Nav/>
 				<div className={menuOpen? 'content-wrapper': 'content-wrapper-expanded'}>
 					<div style={style} >
-						<Route path='/roster' component={TeamPage}/>
+						<Route exact path='/team' component={TeamMenu}/>
+    				<Route path='/team/roster' component={TeamTable}/>
 						<Route path='/players' component={PlayerPage}/>
 					</div>
 				</div>

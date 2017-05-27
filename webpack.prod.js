@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
   entry: './client/index.js',
@@ -15,6 +16,14 @@ module.exports = {
         test: /\.js$|\.jsx$/,
         exclude: /node_modules/
       },
+      {
+        test: /\.scss$/,
+          use: [
+            {loader: "style-loader"}, 
+            {loader: "css-loader" }, 
+            {loader: "sass-loader"}
+          ]
+      },      
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         include : path.join(__dirname, 'icons'),
@@ -40,6 +49,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: 'client/index.html'
-    })    
+    }),
+    new ExtractTextPlugin('style.css')    
   ]
 }

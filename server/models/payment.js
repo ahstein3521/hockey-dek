@@ -16,7 +16,10 @@ const paymentSchema = new Schema({
 		get: v => "$" + (v/100).toFixed(2),
 		set: v => v * 100		
 	},
-	season:Schema.Types.ObjectId
+	season:{
+		type:Schema.Types.ObjectId,
+		ref:'season'
+	}
 }, 
 {timestamp:true});
 

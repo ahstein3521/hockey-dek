@@ -5,13 +5,13 @@ import ColumnTotals from './tfooter.jsx';
 import renderBody from './tbody.jsx';
 import TableHeaderColumns from './thead.jsx';
 
-
+import { rosterTableStyle as css } from '../../../styles/index';
 
 
 const TeamRoster = ({selected:{team}, onSelect, onSort, ...props}) => (
   <div style={{marginBottom:20}}>
-    <Table style={{background:'#fafafa'}}>    
-      <TableHeader style={{background:'#ff9e40'}}>
+    <Table >    
+      <TableHeader style={css.tableHeaderRow}>
         <TableHeaderColumns {...props} onClick={onSort}/>
       </TableHeader>
       <TableBody 

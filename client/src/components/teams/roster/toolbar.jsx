@@ -1,6 +1,5 @@
 import React,{Component} from 'react';
 import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
@@ -9,9 +8,10 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import FlatButton from 'material-ui/FlatButton';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {Link} from 'react-router-dom';
+import IconButton from 'material-ui/IconButton';
 
-import SubHeader from 'material-ui/Subheader';
 
+import { rosterTableStyle as css } from '../../../styles/index';
 
 export default class TableToolbar extends Component {
 
@@ -21,12 +21,10 @@ export default class TableToolbar extends Component {
     const {name,hockeyType, season} = team;
 
     return (
-      <Toolbar style={{background:'#ff6d00'}}>
+      <Toolbar style={css.toolbar}>
         <ToolbarGroup>
-          <ToolbarTitle text={name} />
-          <h4 style={{color:'black',marginLeft:6,fontStyle:'italic'}}>
-          {"Spring 2017"}
-          </h4>
+          <ToolbarTitle text={name} style={css.toolbarTitle}/>
+          <h4 style={css.toolbarSubtitle}> Spring 2017 </h4>
         </ToolbarGroup>
         <ToolbarGroup>
           <ToolbarSeparator/>

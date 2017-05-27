@@ -16,7 +16,7 @@ const seasonSchema = new Schema({
 		max:4
 	},	
 	year:{
-		type:String, 
+		type:Number, 
 		validate:yearValidator 
 	},
 	

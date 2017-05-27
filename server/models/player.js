@@ -29,10 +29,6 @@ const playerSchema = new Schema({
 		min:0, 
 		max:99
 	},
-	team:{ 
-		type: Schema.Types.ObjectId, 
-		ref: 'team'
-	},  
 	payments:[paymentSchema],
 	waivers:[waiverSchema], 
 	suspensions:[suspensionSchema]

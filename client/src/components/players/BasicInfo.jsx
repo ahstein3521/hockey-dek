@@ -17,8 +17,7 @@ const formStyle={
 class PlayerForm extends Component{
 	
 	onSubmit = (body) => {
-		console.log(body);
-		// this.props.updatePlayer(body);
+		this.props.updatePlayer(body);
 	}
 
 	componentWillMount(){
@@ -36,7 +35,7 @@ class PlayerForm extends Component{
 
 	render(){
 		const {handleSubmit} = this.props;
-		console.log(this.props.player);
+		
 		return(
 			<form 
 				style={formStyle}

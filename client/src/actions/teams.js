@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { FETCH_TEAM_ROSTER, FETCH_TEAM_LIST, ROOT_URL } from './constants'; 
+import { FETCH_TEAM_ROSTER, FETCH_TEAM_LIST, ROOT_URL, SET_LOAD_STATE } from './constants'; 
 
 export function initTeamList(){
 	return dispatch => {
 		axios.get(`${ROOT_URL}/team/show`)
 			.then(({data}) => {
+				
 				dispatch({ type: FETCH_TEAM_LIST, payload: data});
 		})
 	}
@@ -15,7 +16,11 @@ export function submitTeamSearch({ _id, currentSeason, ...reqBody}){
 	
 	const url = `${ROOT_URL}/team/search/${currentSeason}/${_id}`;
 	const {name, hockeyType} = reqBody;
+	
 	return dispatch => {
+
+		dispatch({ type: SET_LOAD_STATE, payload: true });
+
 		axios.get(url)
 			.then(({data}) => {
 				const { seasons, team:[teamInfo] } = data;
@@ -23,6 +28,7 @@ export function submitTeamSearch({ _id, currentSeason, ...reqBody}){
 
 				return dispatch({type: FETCH_TEAM_ROSTER, payload })
 			})
+			.then(() => dispatch({ type: SET_LOAD_STATE, payload: false }) )
 			.catch(err => console.log(err));
 	}
 }

@@ -22,7 +22,7 @@ const renderRows = ( team, onSelect ) => {
 				<TableRowColumn style={{width:150}}>
 			    <b 
 			     style={{cursor:"pointer"}} 
-			     onClick={()=> onSelect({_id})}
+			     onClick={()=> onSelect(player)}
 			    >
 			     {`${firstName} ${lastName}`}
 			    </b>
