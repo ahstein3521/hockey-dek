@@ -3,7 +3,7 @@ import { TableRow, TableRowColumn } from 'material-ui/Table';
 
 import Checkbox from 'material-ui/svg-icons/action/done';
 
-import Chip from 'material-ui/Chip';
+import Badge from 'material-ui/Badge';
 import FontIcon from 'material-ui/svg-icons/content/clear';
 import EditIcon from 'material-ui/svg-icons/content/create';
 import IconButton from 'material-ui/IconButton';
@@ -29,7 +29,7 @@ const renderRows = ( team, onSelect ) => {
 			  </TableRowColumn>
         <TableRowColumn> {jerseyNumber} </TableRowColumn>
         <TableRowColumn>
-          <Chip>{checkIns}</Chip>
+          <Badge badgeContent={checkIns} badgeStyle={{backgroundColor:'#FFECB3'}}/>
         </TableRowColumn>
         <TableRowColumn>{$format(amountPaid)}</TableRowColumn>
         <TableRowColumn>{$format(amountComped)}</TableRowColumn>

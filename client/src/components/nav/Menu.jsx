@@ -2,16 +2,20 @@ import React from 'react';
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 
-import LogOutModal from '../modals/LogOut.jsx';
+import LogOutIcon from 'material-ui/svg-icons/action/exit-to-app';
 import TeamIcon from 'url-loader?limit=20000!../../../icons/team.svg';
 import PlayerIcon from 'url-loader?limit=20000!../../../icons/hockey-sticks.svg';
 import GameIcon from 'url-loader?limit=20000!../../../icons/hockey-pitch.svg';
 import Avatar from 'material-ui/Avatar';
 
+import SvgIcon from 'material-ui/SvgIcon';
+import Divider from 'material-ui/Divider';
+
 import { 
   menuStyle,
-  menuItemStyle as style,
-  menuItemActiveStyle as activeStyle 
+  menuItemStyle,
+  avatarStyle,
+  avatarActiveStyle as activeStyle 
 } from '../../styles/index';
 
 import {
@@ -20,34 +24,50 @@ import {
   Link
 } from 'react-router-dom'
 
+const ListItems = [
+  {
+    link:'/teams',
+    svg: TeamIcon,
+  },
+  {
+    link:'/players',
+    svg:PlayerIcon,
+  },
+  {
+    link:'/games',
+    svg:GameIcon,
+  }
+];
+
 
 const LeftMenu = props => {
-    const {open} = props;
+    const {open, onSelect, selected, openModal} = props;
     return (
       
         <Drawer open={open} containerStyle={menuStyle}>
           <List style={{marginTop:70}}>
-            
+            {
+              ListItems.map(({link, svg},i) => (
+                <ListItem
+                  key={i}
+                  onClick={() => onSelect(link)}
+                  style = {menuItemStyle} 
+                  primaryText={link.substr(1).toUpperCase()}
+                  containerElement={<Link to={link}/>} 
+                  leftAvatar={<Avatar style={ selected === link ? activeStyle : avatarStyle}  src={svg}/>} 
+                />                
+                )
+              )
+            }
+            </List>
+            <Divider/>
+            <List>      
             <ListItem
-              onClick={() => props.onSelect('/roster')}
-              style = {props.selected=='/roster'? activeStyle : style} 
-              primaryText="Teams"
-              containerElement={<Link to='/team'/>} 
-              // leftAvatar={<Avatar src={TeamIcon}/>} 
-            />
-            <ListItem
-              onClick={() => props.onSelect('/players')}
-              style = {props.selected=='/players'? activeStyle : style}              
-              primaryText="Players"
-              containerElement={<Link to='/players'/>} 
-              // leftAvatar={<Avatar src={PlayerIcon}/>} 
-            />
-            <ListItem 
-              primaryText="Games"  
-              style = {style}
-              // leftAvatar={<Avatar src={GameIcon}/>} 
-            />          
-            <LogOutModal/>
+              primaryText="Log out"
+              style = {menuItemStyle} 
+              onTouchTap={()=> openModal('logout')}
+              leftIcon={<LogOutIcon style={{fill:'black'}}/>}
+            />            
           </List>
         </Drawer>
       
@@ -55,3 +75,5 @@ const LeftMenu = props => {
 }
 
 export default LeftMenu
+
+ 

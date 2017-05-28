@@ -15,7 +15,7 @@ const Banner = ({showRosterIcon}) => (
 		<ToolbarGroup>
 			{			
 				showRosterIcon &&
-				<Link to='/team/roster'>
+				<Link to='/teams/roster'>
 				<IconButton 
 					iconStyle={{color:"white"}}
 					tooltip="Show Roster"

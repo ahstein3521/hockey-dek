@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import Paper from 'material-ui/Paper';
 import { connect } from 'react-redux';
 import Nav from './nav/index.jsx';
-
+import Modal from './modals/main.jsx';
 import TeamTable from './teams/roster/index.jsx';
 import TeamMenu from './teams/search/main.jsx';
 import PlayerPage from './players/index.jsx';
@@ -28,11 +28,12 @@ class Content extends Component{
 				<Nav/>
 				<div className={menuOpen? 'content-wrapper': 'content-wrapper-expanded'}>
 					<div style={style} >
-						<Route exact path='/team' component={TeamMenu}/>
-    				<Route path='/team/roster' component={TeamTable}/>
+						<Route exact path='/teams' component={TeamMenu}/>
+    				<Route path='/teams/roster' component={TeamTable}/>
 						<Route path='/players' component={PlayerPage}/>
 					</div>
 				</div>
+				<Modal/>
 				<SnackBar/>
 			</div>
 		)		

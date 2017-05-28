@@ -8,11 +8,11 @@ import Table from './table.jsx';
 import Toolbar from './toolbar.jsx';
 import Paper from 'material-ui/Paper';
 
-
+import CircularProgress from 'material-ui/CircularProgress';
 import IconButton from 'material-ui/IconButton';
 import ReturnIcon from 'material-ui/svg-icons/navigation/arrow-back';
 
-import { AccentColor } from '../../../styles/theme';
+import { PrimaryColorDefault } from '../../../styles/theme';
 
 import { orderBy } from 'lodash';
 
@@ -57,13 +57,14 @@ class TeamRoster extends Component{
 	render(){
 		const { selected, isLoading } = this.props;
 
-		if(isLoading) return <h2>Loading</h2>;
-		console.log('rendering table');
+		if(isLoading) return (
+			<CircularProgress size={100} style={{width:100, margin:'20% 30%'}} thickness={6}/>
+		);
 		return (
 			<div>
-        <Link to='/team'>
+        <Link to='/teams'>
           <IconButton 
-            iconStyle={{color:AccentColor}} 
+            iconStyle={{color:PrimaryColorDefault}} 
             tooltip="Return to menu"
           >
             <ReturnIcon/>

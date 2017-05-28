@@ -31,7 +31,7 @@ class TeamMenu extends Component{
     const { submitTeamSearch, history } = this.props;
     if(!teamData) return;
     submitTeamSearch(teamData);
-    history.push('/team/roster');
+    history.push('/teams/roster');
   }
 	
 	render(){

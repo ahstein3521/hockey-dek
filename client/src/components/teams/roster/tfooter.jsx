@@ -1,8 +1,9 @@
 import React from 'react';
 import {TableRow, TableRowColumn } from 'material-ui/Table';
 
+import { rosterTableStyle as style } from '../../../styles/index';
 const TableFooter = ({totalComped, totalPaid}) => (
-	<TableRow style={{background:'#ff6d00', verticalAlign:'middle'}}>
+	<TableRow style={style.tableFooter}>
     <TableRowColumn style={{width:150}}/>
     <TableRowColumn/>
     

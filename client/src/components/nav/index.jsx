@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {toggleMenu, selectView} from '../../actions/index';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { toggleMenu, openModal } from '../../actions/index';
 import AppBar from 'material-ui/AppBar';
 import LeftMenu from './Menu.jsx';
 
@@ -23,6 +23,7 @@ class NavBar extends Component {
           open={this.props.open} 
           selected={this.props.selected}
           onSelect={this.props.selectItem}
+          openModal={this.props.openModal}
         />            
       </div>      
     );
@@ -41,7 +42,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     toggleMenu: () => dispatch({type:'TOGGLE_MENU'}),
-    selectItem: (item) => dispatch({type: 'SELECT_MENU_ITEM', payload:item})
+    selectItem: (item) => dispatch({type: 'SELECT_MENU_ITEM', payload:item}),
+    openModal: (view,data) => dispatch({type:'OPEN_MODAL', payload: {view, data}})
   }
 }
 

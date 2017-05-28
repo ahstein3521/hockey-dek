@@ -48,4 +48,8 @@ export const rosterTableStyle = {
 	tableHeaderRow: {
 		backgroundColor: PrimaryColorLight,
 	},
+	tableFooter: {
+		background:AccentColor,
+		verticalAlign:'middle'
+	}
 }
