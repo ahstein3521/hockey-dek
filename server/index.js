@@ -36,9 +36,8 @@ app.use(session({
   })
 }));
 
-console.log("NODE_ENV ===", process.env.NODE_ENV);
-
-if(process.env.NODE_ENV === 'dev'){
+if (process.env.NODE_ENV === 'dev') {
+  
   const webpackMiddleware = require('../webpack.dev.middleware');
   app.use(webpackMiddleware);
 }
