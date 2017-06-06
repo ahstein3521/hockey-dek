@@ -1,23 +1,23 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
-const yearValidator = {
-	validator(value){
-		return /20(?=\d{2})/.test(value)
-	},
-	message:"Invalid year was submitted"
-}
+const maxYear = new Date().getFullYear() + 2;
+
+const seasonArray = ['','Winter','Spring','Summer', 'Fall'];
 
 const seasonSchema = new Schema({
 	team:String,
 	quarter: {
 		type:Number, 
 		min:1,
-		max:4
+		max:4,
+		get: v => seasonArray[v],
+		set: v =>  Number(v) ? v : seasonArray.indexOf(v),
 	},	
 	year:{
 		type:Number, 
-		validate:yearValidator 
+		min: 2000,
+		max: maxYear  
 	},
 	
 	players:[{
@@ -30,23 +30,12 @@ const seasonSchema = new Schema({
 	}]
 },
 {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
-})
+  toJSON: {
+    getters: true,
+    setters: true,
+  }
+});
 
-class SeasonClass{
-	//http://mongoosejs.com/docs/advanced_schemas.html
-	get formatted(){
-		const seasonArray = ['Winter','Spring','Summer', 'Fall'];
-		const season = seasonArray[this.quarter - 1];
-		return `${season} ${this.year}`;
-	}
 
-	static findTeamArchives(teamId){
-		return this.find({team:teamId})
-	}
-}
-
-seasonSchema.loadClass(SeasonClass);
 
 module.exports = mongoose.model('season',seasonSchema)

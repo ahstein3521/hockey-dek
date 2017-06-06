@@ -10,35 +10,21 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 
 import { teamSearch as styles} from '../../../styles/index';
 
-const Banner = ({showRosterIcon}) => (
+const Banner = ({ showRosterIcon, openModal }) => (
 	<Toolbar style={styles.toolbar}>
 		<ToolbarGroup>
-			{			
-				showRosterIcon &&
-				<Link to='/teams/roster'>
-				<IconButton 
-					iconStyle={{color:"white"}}
-					tooltip="Show Roster"
-				>
-					<ReturnIcon/>
-				</IconButton>
-				</Link>
-		}
 			<ToolbarTitle text=""/>
 		</ToolbarGroup>
 		<ToolbarGroup>
-		<IconButton
-			iconStyle={{color:"white"}}
-			tooltip="Add A Team"
-		>
-			<AddIcon/>
-		</IconButton>
-		<IconButton
-			iconStyle={{color:"white"}}
-			tooltip="Delete A Team"
-		>
-			<DeleteIcon/>
-		</IconButton>		
+			<Link to="/teams/list">
+				<FlatButton label="Show All"/>
+			</Link>				
+			<IconButton
+				tooltip="Add A Team"
+				onTouchTap={()=> openModal("createTeam")}
+			>
+				<AddIcon/>
+			</IconButton>
 		</ToolbarGroup>	
 	</Toolbar>		
 )

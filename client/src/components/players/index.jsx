@@ -1,50 +1,24 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {submitPlayerSearch,  fetchPlayerNames, updatePlayer} from '../../actions/index';
+import {fetchPlayerDetails, updatePlayer} from '../../actions/index';
 import PlayerMenu from './Search.jsx';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import BasicInfo from './BasicInfo.jsx';
 import CheckIns from './Games.jsx';
 import Paper from 'material-ui/Paper';
+import PaymentList from './Payments.jsx';
 
-const styles = {
-  headline: {
-    fontSize: 24,
-    paddingTop: 16,
-    marginBottom: 12,
-    fontWeight: 400,
-  },
-  tab:{
-    color:'#37474F',
-    fontWeight:'bold'
-  }
-};
+import { tabStyles as styles } from '../../styles/index';
 
 class PlayerPage extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 'a',
-    };
-  }
-
-  handleChange = (value) => {
-    this.setState({
-      value: value,
-    });
-  };
-
-  componentDidMount(){
-    const { playerList, fetchPlayerNames } = this.props;
-    if(!playerList.length){
-      fetchPlayerNames()
-    }
-  }//get basic team info list from database when this component loads
+  
+  state = { value: 1 };
+  
+  handleChange = (value) => this.setState({ value });
 
   onSubmit = ({playerData}) => {
-    //console.log(playerData)
-    this.props.submitPlayerSearch(playerData);
+    this.props.fetchPlayerDetails(playerData);
   }
   
   render(){
@@ -62,22 +36,20 @@ class PlayerPage extends Component{
           <Paper zDepth={4}>
             <Tabs
               value={this.state.value}
-              tabItemContainerStyle={{background:'#FFECB3', color:'black'}}
-              inkBarStyle={{background:'#FB8C00', color:'black'}}
+              tabItemContainerStyle={styles.container}
+              inkBarStyle={styles.inkbar}
               onChange={this.handleChange}
             >
-              <Tab label="Basic Info" style={styles.tab} value="a">
-                <BasicInfo player={selected.basicInfo} updatePlayer={updatePlayer}/>
+              <Tab label="Basic Info" style={styles.tab} value={1}>
+                <BasicInfo initialValues={selected.basicInfo} />
               </Tab>
-              <Tab label="Check-ins" style={styles.tab} value="b">
+              <Tab label="Check-ins" style={styles.tab} value={2}>
                 <CheckIns games={selected.games}/>
               </Tab>        
-              <Tab label="Payments" style={styles.tab} value="c">
-                <div>
-                  <h2 style={styles.headline}>Payments </h2>
-                </div>
+              <Tab label="Payments" style={styles.tab} value={3}>
+                <PaymentList payments={selected.payments}/>
               </Tab>
-              <Tab label="Suspensions" style={styles.tab} value="d">
+              <Tab label="Suspensions" style={styles.tab} value={4}>
                 <div>
                   <h2 style={styles.headline}>Suspensions</h2>
                 </div>
@@ -97,7 +69,7 @@ function mapState({player: { list, selected }}){
 }
 
 function mapDispatch(dispatch){
-  return bindActionCreators({fetchPlayerNames, submitPlayerSearch, updatePlayer}, dispatch)
+  return bindActionCreators({fetchPlayerDetails , updatePlayer}, dispatch)
 }
 
 export default connect(mapState, mapDispatch)(PlayerPage)

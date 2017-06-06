@@ -3,24 +3,7 @@ import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
 import { Card } from 'material-ui/Card';
 
-const styles = {
-	card:{
-		marginBottom:30, 
-		background:'#3f51b5'
-	},
-	wrapper:{
-		width:'70%', 
-		margin:'0 auto'
-	},
-	label:{
-		color:'white', 
-		fontSize:'1.3em'
-	},
-	input:{
-		color:'white',
-		fontSize:'1.5em'
-	}
-}
+import { searchStyle as styles } from '../../styles/index';
 
 const getDataSource = (list) => (
 

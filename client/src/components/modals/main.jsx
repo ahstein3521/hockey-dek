@@ -27,9 +27,8 @@ class Modal extends Component {
       return { handleSubmit:() => dispatch(submit(reduxFormName)) };
     }    
 
-    return  bindActionCreators({ 
-      handleSubmit: submitActions[onSubmit]
-    }, dispatch); 
+    return  bindActionCreators(
+      { handleSubmit: submitActions[onSubmit]},dispatch); 
   };
 
   render() {
@@ -41,23 +40,22 @@ class Modal extends Component {
     const handleSubmit = this.getAction().handleSubmit;
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-      <FlatButton
+      <RaisedButton
         label="Submit"
         primary={true}
-        keyboardFocused={true}
         onTouchTap={()=> handleSubmit(data)}
       />,
+      <RaisedButton
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this.handleClose}
+      />,      
     ];
 
     return (
       <div>
         <Dialog
-          titleStyle={{textAlign:'center',background:'#FF5722',color:'#212121'}}
+          titleStyle={{textAlign:'center'}}
           title={title}
           
           actions={actions}

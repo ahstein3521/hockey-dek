@@ -2,30 +2,23 @@ const express = require('express');
 const Router = express.Router();
 const mongoose = require('mongoose')
 const Player = mongoose.model('player');
-const getCheckins = require("./aggregations/player-checkin-history");
+const getPlayerProfile = require("./aggregations/player-profile");
 const _ = require('lodash');
-
+const Season = mongoose.model('season');
+const faker = require('faker');
 
 //Fetch detailed player info regarding game checkin history
 Router.route('/fetch/:_id')
   .get((req, res) => {
     
-    const _id = req.params._id;
-
-    Promise.all([
-      Player.findOne({_id})
-        .populate({
-          path:'payments.season',
-          select:'-players -id'
-        })
-        .exec(),
-      getCheckins(_id)
-    ])
-    .then(data => {
-      const [player, games] = data;
-    
-      res.send({ paymentInfo: player, games})
+    const playerId = req.params._id;
+   
+    getPlayerProfile( playerId )
+      .then(data => {
+        const [player] = data;
+        res.send(player);
     })
+    .catch(error => res.send(String(error)))
   })
 
 //Fetch first and last names for player search autocomplete
@@ -47,6 +40,20 @@ Router.route('/update/:_id')
       .catch(error => res.send({error:error}))
 })
 
+Router.route('/suspension/:playerId')
+  .get((req, res) => {
+
+    const d = new Date()
+    const {playerId} = req.params;
+    const suspension = {
+      to: d,
+      from: d.setDate(d.getDate() - 7),
+      reason: faker.lorem.paragraph()
+    }
+    Player.findByIdAndUpdate(playerId, {$push: {suspensions: suspension}})
+      .exec()
+      .then(() => Player.findById(playerId).exec().then(p => res.send(p)))
+  })
 
 
 module.exports = Router;  

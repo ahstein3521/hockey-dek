@@ -5,7 +5,6 @@ import FlatButton from 'material-ui/FlatButton';
 import ArrowDropUp from 'material-ui/svg-icons/navigation/arrow-drop-up';
 import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 
-const style = {color:'black', fontWeight:'bolder'};
 
 const headings = [
 	{text:'Name',val:'lastName',width:150},

@@ -1,27 +1,27 @@
 @import 'theme';
 // @import './appbar/main';
 
-.app-bar{
-	background-color: $PrimaryDark;
-	z-index:2000;
-	position:fixed;
+body{
+	margin:0;
+	padding: 0;
+	background: #F5F5F6;
+	font-family: 'Della Respira';
 }
-	body{
-		margin:0;
-		padding: 0;
-		background: #F5F5F6;
-		font-family: 'Della Respira';
-	}
 
-	.content-wrapper{
-		width: 80%;
-		position: absolute;
-		left:20%;
-		transition:width 300ms, left 300ms;
-	}
-	.content-wrapper-expanded{
-		position: absolute;
-		left: 0;
-		width:100%;
-		transition:width 300ms, left 300ms;
-	}
+.content-wrapper{
+	width: 80%;
+	position: absolute;
+	left:20%;
+	transition:width 300ms, left 300ms;
+}
+.content-wrapper-expanded{
+	position: absolute;
+	left: 0;
+	width:100%;
+	transition:width 300ms, left 300ms;
+}
+
+.team-nav{
+	display: flex;
+	justify-content:space-between;
+}

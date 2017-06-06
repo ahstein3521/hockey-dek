@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { 
-	FETCH_PLAYER_LIST,
 	SELECT_PLAYER, 
 	UPDATE_PLAYER_IN_ROSTER, 
 	UPDATE_PLAYER_INFO,
@@ -9,81 +8,47 @@ import {
 } from './constants';
 
 
-export function fetchPlayerNames(){
-	const url = `${ROOT_URL}/player/names`;
-	return dispatch => {
-		axios.get(url)
-			.then(({data}) => dispatch({type: FETCH_PLAYER_LIST, payload: data}) )
-			.catch(err => console.log(err))
-	}
-}
-
 export function selectPlayer(player){
 	return { type:SELECT_PLAYER, payload:player };
 }
 
-export function submitPlayerSearch(player){
+export function fetchPlayerDetails(player, redirect){
 
 	const {_id} = player;
 	return dispatch => {
 		axios.get(`${ROOT_URL}/player/fetch/${_id}`)
 			.then(({data}) => {
-				
-				const {paymentInfo: {payments, ...rest}, games } = data;
-				
-				let payload = { payments, games, basicInfo: {...player}}
-				
-				if(!player.checkIns){
-					payload.basicInfo = {...rest};
-				}
-				dispatch({type: SELECT_PLAYER, payload })
+				const basicInfo = { ...player, ...data.basicInfo };
+				dispatch({type: SELECT_PLAYER, payload: {...data, basicInfo}})
 			})
-	}
-}
-
-export function updatePlayer(body){
-	const url = `${ROOT_URL}/player/update/${body._id}`;
-	
-	return dispatch => {
-		axios.put(url, body)
-			.then(({data})=> {
-				dispatch({ type: UPDATE_PLAYER_INFO, payload:data })
-				return data
-			})
-			.then(data => {
-				dispatch({ type: UPDATE_NAME_LIST, payload:data})
-				return data;
-			})
-			.then(data => {
-				if(data.checkIns){
-					return dispatch({type: UPDATE_PLAYER_IN_ROSTER, payload:data})
-				}
-				return data;
-			})			
 			.then(() => {
-				dispatch({type:'OPEN_SNACKBAR',payload:'Player Updated'})
+				if(redirect){
+					redirect();
+				}
 			})
-			.catch(err => console.error("Something went wrong", err))
 	}
 }
 
-export function fetchPlayerDetails(player, done){
-	const {_id} = player;
-	console.log('clicked')
-	return dispatch => {
-		axios.get(`${ROOT_URL}/player/fetch/${_id}`)
-			.then(({data}) => {
-				console.log(data)
-				const {paymentInfo: {payments, ...rest}, games } = data;
-				
-				let payload = { payments, games, basicInfo: {...player}}
-				
-				if(!player.checkIns){
-					payload.basicInfo = {...rest};
-				}
-				dispatch({type: SELECT_PLAYER, payload })
+export function updatePlayer( body, dispatch ){
+	const url = `${ROOT_URL}/player/update/${body._id}`;
 
-			})
-			.then(() => done())
-	}
+	axios.put(url, body)
+		.then(({data})=> {
+			dispatch({ type: UPDATE_PLAYER_INFO, payload:data })
+			return data
+		})
+		.then(data => {
+			dispatch({ type: UPDATE_NAME_LIST, payload:data})
+			return data;
+		})
+		.then(data => {
+			if(data.checkIns){
+				return dispatch({type: UPDATE_PLAYER_IN_ROSTER, payload:data})
+			}
+			return data;
+		})			
+		.then(() => {
+			dispatch({type:'OPEN_SNACKBAR',payload:'Player Updated'})
+		})
+		.catch(err => console.error("Something went wrong", err))
 }

@@ -10,7 +10,7 @@ const suspensionSchema = new Schema({
 	to:Date,
 	reason:String,
 	season:Schema.Types.ObjectId
-}, {timestamp:true});
+}, {timestamps:true});
 
 
 const playerSchema = new Schema({

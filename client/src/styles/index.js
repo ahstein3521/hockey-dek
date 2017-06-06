@@ -1,2 +1,4 @@
 export * from './appBar';
-export * from './tables';
+export * from './teams';
+export * from './players';
+export * from './form';

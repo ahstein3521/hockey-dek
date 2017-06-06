@@ -7,10 +7,11 @@ import LeftMenu from './Menu.jsx';
 
 import { appBarStyle as style } from '../../styles/index';
 
+
 class NavBar extends Component {
   
   render() {
-
+    
     return (
       <div>
         <AppBar 
@@ -20,10 +21,8 @@ class NavBar extends Component {
         />
         
         <LeftMenu 
-          open={this.props.open} 
-          selected={this.props.selected}
           onSelect={this.props.selectItem}
-          openModal={this.props.openModal}
+          {...this.props}
         />            
       </div>      
     );

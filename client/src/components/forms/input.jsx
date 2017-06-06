@@ -2,21 +2,14 @@ import React from 'react';
 import { reduxForm, Field } from 'redux-form'
 import { TextField, SelectField, AutoComplete } from 'redux-form-material-ui';
 
-const blueGrey = '#546E7A';
-const teal = '#00897B';
+import { inputStyle as style } from '../../styles/index';
 
-const labelStyle = {
-	color:teal,
-	fontWeight:'bold'
-}
 
 const renderTextField = props => (
 	<TextField
 		floatingLabelText={`${props.label}`}
-		floatingLabelStyle={labelStyle}
-		underlineStyle={{borderColor:blueGrey, height:'7px'}}
-		underlineFocusStyle={{borderColor:teal}}
 		errorText={props.touched && props.error}
+    {...style}
 		{...props}
 	/>
 )

@@ -28,9 +28,7 @@ const renderRows = ( team, onSelect ) => {
 			    </b>
 			  </TableRowColumn>
         <TableRowColumn> {jerseyNumber} </TableRowColumn>
-        <TableRowColumn>
-          <Badge badgeContent={checkIns} badgeStyle={{backgroundColor:'#FFECB3'}}/>
-        </TableRowColumn>
+        <TableRowColumn> {checkIns} </TableRowColumn>
         <TableRowColumn>{$format(amountPaid)}</TableRowColumn>
         <TableRowColumn>{$format(amountComped)}</TableRowColumn>
         <TableRowColumn>

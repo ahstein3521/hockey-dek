@@ -10,48 +10,36 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 import {Link} from 'react-router-dom';
 import IconButton from 'material-ui/IconButton';
 
-
 import { rosterTableStyle as css } from '../../../styles/index';
 
-export default class TableToolbar extends Component {
+const TableToolbar = props => {   
+  
+  const {selected:{seasons, team}} = props;
+  const {name,hockeyType, season} = team;
 
-  render() {
-   
-    const {selected:{seasons, team}} = this.props;
-    const {name,hockeyType, season} = team;
-
-    return (
-      <Toolbar style={css.toolbar}>
-        <ToolbarGroup>
-          <ToolbarTitle text={name} style={css.toolbarTitle}/>
-          <h4 style={css.toolbarSubtitle}> Spring 2017 </h4>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <ToolbarSeparator/>
-          <IconMenu
-            iconButtonElement={
-              <IconButton touch={true}>
-                <SettingsIcon />
-              </IconButton>
-            }
-          >
-            <MenuItem primaryText="Team Settings" />
-            <MenuItem primaryText="Create New Season"/>
-            <MenuItem primaryText="Add/Remove Players" />
-            <MenuItem primaryText="Download"/>            
-          </IconMenu>
-        </ToolbarGroup>
-      </Toolbar>
-    );
-  }
+  return (
+    <Toolbar style={css.toolbar}>
+      <ToolbarGroup>
+        <ToolbarTitle text={name} style={css.toolbarTitle}/>
+        <h4 style={css.toolbarSubtitle}> Spring 2017 </h4>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <ToolbarSeparator/>
+        <IconMenu
+          iconButtonElement={
+            <IconButton touch={true}>
+              <SettingsIcon />
+            </IconButton>
+          }
+        >
+          <MenuItem primaryText="Team Settings" />
+          <MenuItem primaryText="Create New Season"/>
+          <MenuItem primaryText="Add/Remove Players" />
+          <MenuItem primaryText="Download"/>            
+        </IconMenu>
+      </ToolbarGroup>
+    </Toolbar>
+  );
 }
 
-// //          <IconMenu
-//             maxHeight={300}
-//             iconButtonElement={<FlatButton label="Archived Seasons"/>}
-//           >
-//             <SubHeader>Archived Seasons</SubHeader>
-//             {
-//               seasons.map(({value}, i) => <MenuItem key={i} primaryText={value}/>)
-//             }
-//           </IconMenu>
+export default TableToolbar;

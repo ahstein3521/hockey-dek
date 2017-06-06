@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CircularProgress from 'material-ui/CircularProgress';
-import { initAuthState } from '../actions/index';
+import { initializeApp } from '../actions/index';
 import { Redirect } from 'react-router-dom';
 
 const style = {
@@ -37,19 +37,21 @@ export default function(ComposedComponent){
     componentWillMount(){
       //Get authentication status from the server
       //This switches off the loading state as long as a success response is received
-      
-      this.props.initAuthState();
+   
+      this.props.initializeApp();
     }
 
     render(){
   
-      const { initAuthState, loggedIn, ...props } = this.props;
-     
-      if(props.loading){
+      const { loggedIn, loading, ...props } = this.props;
+    
+      if ( loading ){
+
         return this.renderSpinner();
       }
       //Redirect instantly if the user is not logged in 
-      else if(!loggedIn){
+      else if ( !loggedIn ){
+        
         return <Redirect to="/login"/>
       }
       //Render the desired content
@@ -66,7 +68,7 @@ export default function(ComposedComponent){
   }
   
   function mapDispatchToProps(dispatch){
-    return bindActionCreators({ initAuthState }, dispatch);
+    return bindActionCreators({ initializeApp }, dispatch);
   }
   
   return connect(mapStateToProps, mapDispatchToProps)(loadState);

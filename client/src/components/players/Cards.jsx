@@ -13,7 +13,7 @@ const formatTeam = (_id) => {
 
 }
 
-export default class SeasonCard extends Component {
+export default class SeezonCard extends Component {
 
   constructor(props) {
     super(props);
@@ -43,35 +43,28 @@ export default class SeasonCard extends Component {
         onExpandChange={this.handleExpandChange}
       >
         <CardHeader
-          title={formatTeam(this.props._id.team)}
-          subtitle={seasons[this.props._id.quarter]+" "+this.props._id.year}
+          title={formatTeam(this.props.season.team)}
+          subtitle={seasons[this.props.season.quarter]+" "+this.props.season.year}
           actAsExpander={true}
           showExpandableButton={true}
         />
         <CardText expandable={true}>
-          <table style={{}}>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Played</th>
-              </tr>
-            </thead>
+          <table>
             <tbody>
-            {
-              this.props.checkIns.map(({date, attended}) => (
-                <tr key={date}>
-                  <td>{date}</td>
-                  <td>{attended? 'Yes' : 'No'}</td>
-                </tr>
-              ))
-            }
+            <tr>
+              <th>Payement Type:</th>
+              <td>{this.props.record.paymentType}</td>
+            </tr>
+            <tr>
+              <th>Amount:</th>
+              <td>{'$'+(this.props.record.amount/100).toFixed(2)}</td>
+            </tr>
+            <tr>
+              <th>Comped:</th>
+              <td>{'$'+(this.props.record.comped/100).toFixed(2)}</td>
+            </tr>
             </tbody>
-            <tfoot>
-              <tr>
-                <td>{"Total Checkins: "+ this.props.totalPlayed}</td>
-              </tr>
-            </tfoot>  
-          </table>
+          </table>          
         </CardText>
       </Card>
     );

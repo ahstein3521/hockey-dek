@@ -9,47 +9,47 @@ import {
 
 export const teamSearch = {
 	toolbar:{
-		backgroundColor: PrimaryColorDefault,
+		// backgroundColor: PrimaryColorDefault,
 	},
 	card:{
 		marginBottom:30, 
-		backgroundColor: PrimaryColorLight,
+		// backgroundColor: PrimaryColorLight,
 	},
 	wrapper:{
 		width:'70%', 
 		margin:'0 auto'
 	},
 	label:{
-		color: PrimaryTextColor, 
+		// color: PrimaryTextColor, 
 		fontSize:'1.3em'
 	},
 	
 	input:{
-		color: PrimaryTextColor,
+		// color: PrimaryTextColor,
 		fontSize:'1.5em'
 	},
 	underline:{
-		borderColor: AccentColor
+		// borderColor: AccentColor
 	}			
 }
 
 export const rosterTableStyle = {
 	toolbar: {
-		backgroundColor: PrimaryColorDefault	
+		// backgroundColor: PrimaryColorDefault	
 	},
 	toolbarTitle: {
-		color: TextPrimaryColor
+		// color: TextPrimaryColor
 	},
 	toolbarSubtitle: {
-		color: TextPrimaryColor,
+		// color: TextPrimaryColor,
 		marginLeft:6,
 		fontStyle:'italic'
 	},
 	tableHeaderRow: {
-		backgroundColor: PrimaryColorLight,
+		// backgroundColor: PrimaryColorLight,
 	},
 	tableFooter: {
-		background:AccentColor,
+		// background:AccentColor,
 		verticalAlign:'middle'
 	}
 }

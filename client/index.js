@@ -8,6 +8,7 @@ import thunk from 'redux-thunk';
 
 import reducers from './src/reducers/index';
 
+import theme from './theme';
 
 import App from './src/app.jsx';
 
@@ -17,7 +18,7 @@ injectTapEventPlugin()
 
 const Root = () => {
 	return(
-		<MuiThemeProvider>
+		<MuiThemeProvider muiTheme={theme}>
 		  <Provider store={createStore(reducers, applyMiddleware(thunk))}>
 		    <App />
 		  </Provider>

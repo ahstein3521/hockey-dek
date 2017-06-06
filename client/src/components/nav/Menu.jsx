@@ -21,7 +21,8 @@ import {
 import {
   BrowserRouter as Router,
   Route,
-  Link
+  Link,
+  withRouter,
 } from 'react-router-dom'
 
 const ListItems = [
@@ -40,21 +41,32 @@ const ListItems = [
 ];
 
 
+const matchLink = ({pathname}) => {
+  return link => {
+    if (pathname === '/') return false;
+    const regex = new RegExp(link);
+    return regex.test(pathname);
+  }
+}
+
 const LeftMenu = props => {
-    const {open, onSelect, selected, openModal} = props;
+    const {open, location, openModal} = props;
+    
+    const isSubRoute = matchLink( location ); 
+
+
     return (
-      
+        
         <Drawer open={open} containerStyle={menuStyle}>
           <List style={{marginTop:70}}>
             {
               ListItems.map(({link, svg},i) => (
                 <ListItem
                   key={i}
-                  onClick={() => onSelect(link)}
                   style = {menuItemStyle} 
                   primaryText={link.substr(1).toUpperCase()}
                   containerElement={<Link to={link}/>} 
-                  leftAvatar={<Avatar style={ selected === link ? activeStyle : avatarStyle}  src={svg}/>} 
+                  leftAvatar={<Avatar style={ isSubRoute(link) ? activeStyle : avatarStyle}  src={svg}/>} 
                 />                
                 )
               )
@@ -74,6 +86,6 @@ const LeftMenu = props => {
   );
 }
 
-export default LeftMenu
+export default LeftMenu;
 
  

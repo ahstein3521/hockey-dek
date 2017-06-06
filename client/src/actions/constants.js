@@ -12,7 +12,8 @@ export const LOG_OUT_USER = 'log out';
 	//Teams
 export const FETCH_TEAM_LIST = 'fetch teams list';
 export const FETCH_TEAM_ROSTER = 'fetch team roster';
-
+export const ADD_TEAM = 'ADD_TEAM';
+export const DELETE_TEAM = 'DELETE_TEAM';
 
 	//Players
 export const SELECT_PLAYER = 'SELECT_PLAYER';
@@ -27,3 +28,4 @@ export const TOGGLE_MENU = 'TOGGLE_MENU';
 export const SET_LOAD_STATE = 'SET_LOAD_STATE';	
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const OPEN_SNACKBAR = 'OPEN_SNACKBAR';

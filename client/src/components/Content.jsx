@@ -3,33 +3,38 @@ import Paper from 'material-ui/Paper';
 import { connect } from 'react-redux';
 import Nav from './nav/index.jsx';
 import Modal from './modals/main.jsx';
-import TeamTable from './teams/roster/index.jsx';
-import TeamMenu from './teams/search/main.jsx';
+// import TeamTable from './teams/roster/index.jsx';
+// import TeamMenu from './teams/search/main.jsx';
+// import TeamList from './teams/list/index.jsx';
+
+import TeamPage from './teams/index.jsx';
+import NavigationArrows from './navigation.jsx';
+
 import PlayerPage from './players/index.jsx';
 import SnackBar from './snackbar.jsx';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 
 const style = {
 	width:'90%',
 	margin:'100px auto 0',
-  minHeight: 400,
-  // background:'#ECEFF1',
-  // border:'1px solid #607D8B',	
+  minHeight: 400
 }
 
 
 class Content extends Component{
 
 	render(){
-		const { menuOpen} = this.props
-
+		const { menuOpen, location } = this.props
+		const selectedCategory = location.pathname.length > 1;
 		return(
 			<div style={{paddingBottom:20}}>
-				<Nav/>
+				<Route path="/" component={Nav}/>
 				<div className={menuOpen? 'content-wrapper': 'content-wrapper-expanded'}>
 					<div style={style} >
-						<Route exact path='/teams' component={TeamMenu}/>
-    				<Route path='/teams/roster' component={TeamTable}/>
+						{
+							selectedCategory && <Route path='/' component={NavigationArrows}/>
+						}
+						<TeamPage/>
 						<Route path='/players' component={PlayerPage}/>
 					</div>
 				</div>
@@ -41,7 +46,7 @@ class Content extends Component{
 }
 
 function mapStateToProps({menu}){
-	return {menuOpen:menu.open}
+	return { menuOpen:menu.open };
 }
 
 export default connect(mapStateToProps)(Content)

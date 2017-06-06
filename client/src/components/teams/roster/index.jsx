@@ -16,21 +16,21 @@ import { PrimaryColorDefault } from '../../../styles/theme';
 
 import { orderBy } from 'lodash';
 
-const SortRows = ( selected, state ) => {
-	
-	const { sortCategory, direction } = state;
-	let { team } = selected;
-	let { players } = team;
-	players = orderBy(players, sortCategory, direction);
-
-	return {...selected, team: {...team, players}};
-}
 
 class TeamRoster extends Component{
 	
 	state = {
 		sortCategory: 'lastName',
 		direction: 'asc'
+	}
+
+	sortRows = ( selected ) => {
+		const { sortCategory, direction } = this.state;
+		let { team } = selected;
+		let { players } = team;
+		players = orderBy(players, sortCategory, direction);
+
+		return {...selected, team: {...team, players}};
 	}
 
 	onSelect = (player) => {
@@ -56,39 +56,30 @@ class TeamRoster extends Component{
 
 	render(){
 		const { selected, isLoading } = this.props;
-
+	
 		if(isLoading) return (
 			<CircularProgress size={100} style={{width:100, margin:'20% 30%'}} thickness={6}/>
 		);
-		return (
-			<div>
-        <Link to='/teams'>
-          <IconButton 
-            iconStyle={{color:PrimaryColorDefault}} 
-            tooltip="Return to menu"
-          >
-            <ReturnIcon/>
-          </IconButton>
-        </Link>			
+
+		return (		
 				<Paper zDepth={3}>
 					<Toolbar selected={selected} />
 					<Table 
 						onSelect={this.onSelect} 
 						onSort={this.onSort}
 						sortProps={this.state}
-						selected={SortRows(selected, this.state)}
+						selected={this.sortRows(selected)}
 					/>
 				</Paper>
-			</div>
 			)
   }
 }
 
-TeamRoster = withRouter(TeamRoster);
+// TeamRoster = withRouter(TeamRoster);
 
 function mapState({teams, loading}){
 
-	return { selected: teams.selected, isLoading: loading }
+	return { selected: teams.selected.roster, isLoading: loading }
 }
 
 function mapDispatch(dispatch){

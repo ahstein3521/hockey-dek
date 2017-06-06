@@ -10,24 +10,24 @@ import {
 } from './theme'; 
 
 export const appBarStyle = {
-	backgroundColor: PrimaryColorDark,
+	// backgroundColor: PrimaryColorDark,
 	zIndex: 2000,
 	position: 'fixed'
 };
 
 export const menuStyle = {
-	color: PrimaryTextColor,
-	backgroundColor: PrimaryColorLight
+	// color: PrimaryTextColor,
+	// backgroundColor: PrimaryColorLight
 }
 export const menuItemStyle = {
 	fontSize:'2em',
-	color:'black',
+	// color:'black',
 	fontFamily: 'Della Respira'
 }
 
 export const avatarStyle = {
-	backgroundColor:AccentColorLight,
-	color:TextPrimaryColor,
+	// backgroundColor:AccentColorLight,
+	// color:TextPrimaryColor,
 	border: `1px solid ${SecondaryTextColor}`,
 }
 

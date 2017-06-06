@@ -1,6 +1,6 @@
 import { TOGGLE_MENU } from '../actions/constants';
 
-export default function(state = {open:true}, action){
+export default function(state = {open:true, selected:null }, action){
 	switch(action.type){
 		case TOGGLE_MENU:
 			return {...state, open: !state.open}	
