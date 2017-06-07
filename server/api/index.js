@@ -4,8 +4,8 @@ const team = require('./team');
 const season = require('./season');
 
 module.exports = {
-	auth: auth,
-	player: player,
-	team: team,
-	season: season
+	auth,
+	player,
+	team,
+	season
 };
