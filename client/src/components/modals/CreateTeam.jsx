@@ -1,21 +1,17 @@
 import React from 'react';
-import MenuItem from 'material-ui/MenuItem'
+import { connect } from 'react-redux';
+import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import { RadioButton } from 'material-ui/RadioButton'
 import { Field, reduxForm } from 'redux-form';
 import { TextField, SelectField, RadioButtonGroup } from 'redux-form-material-ui';
 import { createTeam, openSnackbar } from '../../actions/index';
 
-const validate = values => {
-	const errors = {};
+import validate from '../forms/validation';
 
-
-
-}
-
-const CreateTeamForm = props => {
+let CreateTeamForm = props => {
 	const { handleSubmit, error } = props;
-	console.log(error, props)
+
 	return (
 		<form onSubmit={handleSubmit}>
 			<div style={{width:'100%',display:'flex', justifyContent:'space-around'}}>
@@ -39,7 +35,7 @@ const CreateTeamForm = props => {
 			<Field
 				floatingLabelText="Season"
 				component={SelectField}
-				name="season.quarter"
+				name="quarter"
 				style={{width:'45%'}}
 			>
 				<MenuItem value={1} primaryText="Winter"/>
@@ -50,7 +46,7 @@ const CreateTeamForm = props => {
 			<Field
 				type="number"
 				component={TextField}
-				name="season.year"
+				name="year"
 				style={{width:'20%'}}
 				floatingLabelText="Year"
 			/>
@@ -59,9 +55,16 @@ const CreateTeamForm = props => {
 	)
 }
 
-export default reduxForm({
+function mapStateToProps({teams:{ list } }){
+  return { teamsList:list };
+}
+
+CreateTeamForm = reduxForm({
 	form:'CreateTeamForm',
 	onSubmit: createTeam,
 	onSubmitSuccess: openSnackbar,
+	validate,
 
 })(CreateTeamForm)
+
+export default connect(mapStateToProps)(CreateTeamForm);

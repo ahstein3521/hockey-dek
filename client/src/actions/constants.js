@@ -14,6 +14,7 @@ export const FETCH_TEAM_LIST = 'fetch teams list';
 export const FETCH_TEAM_ROSTER = 'fetch team roster';
 export const ADD_TEAM = 'ADD_TEAM';
 export const DELETE_TEAM = 'DELETE_TEAM';
+export const UPDATE_ROSTER = 'UPDATE_ROSTER';
 
 	//Players
 export const SELECT_PLAYER = 'SELECT_PLAYER';

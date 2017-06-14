@@ -19,6 +19,7 @@ export function fetchPlayerDetails(player, redirect){
 		axios.get(`${ROOT_URL}/player/fetch/${_id}`)
 			.then(({data}) => {
 				const basicInfo = { ...player, ...data.basicInfo };
+				console.log(data, 'in action');
 				dispatch({type: SELECT_PLAYER, payload: {...data, basicInfo}})
 			})
 			.then(() => {

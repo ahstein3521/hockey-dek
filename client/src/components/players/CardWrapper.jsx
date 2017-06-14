@@ -5,13 +5,6 @@ import Toggle from 'material-ui/Toggle';
 
 const seasons = ['','Winter', 'Spring', 'Summer', 'Fall'];
 
-const formatTeam = (_id) => {
-  const id = _id.split('-');
-  id.pop();
-
-  return id.join(" ").toUpperCase();
-
-}
 
 export default class SeasonCard extends Component {
 
@@ -25,7 +18,7 @@ export default class SeasonCard extends Component {
   
 
   render() {
-
+    const {season: { team: { name, hockeyType }, quarter, year }} = this.props;
     return (
       <Card 
         style={{marginTop:20}}
@@ -33,8 +26,8 @@ export default class SeasonCard extends Component {
         onExpandChange={this.handleExpandChange}
       >
         <CardHeader
-          title={formatTeam(this.props.season.team)}
-          subtitle={seasons[this.props.season.quarter]+" "+this.props.season.year}
+          title={`${name}, ${hockeyType}`}
+          subtitle={seasons[quarter]+" "+year}
           actAsExpander={true}
           showExpandableButton={true}
         />

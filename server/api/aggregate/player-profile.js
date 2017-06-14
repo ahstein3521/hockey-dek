@@ -6,7 +6,13 @@ module.exports = playerId =>
 
 	Seasons.aggregate([
 		//Get seasons associated with player
-		{$match: {players: {$in: [ObjectId(playerId)] } }},
+		{$match: 
+      {$or: [
+          {players: {$in: [ ObjectId(playerId) ]}},
+          {formerPlayers: { $in: [ ObjectId(playerId) ]}}
+        ]
+      }
+		},
 		
 		{$project: 
 			{
@@ -17,7 +23,7 @@ module.exports = playerId =>
 				player: {
 					$arrayElemAt:[
 						{$filter:{
-							input:'$players',
+							input:{$concatArrays: ["$formerPlayers", "$players"] },
 							as:'player',
 							cond:{ $eq: ['$$player', ObjectId(playerId)] }
 						}},0]	
@@ -28,12 +34,18 @@ module.exports = playerId =>
 		{$unwind:"$games"},
 		{$lookup: {from:'games', foreignField: '_id', localField: 'games', as: 'games'}},
 		{$unwind:"$games"},
+		{$lookup: {from:"teams", foreignField:'_id', localField:'team', as:'team' }},
+		{$unwind: "$team"},		
 		{$project: 
 			{
 				season:{
-					team:"$team",
 					year:"$year",
 					quarter:"$quarter",
+					team: {
+						_id: "$team._id",
+						name: "$team.name",
+						hockeyType: "$team.hockeyType"
+					}
 				},
 				player:{
 					$arrayElemAt: ["$player", 0]

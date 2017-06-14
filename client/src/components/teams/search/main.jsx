@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {submitTeamSearch, openModal } from '../../../actions/index';
-import Banner from './banner.jsx';
-import BottomNav from './bottomNavigation.jsx';
+import {submitTeamSearch } from '../../../actions/index';
+
+
 import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import { Card } from 'material-ui/Card';
 
 import { teamSearch as styles } from '../../../styles/index';
-import { withRouter, Route } from 'react-router-dom';
 
 const getDataSource = (list) => (
 	list.map(({name,_id, hockeyType, ...rest}) => ({
@@ -24,17 +23,17 @@ class TeamMenu extends Component{
   onSubmit = ({teamData}) => {
     const { submitTeamSearch, history } = this.props;
     if(!teamData) return;
+    const { currentSeason: {formatted}, name } = teamData;
     submitTeamSearch(teamData);
-    history.push('/teams/roster');
+    history.push('/teams/roster', {title: name, subtitle: formatted});
   }
 	
 	render(){
 
-		const { teamList, openModal } = this.props;
+		const { teamList } = this.props;
 
 		return(
-			<Card style={styles.card}>		
-				<Banner openModal={openModal}/>
+				
 				<div style={styles.wrapper}>
 					<AutoComplete
 						onNewRequest={this.onSubmit}
@@ -46,7 +45,6 @@ class TeamMenu extends Component{
 						dataSource={getDataSource(teamList)}
 					/>
 				</div>
-			</Card>
 		)
 	}
 }
@@ -56,7 +54,7 @@ function mapStateToProps({teams:{ list } }){
 }
 
 function mapDispatchToProps(dispatch){
-  return bindActionCreators({ submitTeamSearch, openModal }, dispatch)
+  return bindActionCreators({ submitTeamSearch }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeamMenu);

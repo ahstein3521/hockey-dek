@@ -1,28 +1,19 @@
 import { 
-  PrimaryColorDefault, 
-  PrimaryColorLight, 
-  TextPrimaryColor,
-  PrimaryTextColor,
-  PrimaryColorDark,
-  SecondaryTextColor,
-  AccentColor,
-} from './theme'; 
+    accent2Color
+} from '../../theme'; 
 
 export const searchStyle = {
   card:{
     marginBottom:30, 
-    // background:'#3f51b5'
   },
   wrapper:{
     width:'70%', 
     margin:'0 auto'
   },
   label:{
-    // color:'white', 
     fontSize:'1.3em'
   },
   input:{
-    // color:'white',
     fontSize:'1.5em'
   }
 }
@@ -35,14 +26,11 @@ export const tabStyles = {
     fontWeight: 400,
   },
   tab:{
-    // color: TextPrimaryColor,
     fontWeight:'bold'
   },
-  container:{
-    // background:PrimaryColorDefault, 
-  },
+
   inkbar: {
-    // background:AccentColor, 
+    background:accent2Color, 
   }  
 };
 

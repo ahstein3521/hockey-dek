@@ -21,7 +21,7 @@ const TableToolbar = props => {
     <Toolbar style={css.toolbar}>
       <ToolbarGroup>
         <ToolbarTitle text={name} style={css.toolbarTitle}/>
-        <h4 style={css.toolbarSubtitle}> Spring 2017 </h4>
+        <h4 style={css.toolbarSubtitle}> </h4>
       </ToolbarGroup>
       <ToolbarGroup>
         <ToolbarSeparator/>
@@ -34,7 +34,6 @@ const TableToolbar = props => {
         >
           <MenuItem primaryText="Team Settings" />
           <MenuItem primaryText="Create New Season"/>
-          <MenuItem primaryText="Add/Remove Players" />
           <MenuItem primaryText="Download"/>            
         </IconMenu>
       </ToolbarGroup>

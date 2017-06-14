@@ -4,10 +4,12 @@ import { OPEN_SNACKBAR } from './constants';
 
 const getGessage = ({values, form}) => {
 	
-	const { name } = values;
+	const { team } = values;
 
 	const messages = {
-		CreateTeamForm: `A new team - ${name} - has been successfully created` 
+		CreateTeamForm: `A new team has been successfully created`,
+		UpdateTeamForm: 'Your team has been updated',
+		 
 	};
 
 	return messages[form];
@@ -16,7 +18,6 @@ const getGessage = ({values, form}) => {
 //Action to trigger the snackbar component once a form submits successfully
 
 export function openSnackbar(results, dispatch, props){
-	const form = props.form;
 
 	const message = getGessage(props);
 

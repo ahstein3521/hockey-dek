@@ -2,10 +2,8 @@ const express = require('express');
 const Router = express.Router();
 const mongoose = require('mongoose')
 const Player = mongoose.model('player');
-const getPlayerProfile = require("./aggregations/player-profile");
-const _ = require('lodash');
-// const Season = mongoose.model('season');
-// const faker = require('faker');
+const getPlayerProfile = require("./aggregate/player-profile");
+
 
 //Fetch detailed player info regarding game checkin history
 Router.route('/fetch/:_id')

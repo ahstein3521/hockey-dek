@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { updatePlayer } from '../../actions/index';
-import TextField from '../forms/input.jsx';
+import { TextField } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { basicInfoStyle as style } from '../../styles/index';

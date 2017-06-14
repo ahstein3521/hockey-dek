@@ -31,7 +31,7 @@ const TeamTableList = props => (
         <TableHeaderColumns {...props} />
       </TableHeader>      
       <TableBody
-        prescanRows={false}
+        preScanRows={false}
         showRowHover={true}
         displayRowCheckbox={false}
       >
@@ -50,7 +50,7 @@ const TeamTableList = props => (
                 {team.hockeyType}
               </TableRowColumn>
               <TableRowColumn>
-                {team.currentSeason.quarter+ ' '+team.currentSeason.year}
+                {team.currentSeason.formatted}
               </TableRowColumn>
               <TableRowColumn>
                 <IconButton

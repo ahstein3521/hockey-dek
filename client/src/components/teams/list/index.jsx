@@ -43,47 +43,35 @@ class TeamList extends Component{
 			sortCategory: newCategory
 		}); 
 	}
+	
 	onSelect = (team, route) => {
-		if(route === '/teams/roster'){
-			this.props.submitTeamSearch(team);
-		}
-		else{
-			this.props.getTeamSettings(team);
-		}
-		
-		this.props.history.push(route);
+		const { name } = team;
+		this.props.submitTeamSearch(team);
+		this.props.history.push(route, { title: name, subtitle: 'Team Settings'});
 	}
 
 	render(){
 		const { teams, openModal } = this.props;
 
 		return (
-			<div>		
-				<Paper zDepth={3}>
-					<Toolbar>
-						<ToolbarGroup>
-							<ToolbarTitle text="All Teams"/>
-						</ToolbarGroup>
-					</Toolbar>
-					<Table 
-						onSort={this.onSort}
-						sortProps={this.state}
-						onSelect={this.onSelect}
-						openModal={openModal}
-						teams={SortRows(teams, this.state)}
-					/>
-				</Paper>
-			</div>
-			)
+			<Table 
+				onSort={this.onSort}
+				sortProps={this.state}
+				onSelect={this.onSelect}
+				openModal={openModal}
+				teams={SortRows(teams, this.state)}
+			/>
+		)
   }
 }
 
 function mapStateToProps({ teams }){
+	
 	return { teams: teams.list };
 }
 
 function mapDispatchToProps(dispatch){
-	return bindActionCreators({ openModal, submitTeamSearch, getTeamSettings }, dispatch);
+	return bindActionCreators({ openModal, submitTeamSearch }, dispatch);
 }
 
 export default connect (mapStateToProps, mapDispatchToProps )(TeamList)

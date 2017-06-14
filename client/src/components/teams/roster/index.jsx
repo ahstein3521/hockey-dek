@@ -60,26 +60,21 @@ class TeamRoster extends Component{
 		if(isLoading) return (
 			<CircularProgress size={100} style={{width:100, margin:'20% 30%'}} thickness={6}/>
 		);
-
-		return (		
-				<Paper zDepth={3}>
-					<Toolbar selected={selected} />
-					<Table 
-						onSelect={this.onSelect} 
-						onSort={this.onSort}
-						sortProps={this.state}
-						selected={this.sortRows(selected)}
-					/>
-				</Paper>
+		
+		return (							
+				<Table 
+					onSelect={this.onSelect} 
+					onSort={this.onSort}
+					sortProps={this.state}
+					selected={this.sortRows(selected)}
+				/>
 			)
   }
 }
 
-// TeamRoster = withRouter(TeamRoster);
 
 function mapState({teams, loading}){
-
-	return { selected: teams.selected.roster, isLoading: loading }
+	return { selected: teams.selected, isLoading: loading }
 }
 
 function mapDispatch(dispatch){

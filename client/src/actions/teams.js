@@ -8,42 +8,41 @@ import {
 	CLOSE_MODAL, 
 	DELETE_TEAM 
 } from './constants'; 
-import { kebabCase } from 'lodash';
+
 
 export function createTeam( form, dispatch ){
 	
 	const url = `${ROOT_URL}/team/create`;
-
-	const { name, hockeyType } = form.team;
-
-	form.team._id = kebabCase( name + ' ' + hockeyType )
 	
-	axios.post(url, form)
+	const { year, quarter , team } = form;
+	const body = { season: {year, quarter}, team};
+
+	axios.post(url, body)
 		.then(({ data, status }) => {
 
 			dispatch({type: CLOSE_MODAL});
 			dispatch({ type: ADD_TEAM, payload: data });
 		})
 		.catch(err => {
-				throw new SubmissionError({_error: 'A team with this name and hockey type already exists',_name:'ERROR'});
+			console.error('Error adding team',err);
 		});
 }
 
-
-export function submitTeamSearch({ _id, currentSeason, ...reqBody}){
+export function submitTeamSearch({ _id, currentSeason, name, hockeyType }){
 	
 	const url = `${ROOT_URL}/team/search/${currentSeason._id}/${_id}`;
-	const {name, hockeyType} = reqBody;
-	
+		
 	return dispatch => {
 
 		dispatch({ type: SET_LOAD_STATE, payload: true });
 
 		axios.get(url)
 			.then(({data}) => {
-				const { seasons, team:[teamInfo] } = data;
-				const payload = {seasons, team:{ name, hockeyType,...teamInfo}};
-
+				
+				let { seasons, team:[teamInfo] } = data;
+				let teamData =  { name, hockeyType, currentSeason, ...teamInfo };
+				const payload = { seasons, team: teamData };
+				console.log(payload);
 				return dispatch({type: FETCH_TEAM_ROSTER, payload })
 			})
 			.then(() => dispatch({ type: SET_LOAD_STATE, payload: false }))
@@ -51,28 +50,28 @@ export function submitTeamSearch({ _id, currentSeason, ...reqBody}){
 	}
 }
 
-export function getTeamSettings({ _id, currentSeason, name, hockeyType }){
+
+export function updateTeam(form, dispatch, props){
+	const url = `${ROOT_URL}/team/update/basic-info/${form.currentSeason.team}`;
 	
-	const url = `${ROOT_URL}/team/settings/${currentSeason._id}/${_id}`;
-	
+	axios.put(url, form)
+			.then(({data}) => console.log('Response', data))
+}
+
+export function updateTeamPlayers(currentSeason, players) {
+	const url = `${ROOT_URL}/team/update/players/${currentSeason}`;
+	console.log('before post', players)
 	return dispatch => {
-
-		dispatch({ type: SET_LOAD_STATE, payload: true });
-
-		axios.get(url)
-			.then(({data: [settings]}) => {
-				const payload = { ...settings, name, hockeyType };
-				return dispatch({type: 'FETCH_TEAM_SETTINGS', payload})
+		axios.put(url, players)
+			.then(({data}) => {
+				const payload = data[0];
+				dispatch({type:'UPDATE_ROSTER', payload })
 			})
-			.then(() => dispatch({ type: SET_LOAD_STATE, payload: false }))
-			.catch(err => console.log(err));
 	}
 }
 
-
-export function deleteTeam(team){
+export function deleteTeam(team) {
 	const teamId = team._id;
-
 	return dispatch => {
 
 		dispatch({ type: CLOSE_MODAL });

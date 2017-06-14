@@ -14,6 +14,8 @@ const getDataSource = (list) => (
 const AddPlayerAutocomplete = props => (
 		<AutoComplete
 			filter={AutoComplete.caseInsensitiveFilter}
+			searchText={props.searchText}
+			onUpdateInput={props.handleUpdateInput}
 			onNewRequest={props.handleNewRequest}  
 			dataSource={getDataSource(props.available)}
 			hintText="Find a player to add"

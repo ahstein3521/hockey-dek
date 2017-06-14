@@ -1,52 +1,31 @@
 const express = require('express');
 const Router = express.Router();
+
 const mongoose = require('mongoose');
+
 const Team = mongoose.model('team');
 const Season = mongoose.model('season');
-const Games = mongoose.model('game');
 const Players = mongoose.model('player');
-const startCase = require("lodash").startCase;
-const ObjectId = mongoose.Types.ObjectId;
 
-const getSettings = require('./aggregations/team-settings');
-const getRoster = require('./aggregations/roster');
 
-const getSeasons = (teamId, sId) => (
-  Season
-    .find({team:teamId})
-    .select("year quarter")
-    .exec()
-    // .then(seasons => {
-      
-    //   const index = seasons.findIndex(season => season._id == sId);
-    //   const selectedSeason = seasons[index];
-    //   seasons.splice(index, 1);
-      
-    //   return Promise.resolve({list: seasons, selectedSeason})
-    // })
-)
+const getRoster = require('./aggregate/roster');
 
-Router.route('/settings/:seasonId/:teamId')
-  .get((req, res) => {
-    const {seasonId, teamId} = req.params;
-
-    getSettings(seasonId, teamId)
-      .then((data) => res.send(data))
-      .catch(err => {throw err})
-})
 
 Router.route('/search/:seasonId/:teamId')
   .get((req, res) => {
     const {seasonId, teamId} = req.params;
     
-
     Promise.all([
-      getRoster(seasonId),
-      getSeasons(teamId, seasonId)
+      getRoster(seasonId), 
+      Season
+        .find({team: teamId})
+        .select('-games -players')
+        .sort({ year: -1, quarter: -1 })
+        .exec()
     ])
     .then(data => {      
       const [playerInfo, seasons] = data;
-      
+         
       res.send({ 
         team: playerInfo,
         seasons
@@ -57,7 +36,7 @@ Router.route('/search/:seasonId/:teamId')
 Router.route('/delete/:teamId')
   .delete((req, res) => {
 
-     const { teamId } = req.params;
+    const { teamId } = req.params;
 
     Team.findByIdAndRemove( teamId )
       .exec()
@@ -67,31 +46,45 @@ Router.route('/delete/:teamId')
 
 Router.route('/create')
   .post((req, res) => {
-    const { season, team: { name, hockeyType, _id } } = req.body;
+    const { season, team } = req.body;
 
-    Team.findById(_id)
-      .exec()
-      .then(team => {
-        if(team) {
-          throw new Error('Duplicate team/hockeyType combo');
-        }
-        else{
-          return Season.create(season)  
-        }
-      })
+    Season.create(season)
       .then( newSeason => {
-        return Team.create({ 
-          _id,
-          name,
-          hockeyType,
-          currentSeason: newSeason._id
-        })
+        team.currentSeason = newSeason;     
+        const newTeam = new Team(team)
+    
+        return newTeam.save();
       })
-      .then(team => res.send(team))
-      .catch(error => res.status(500).send({error}))
-  });
- 
+      .then(({currentSeason, _id}) => {
+        team._id = _id;
+        return Season.findByIdAndUpdate(currentSeason, {team: _id}).exec()
+      })
+      .then(() => res.send(team))
+      .catch(err => { throw err})   
+  })
 
+Router.route('/update/basic-info/:teamId')
+  .put((req, res) => {
+    const { teamId } = req.params;
+    const query = { team: teamId };
+    const options = { multi: true, new: true, upsert: true }; 
+    
+    Team.findByIdAndUpdate(teamId, req.body)
+      .exec()
+      .then(() => {
+        res.status(200).send('team updated')
+      })
+      .catch(err => { throw err })
+  })
+
+
+Router.route('/update/players/:seasonId')
+  .put((req, res) => {
+    const { seasonId } = req.params;
+    
+    Season.updateRoster(seasonId, req.body, getRoster)
+      .then(team => res.send(team))
+  })  
 
 Router.route('/show')
   .get((req,res) => {

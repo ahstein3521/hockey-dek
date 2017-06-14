@@ -14,6 +14,7 @@ class PlayersList extends Component{
 		available: [...this.props.availablePlayers],
 		removed: [],
 		added: [], 
+		searchText: ''
 	};
 
 	//Delete permanently if not a current team member, else store in an array in case user wants to undo
@@ -27,7 +28,7 @@ class PlayersList extends Component{
 			formatting the AutoComplete component 
 		*/
 			added.splice(index, 1);
-			available.push({...player, index: available.length});
+			available.push(player);
 		}
 		else{
 			current.splice(index, 1);
@@ -45,7 +46,7 @@ class PlayersList extends Component{
 		added.push(playerData);
 		available.splice(playerData.index, 1);
 
-		this.setState({ added, available});
+		this.setState({ added, available, searchText: ''});
 	};
 
 	handleRestore = ({ index, ...player }, removedIndex) => {
@@ -60,19 +61,29 @@ class PlayersList extends Component{
 		this.setState({ current: restoredArray, removed });
 	};
 
-	handleReset = () => {
+	handleReset = (props = this.props) => {
 		this.setState({
-			available: [...this.props.availablePlayers],
-				current: [...this.props.players],
+			available: [...props.availablePlayers],
+				current: [...props.players],
 					added: [],
 				removed: []
 		});
 	};
 
-	handleSubmit = (data) => {
+	handleUpdateInput = searchText => {
+		this.setState({ searchText });
+	}
+	handleSubmit = () => {
+		const { removed , added } = this.state;
 
-	};
+		this.props.updateTeamPlayers({added, removed});
+	}
 
+	componentWillReceiveProps = nextProps => {
+		if(nextProps.players != this.props.players){
+			this.handleReset(nextProps);
+		}	
+	}
 	render(){
 		
 		return(
@@ -98,22 +109,26 @@ class PlayersList extends Component{
 
 				
 					<AutoComplete
+						searchText = {this.state.searchText}
 						handleNewRequest = {this.handleNewRequest}
 						available = {this.state.available}
+						
+						handleUpdateInput = {this.handleUpdateInput}
 					/>
 					<div style={{position:'absolute', right:10, bottom:10}}>
+						<RaisedButton 
+							style={{marginRight:10}}
+							label="Update"
+							onTouchTap={this.handleSubmit}
+							primary={true}
+						/>						
 						<RaisedButton
 							secondary={true}
 							onTouchTap={this.handleReset}
 							label="Reset"
 							style={{marginRight:15}}
 						/>
-						<RaisedButton 
-							label="Update"
-							primary={true}
-						/>
 				</div>
-				<span style={{clear:'both'}}></span>
 			</div>
 		)
 	}
