@@ -45,9 +45,10 @@ class TeamList extends Component{
 	}
 	
 	onSelect = (team, route) => {
-		const { name } = team;
+		const { name, currentSeason } = team;
+		const subtitle = /settings$/.test(route) ? 'Settings' : currentSeason.formatted;
 		this.props.submitTeamSearch(team);
-		this.props.history.push(route, { title: name, subtitle: 'Team Settings'});
+		this.props.history.push(route, { title: name, subtitle });
 	}
 
 	render(){

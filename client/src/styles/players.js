@@ -37,15 +37,14 @@ export const tabStyles = {
 export const basicInfoStyle = {
   submitBtn:{
     style:{marginTop:40},
-    // labelStyle:{color: PrimaryTextColor },
-    // backgroundColor:AccentColor
   },
   formRow:{
     display:'flex',
     justifyContent:'space-around'
   },
   form:{
-    width:'70%',
-    margin:'10px auto'
+    width:'80%',
+    margin:'10px auto',
+    padding: 10
   }  
 }

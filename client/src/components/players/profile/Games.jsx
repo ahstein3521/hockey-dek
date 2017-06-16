@@ -5,11 +5,11 @@ import SeasonCard from './CardWrapper.jsx';
 
 export default class GamesList extends Component{
 	render(){
-		const {games} = this.props;
+		const { games = [] } = this.props;
 		return(
 		<div style={{width:'90%', margin:'0 auto 20px'}}> 		
 			{
-				games.map((val, i) => (
+				games.map((val ={}, i) => (
 					<SeasonCard 
 						key={i}
 						season={val.season}

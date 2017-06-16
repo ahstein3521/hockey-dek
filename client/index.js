@@ -14,12 +14,14 @@ import App from './src/app.jsx';
 
 import './style/main.scss';
 
-injectTapEventPlugin()
+injectTapEventPlugin();
+
+const store = createStore(reducers, applyMiddleware(thunk));
 
 const Root = () => {
 	return(
 		<MuiThemeProvider muiTheme={theme}>
-		  <Provider store={createStore(reducers, applyMiddleware(thunk))}>
+		  <Provider store={store}>
 		    <App />
 		  </Provider>
 		</MuiThemeProvider>

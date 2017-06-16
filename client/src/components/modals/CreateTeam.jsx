@@ -15,7 +15,7 @@ let CreateTeamForm = props => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div style={{width:'100%',display:'flex', justifyContent:'space-around'}}>
-				{error && <p>Error</p>}
+				
 				<Field 
 					style={{width:'45%'}}
 					component={TextField}

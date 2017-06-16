@@ -26,7 +26,8 @@ const mappings = {
 		Children: CreateTeamForm,
 		onSubmit:null,
 		reduxFormName: 'CreateTeamForm'
-	}
+	},
+
 };
 
 

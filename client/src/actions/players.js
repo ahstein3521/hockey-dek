@@ -1,32 +1,48 @@
 import axios from 'axios';
 import { 
 	SELECT_PLAYER, 
-	UPDATE_PLAYER_IN_ROSTER, 
+	UPDATE_PLAYER_IN_ROSTER,
+	ADD_PLAYER, 
 	UPDATE_PLAYER_INFO,
-	UPDATE_NAME_LIST,
+	UPDATE_PLAYER_LIST,
 	ROOT_URL 
 } from './constants';
 
+import { reset } from 'redux-form';
 
 export function selectPlayer(player){
 	return { type:SELECT_PLAYER, payload:player };
 }
 
-export function fetchPlayerDetails(player, redirect){
+export function createPlayer(form, dispatch) {
+	let { team, ...newPlayer } = form;
+	
+	if (team) {
+		newPlayer.payments = [ {season: team, paymentType: 'N/A'} ]
+	}
 
-	const {_id} = player;
+	const body = { seasonId: team, newPlayer };
+
+	axios.post(`${ROOT_URL}/player/create`, body)
+		.then(({data}) => dispatch({ type: ADD_PLAYER, payload: data }))
+		.then(() => dispatch(reset('CreatePlayerForm')))
+		.catch(err => console.error(err, 'ERROR '))
+}
+
+
+
+export function fetchPlayerDetails(player, history){
+	const redirectUrl = '/players/profile'
+	const fullName = player.firstName + ' ' + player.lastName;
+
 	return dispatch => {
-		axios.get(`${ROOT_URL}/player/fetch/${_id}`)
+		axios.get(`${ROOT_URL}/player/fetch/${player._id}`)
 			.then(({data}) => {
 				const basicInfo = { ...player, ...data.basicInfo };
-				console.log(data, 'in action');
+				
 				dispatch({type: SELECT_PLAYER, payload: {...data, basicInfo}})
 			})
-			.then(() => {
-				if(redirect){
-					redirect();
-				}
-			})
+			.then(() => history.push(redirectUrl, {title: fullName} ))
 	}
 }
 
@@ -39,7 +55,7 @@ export function updatePlayer( body, dispatch ){
 			return data
 		})
 		.then(data => {
-			dispatch({ type: UPDATE_NAME_LIST, payload:data})
+			dispatch({ type: UPDATE_PLAYER_LIST, payload:data})
 			return data;
 		})
 		.then(data => {

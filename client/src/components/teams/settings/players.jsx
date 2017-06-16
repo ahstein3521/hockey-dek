@@ -61,18 +61,17 @@ class PlayersList extends Component{
 		this.setState({ current: restoredArray, removed });
 	};
 
-	handleReset = (props = this.props) => {
+	handleReset = () => {
+
 		this.setState({
-			available: [...props.availablePlayers],
-				current: [...props.players],
+			available: [...this.props.availablePlayers],
+				current: [...this.props.players],
 					added: [],
 				removed: []
 		});
 	};
 
-	handleUpdateInput = searchText => {
-		this.setState({ searchText });
-	}
+	
 	handleSubmit = () => {
 		const { removed , added } = this.state;
 
@@ -80,8 +79,13 @@ class PlayersList extends Component{
 	}
 
 	componentWillReceiveProps = nextProps => {
-		if(nextProps.players != this.props.players){
-			this.handleReset(nextProps);
+		if (nextProps.players != this.props.players) {
+			this.setState({
+				available: [...nextProps.availablePlayers],
+				current: [...nextProps.players],
+				added: [],
+				removed: []
+			})
 		}	
 	}
 	render(){
@@ -111,9 +115,8 @@ class PlayersList extends Component{
 					<AutoComplete
 						searchText = {this.state.searchText}
 						handleNewRequest = {this.handleNewRequest}
-						available = {this.state.available}
-						
-						handleUpdateInput = {this.handleUpdateInput}
+						available = {this.state.available}					
+						handleUpdateInput = {searchText => this.setState({ searchText })}
 					/>
 					<div style={{position:'absolute', right:10, bottom:10}}>
 						<RaisedButton 

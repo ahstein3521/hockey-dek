@@ -1,15 +1,15 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { updatePlayer } from '../../actions/index';
+import { updatePlayer } from '../../../actions/index';
 import { TextField } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { basicInfoStyle as style } from '../../styles/index';
+import { basicInfoStyle as style } from '../../../styles/index';
 
 
 let PlayerForm = props => {
 	const { handleSubmit } = props;
-
+	console.log(props.initialValues, 'forrrrm');
 	return(
 		<form 
 			style={style.form}
@@ -24,7 +24,7 @@ let PlayerForm = props => {
 			</div>
 			<div style={style.formRow}>
 				<Field 
-					label="Jersey number" 
+					floatingLabelText="Jersey number" 
 					type="number" 
 					name="jerseyNumber" 
 					component={TextField} 

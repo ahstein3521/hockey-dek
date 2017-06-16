@@ -18,12 +18,7 @@ import {
   avatarActiveStyle as activeStyle 
 } from '../../styles/index';
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  withRouter,
-} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const ListItems = [
   {

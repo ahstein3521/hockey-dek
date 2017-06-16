@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchPlayerDetails } from '../../../actions/index';
 import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
 import { Card } from 'material-ui/Card';
 
-import { searchStyle as styles } from '../../styles/index';
+import { searchStyle as styles } from '../../../styles/index';
 
 const getDataSource = (list) => (
 
@@ -15,23 +18,27 @@ const getDataSource = (list) => (
 );
 
 
-const PlayerMenu = ({onNewRequest, playerList}) => (
-	<Card style={styles.card}>		
+const PlayerMenu = ({fetchPlayerDetails, playerList, history}) => (
+		
 		<div style={styles.wrapper}>
 			<AutoComplete
-				onNewRequest={onNewRequest}
+				onNewRequest={player => fetchPlayerDetails(player.playerData, history)}
 				fullWidth={true}
 				floatingLabelText="Player Name:"
 				name="name"
 				maxSearchResults={6}
-				floatingLabelStyle={styles.label}
-	  		inputStyle={styles.input}
-	  		underlineStyle={styles.input}
 	  		filter={AutoComplete.caseInsensitiveFilter}  
 				dataSource={getDataSource(playerList)}
 			/>
 		</div>
-	</Card>
 )
 
-export default PlayerMenu;
+function mapStateToProps({player}) {
+	return { playerList: player.list}
+}
+
+function mapDispatchToProps(dispatch){
+	return bindActionCreators({fetchPlayerDetails}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerMenu);

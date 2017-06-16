@@ -1,9 +1,10 @@
 import React from 'react';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
-import Search from './search.jsx';
+import TeamSearch from '../teams/toolbar/search.jsx';
+import PlayerMenu from '../players/toolbar/menu.jsx';
 
-import { rosterTableStyle as css } from '../../../styles/index';
+import { rosterTableStyle as css } from '../../styles/index';
 
 const ToolbarBase = props => {   
   const { location: { state={}, pathname }} = props;
@@ -24,10 +25,11 @@ const ToolbarBase = props => {
 }
 
 const map = {
-  '/teams': <Search/>,
+  '/teams': <TeamSearch/>,
   '/teams/list': <noScript/>,
   '/teams/roster': <noScript/>,
-  '/teams/settings': <noScript/>
+  '/teams/settings': <noScript/>,
+  '/players': <PlayerMenu/>
 }
 
 export default ToolbarBase;

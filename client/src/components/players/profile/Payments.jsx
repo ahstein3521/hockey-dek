@@ -5,11 +5,12 @@ import Card from './CardWrapper.jsx';
 
 export default class PaymentList extends Component{
 	render(){
-		const {payments} = this.props;
+		const { payments = []} = this.props;
+  
 		return(
 		<div style={{width:'90%', margin:'0 auto 20px'}}> 		
 			{
-				payments.map(({record, season},i) => (
+				payments.map(({record ={}, season={}},i) => (
           <Card season={season} key={i}>
           <table>
             <tbody>

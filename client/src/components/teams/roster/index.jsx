@@ -12,7 +12,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import IconButton from 'material-ui/IconButton';
 import ReturnIcon from 'material-ui/svg-icons/navigation/arrow-back';
 
-import { PrimaryColorDefault } from '../../../styles/theme';
 
 import { orderBy } from 'lodash';
 
@@ -35,8 +34,8 @@ class TeamRoster extends Component{
 
 	onSelect = (player) => {
 		const {history, fetchPlayerDetails} = this.props
-		const redirect = () => history.push("/players");
-		fetchPlayerDetails(player, redirect);
+		
+		fetchPlayerDetails(player, history);
 	}
 	onSort = columnClicked => {
 		const { sortCategory, direction } = this.state;

@@ -6,7 +6,7 @@ import TeamTable from './roster/index.jsx';
 import TeamMenu from './search/main.jsx';
 import TeamList from './list/index.jsx';
 import TeamSettings from './settings/main.jsx';
-import ToolBar from './toolbar/main.jsx';
+import ToolBar from '../common/toolbar.jsx';
 	
 
 const TeamPage = () => (

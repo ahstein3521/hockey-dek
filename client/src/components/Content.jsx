@@ -35,7 +35,7 @@ class Content extends Component{
 							selectedCategory && <Route path='/' component={NavigationArrows}/>
 						}
 						<TeamPage/>
-						<Route path='/players' component={PlayerPage}/>
+						<PlayerPage/>
 					</div>
 				</div>
 				<Modal/>
