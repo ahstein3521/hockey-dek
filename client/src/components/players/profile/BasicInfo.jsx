@@ -9,18 +9,18 @@ import { basicInfoStyle as style } from '../../../styles/index';
 
 let PlayerForm = props => {
 	const { handleSubmit } = props;
-	console.log(props.initialValues, 'forrrrm');
+
 	return(
 		<form 
 			style={style.form}
 			onSubmit={handleSubmit}>
 			<div style={style.formRow}>
-				<Field label="First name" name="firstName" component={TextField} />
-				<Field label="Last name"  name="lastName"  component={TextField} />
+				<Field floatingLabelText="First name" name="firstName" component={TextField} />
+				<Field floatingLabelText="Last name"  name="lastName"  component={TextField} />
 			</div>
 			<div style={style.formRow}>
-				<Field label="Phone number" name="phone" component={TextField} />
-				<Field label="Email" name="email" component={TextField} />
+				<Field floatingLabelText="Phone number" name="phone" component={TextField} />
+				<Field floatingLabelText="Email" name="email" component={TextField} />
 			</div>
 			<div style={style.formRow}>
 				<Field 

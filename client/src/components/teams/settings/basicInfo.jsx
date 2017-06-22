@@ -15,8 +15,8 @@ const UpdateTeamForm = props => {
 	const { handleSubmit, initialValues, change, seasons } = props;
 
 	return (
-		<form onSubmit={handleSubmit} style={{padding: 10}}>
-			<div style={{width:'100%',display:'flex', justifyContent:'space-around'}}>
+		<form onSubmit={handleSubmit} className="form">
+			<div className="form-row">
 				<Field 
 					style={{width:'45%'}}
 					component={TextField}
@@ -32,7 +32,7 @@ const UpdateTeamForm = props => {
 					<RadioButton label="Roller" value="Roller"/>
 				</Field>
 			</div>
-			<div style={{width:'100%',display:'flex', justifyContent:'space-around', marginBottom:40}}>
+			<div className="form-row">
 				<Field 
 					name="currentSeason._id"
 					onChange={(_, _id) => change('currentSeason', getById(seasons, _id))}
@@ -47,22 +47,22 @@ const UpdateTeamForm = props => {
 					}
 				</Field>
 
-				<div style={{width:'20%', paddingTop:25}}>
+				<div style={{width:'40%', paddingTop:25}}>
 					<p>Create a new season?</p>
 				</div>	
 			</div>	
-			<div style={{position:'absolute', right:10, bottom:10}}>
+			<div className="btn-group">
 				<RaisedButton
-					style={{marginRight:10}} 
+					className="form-btn"
 					label="Update"
 					type="submit"
 					primary={true}
 				/>
 				<RaisedButton
+					className="form-btn"
 					secondary={true}
 					onTouchTap={() => props.reset()}
 					label="Reset"
-					style={{marginRight:15}}
 				/>
 			</div>
 		</form>

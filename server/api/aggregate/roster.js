@@ -48,6 +48,7 @@ module.exports = seasonId => Seasons.aggregate([
         _id: "$info._id",
         firstName:"$info.firstName",
         lastName: "$info.lastName",
+        fullName: {$concat: ["$info.firstName", " ", "$info.lastName"]},
         jerseyNumber:"$info.jerseyNumber",
         email: "$info.email",
         phone: "$info.phone",

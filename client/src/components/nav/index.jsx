@@ -41,7 +41,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     toggleMenu: () => dispatch({type:'TOGGLE_MENU'}),
-    selectItem: (item) => dispatch({type: 'SELECT_MENU_ITEM', payload:item}),
     openModal: (view,data) => dispatch({type:'OPEN_MODAL', payload: {view, data}})
   }
 }

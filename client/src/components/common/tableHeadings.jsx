@@ -5,16 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import ArrowDropUp from 'material-ui/svg-icons/navigation/arrow-drop-up';
 import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 
-
-const headings = [
-	{text:'Name',val:'lastName',width:150},
-	{text:'#' ,val:'jerseyNumber'},
-	{text:'Check-ins',val:'checkIns'},
-	{text:'Paid' ,val:'amountPaid'},
-	{text:'Comped' ,val:'amountComped'},
-	{text:'Suspended' ,val:null },
-	{text:'Waiver' ,val:null }
-]
+import { primary3Color } from '../../../theme';
 
 const Arrow = ({ direction, selected }) => {
 	if(!selected) return <noScript/>
@@ -35,19 +26,20 @@ const Label = ({val, text, onClick, ...rest}) => {
 }
 
 const THead = props => {
-	const { sortProps: {direction, sortCategory }} = props;
+	const {direction, sortCategory, headings} = props;
 
 	return(
-	  <TableRow >
+	  <TableRow style={{backgroundColor: primary3Color}}>
 	  	{headings.map((heading,i) => (
-	  		<TableHeaderColumn 
-	  			style={{width: heading.width, color:'black'}}
+	  		<TableHeaderColumn
+	  			style={{color:'black'}} 
+	  			colSpan={heading.colSpan || 1}
 	  			key={i}
 	  		>
 	  			<Label 
 	  				{...heading}
 	  				onClick={props.onClick}
-	  				selected={sortCategory===heading.val}
+	  				selected={sortCategory === heading.val}
 	  				direction={direction}
 	  			/>
 				</TableHeaderColumn>

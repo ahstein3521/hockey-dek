@@ -5,7 +5,8 @@ import {
 	ADD_PLAYER, 
 	UPDATE_PLAYER_INFO,
 	UPDATE_PLAYER_LIST,
-	ROOT_URL 
+	ROOT_URL,
+	SET_LOAD_STATE,  
 } from './constants';
 
 import { reset } from 'redux-form';
@@ -31,18 +32,20 @@ export function createPlayer(form, dispatch) {
 
 
 
-export function fetchPlayerDetails(player, history){
-	const redirectUrl = '/players/profile'
+export function fetchPlayerDetails(player){
 	const fullName = player.firstName + ' ' + player.lastName;
 
 	return dispatch => {
+
+		dispatch({ type: SET_LOAD_STATE, payload: true });
+
 		axios.get(`${ROOT_URL}/player/fetch/${player._id}`)
 			.then(({data}) => {
 				const basicInfo = { ...player, ...data.basicInfo };
-				
+		
 				dispatch({type: SELECT_PLAYER, payload: {...data, basicInfo}})
 			})
-			.then(() => history.push(redirectUrl, {title: fullName} ))
+			.then(() => 	dispatch({ type: SET_LOAD_STATE, payload: false }))
 	}
 }
 

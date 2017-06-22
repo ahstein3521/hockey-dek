@@ -12,10 +12,15 @@ const suspensionSchema = new Schema({
 	season:Schema.Types.ObjectId
 }, {timestamps:true});
 
+const nameFormat = {
+	type:String,
+	trim: true,
+	required: true
+}
 
 const playerSchema = new Schema({
-	firstName:String,
-	lastName:String,
+	firstName: nameFormat,
+	lastName: nameFormat,
 	email:{ 
 		type:String, 
 		unique:true

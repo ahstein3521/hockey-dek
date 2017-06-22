@@ -21,7 +21,7 @@ const checkAuthentication = ( req, res ) => {
         .populate({path:'currentSeason', select:'-games -players'})
         .exec(),
       
-      Player.find({}, {firstName:1, lastName:1}).exec()
+      Player.find({}, {firstName:1, lastName:1, email:1, phone:1}).exec()
     ])
     .then((data) => {
       const [teams, players] = data;

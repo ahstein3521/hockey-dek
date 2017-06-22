@@ -8,28 +8,39 @@ import { rosterTableStyle as css } from '../../styles/index';
 
 const ToolbarBase = props => {   
   const { location: { state={}, pathname }} = props;
-  const { title, subtitle } = state;
+  let { title = null, subtitle } = state;
   
+
   return (
     <Toolbar >
       <ToolbarGroup>
-        <ToolbarTitle text={title} />
+        <ToolbarTitle text={title? title : map[pathname].title} />
         <h4 style={css.toolbarSubtitle}>{subtitle}</h4>
       </ToolbarGroup>
       <ToolbarGroup>
         <ToolbarSeparator/>
-        {map[pathname]}
+        {map[pathname] ? map[pathname].component : <noScript/>}
       </ToolbarGroup>
     </Toolbar>
   );
 }
 
 const map = {
-  '/teams': <TeamSearch/>,
-  '/teams/list': <noScript/>,
+  '/teams': {
+    title: 'Teams',
+    component:<TeamSearch/>
+  },
   '/teams/roster': <noScript/>,
   '/teams/settings': <noScript/>,
-  '/players': <PlayerMenu/>
+  '/players': {
+    title:'Players',
+    component:<PlayerMenu/>,
+  },
+  '/games':{
+    title:'Start a new game',
+    component:<noScript/>
+  },
+
 }
 
 export default ToolbarBase;

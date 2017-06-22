@@ -1,17 +1,16 @@
 import React,{Component} from 'react';
 import Paper from 'material-ui/Paper';
 import { connect } from 'react-redux';
+
+import NavigationArrows from './navigation.jsx';
 import Nav from './nav/index.jsx';
 import Modal from './modals/main.jsx';
-// import TeamTable from './teams/roster/index.jsx';
-// import TeamMenu from './teams/search/main.jsx';
-// import TeamList from './teams/list/index.jsx';
+import SnackBar from './snackbar.jsx';
 
 import TeamPage from './teams/index.jsx';
-import NavigationArrows from './navigation.jsx';
-
 import PlayerPage from './players/index.jsx';
-import SnackBar from './snackbar.jsx';
+import GamesPage from './games/index.jsx';
+
 import { Route, Link } from 'react-router-dom';
 
 const style = {
@@ -36,6 +35,7 @@ class Content extends Component{
 						}
 						<TeamPage/>
 						<PlayerPage/>
+						<GamesPage/>
 					</div>
 				</div>
 				<Modal/>

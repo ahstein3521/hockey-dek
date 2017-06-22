@@ -8,7 +8,7 @@ import ForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 const TeamNav = props => {
 	
 	return(
-		<div className="team-nav">
+		<div id="nav-arrows">
 			<IconButton
 				onTouchTap={()=> props.history.goBack()}
 			>

@@ -14,10 +14,10 @@ class PlayerTabs extends Component{
   handleChange = (value) => this.setState({ value });
 
   render(){
-    const { selected} = this.props;
-
+    const { selected, loading } = this.props;
+    if (loading) return <h2>Loading....</h2>
+      
     return(
-  
         <Tabs
           value={this.state.value}
           tabItemContainerStyle={styles.container}
@@ -43,9 +43,9 @@ class PlayerTabs extends Component{
   }
 }
 
-function mapState({player: { selected }}){
+function mapState({ player: { selected }, loading }){
   
-  return { selected }
+  return { selected, loading }
 }
 
 

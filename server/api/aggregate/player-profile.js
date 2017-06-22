@@ -13,7 +13,8 @@ module.exports = playerId =>
         ]
       }
 		},
-		
+		// Create a new field 'player' by combining the players and formerPlayers fields and filtering out any
+		//players not matching the playerId param
 		{$project: 
 			{
 				year:1,
@@ -30,12 +31,17 @@ module.exports = playerId =>
 				}
 			}
 		},
+		//Populate the player, games, and team field
+		//(Currently the field contains only a ref)
 	 	{$lookup: {from:"players", foreignField:"_id", localField:'player', as:'player'}},
 		{$unwind:"$games"},
 		{$lookup: {from:'games', foreignField: '_id', localField: 'games', as: 'games'}},
 		{$unwind:"$games"},
 		{$lookup: {from:"teams", foreignField:'_id', localField:'team', as:'team' }},
 		{$unwind: "$team"},		
+		//Reformat each document with the newly populated data
+		//Create a new field 'checkedIn' that contains a formatted date, an id of the game, 
+			//and boolean for whether or not the playerId params is included in 'games.players'
 		{$project: 
 			{
 				season:{
@@ -57,6 +63,11 @@ module.exports = playerId =>
 				}
 			}
 		},
+		//Group documents by season
+		//Reformat docs to have a 'basicInfo' field for player info
+		//Create a 'payment' field by finding the player's payment subdocument relative to the season
+		//Create an array for each checkIn of the season
+		//Create a field containing the total number of checkins for the season
 		{$group: 
 			{
 				_id:"$season",
@@ -83,7 +94,10 @@ module.exports = playerId =>
 			totalPlayed:{$sum: {$cond: ["$checkedIn.attended", 1, 0]}}
 		}
 	},
+	//Sort documents by most recent
 	{$sort: { '_id.year':-1, '_id.quarter':-1}},
+	//Create a single document by grouping by player
+	// The payments and games fields become arrays containing an object for each season
 	{$group:
 		{
 			_id: "$basicInfo._id",

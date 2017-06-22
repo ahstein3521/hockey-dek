@@ -14,10 +14,7 @@ const linkProps = {
 };
 
 const Banner = ({ openModal }) => (
-	<div>
-		<Link to={linkProps}>
-			<FlatButton label="Show All"/>
-		</Link>				
+	<div>			
 		<IconButton
 			tooltip="Add A Team"
 			onTouchTap={()=> openModal()}

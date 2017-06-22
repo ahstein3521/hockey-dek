@@ -118,18 +118,18 @@ class PlayersList extends Component{
 						available = {this.state.available}					
 						handleUpdateInput = {searchText => this.setState({ searchText })}
 					/>
-					<div style={{position:'absolute', right:10, bottom:10}}>
+					<div className="btn-group">
 						<RaisedButton 
-							style={{marginRight:10}}
 							label="Update"
+							className="form-btn"
 							onTouchTap={this.handleSubmit}
 							primary={true}
 						/>						
 						<RaisedButton
 							secondary={true}
+							className="form-btn"
 							onTouchTap={this.handleReset}
 							label="Reset"
-							style={{marginRight:15}}
 						/>
 				</div>
 			</div>

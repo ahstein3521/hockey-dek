@@ -42,7 +42,7 @@ export function submitTeamSearch({ _id, currentSeason, name, hockeyType }){
 				let { seasons, team:[teamInfo] } = data;
 				let teamData =  { name, hockeyType, currentSeason, ...teamInfo };
 				const payload = { seasons, team: teamData };
-				console.log(payload);
+				
 				return dispatch({type: FETCH_TEAM_ROSTER, payload })
 			})
 			.then(() => dispatch({ type: SET_LOAD_STATE, payload: false }))

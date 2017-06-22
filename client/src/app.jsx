@@ -3,10 +3,9 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 
 import requireAuth from './hoc/requireAuth.jsx';
 
-import Nav from './components/nav/index.jsx';
 import Content from './components/Content.jsx';
 import Login from './components/modals/Login.jsx';
-import TeamSearch from './components/teams/search/main.jsx';
+
 
 
 
