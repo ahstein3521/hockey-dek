@@ -72,19 +72,14 @@ Router.route('/update/:_id')
       .catch(error => res.send({error:error}))
 })
 
-// Router.route('/suspension/:playerId')
+// Router.route('/suspend')
 //   .get((req, res) => {
-
-//     const d = new Date()
-//     const {playerId} = req.params;
-//     const suspension = {
-//       to: d,
-//       from: d.setDate(d.getDate() - 7),
-//       reason: faker.lorem.paragraph()
-//     }
-//     Player.findByIdAndUpdate(playerId, {$push: {suspensions: suspension}})
+    
+//     Player.findByIdAndUpdate(_id, {$push: { suspensions : req.body }})
 //       .exec()
-//       .then(() => Player.findById(playerId).exec().then(p => res.send(p)))
+//       .then(() => Player.findById(_id).exec())
+//       .then(player => res.send(player))
+//       .catch(err => res.send({error: err}))
 //   })
 
 

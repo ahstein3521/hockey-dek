@@ -13,8 +13,8 @@ let CreateTeamForm = props => {
 	const { handleSubmit, error } = props;
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div style={{width:'100%',display:'flex', justifyContent:'space-around'}}>
+		<form onSubmit={handleSubmit} className="form">
+			<div className="form-row">
 				
 				<Field 
 					style={{width:'45%'}}
@@ -31,25 +31,25 @@ let CreateTeamForm = props => {
 					<RadioButton label="Roller" value="Roller"/>
 				</Field>
 			</div>
-			<div style={{width:'100%',display:'flex', justifyContent:'space-around'}}>
-			<Field
-				floatingLabelText="Season"
-				component={SelectField}
-				name="quarter"
-				style={{width:'45%'}}
-			>
-				<MenuItem value={1} primaryText="Winter"/>
-				<MenuItem value={2} primaryText="Spring"/>
-				<MenuItem value={3} primaryText="Summer"/>
-				<MenuItem value={4} primaryText="Fall"/>				
-			</Field>
-			<Field
-				type="number"
-				component={TextField}
-				name="year"
-				style={{width:'20%'}}
-				floatingLabelText="Year"
-			/>
+			<div className="form-row">
+				<Field
+					floatingLabelText="Season"
+					component={SelectField}
+					name="quarter"
+					style={{width:'45%'}}
+				>
+					<MenuItem value={1} primaryText="Winter"/>
+					<MenuItem value={2} primaryText="Spring"/>
+					<MenuItem value={3} primaryText="Summer"/>
+					<MenuItem value={4} primaryText="Fall"/>				
+				</Field>
+				<Field
+					type="number"
+					component={TextField}
+					name="year"
+					style={{width:'20%'}}
+					floatingLabelText="Year"
+				/>
 			</div>
 		</form>
 	)

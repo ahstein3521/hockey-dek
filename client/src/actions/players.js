@@ -41,8 +41,9 @@ export function fetchPlayerDetails(player){
 
 		axios.get(`${ROOT_URL}/player/fetch/${player._id}`)
 			.then(({data}) => {
+
 				const basicInfo = { ...player, ...data.basicInfo };
-		
+				
 				dispatch({type: SELECT_PLAYER, payload: {...data, basicInfo}})
 			})
 			.then(() => 	dispatch({ type: SET_LOAD_STATE, payload: false }))
@@ -54,7 +55,7 @@ export function updatePlayer( body, dispatch ){
 
 	axios.put(url, body)
 		.then(({data})=> {
-			dispatch({ type: UPDATE_PLAYER_INFO, payload:data })
+			dispatch({ type: UPDATE_PLAYER_INFO, payload:data, category: 'basicInfo' })
 			return data
 		})
 		.then(data => {
@@ -71,4 +72,36 @@ export function updatePlayer( body, dispatch ){
 			dispatch({type:'OPEN_SNACKBAR',payload:'Player Updated'})
 		})
 		.catch(err => console.error("Something went wrong", err))
+}
+
+export function suspendPlayer(form, dispatch, props) {
+	const url = `${ROOT_URL}/player/update/${form.basicInfo._id}`;
+	const { start, end, reason, currentSeason, suspensions } = form;
+	const newSuspension = {
+		start,
+		end,
+		reason,
+		season: currentSeason[0]._id
+	}	
+	
+	suspensions.forEach(suspension => {
+		if (suspension.season._id == newSuspension.season) {
+			alert('MAthc');
+			suspension.records.push(newSuspension);
+		}
+	})
+
+	const body = {
+		$push: {
+			suspensions: newSuspension
+		}
+	}
+	console.log(suspensions);
+	axios.put(url, body)
+		.then(({data}) => 
+			dispatch({ type: UPDATE_PLAYER_INFO, payload: suspensions, category: 'suspensions' })
+		)
+		.then(() => props.history.goBack())
+		.catch(err => console.error(err))
+
 }

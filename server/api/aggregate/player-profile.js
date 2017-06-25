@@ -21,6 +21,9 @@ module.exports = playerId =>
 				team:1,
 				quarter:1,
 				games:1,
+				formerPlayer: {
+					$setIsSubset:[[ObjectId(playerId)], "$formerPlayers"]
+				},
 				player: {
 					$arrayElemAt:[
 						{$filter:{
@@ -45,14 +48,32 @@ module.exports = playerId =>
 		{$project: 
 			{
 				season:{
+					_id:"$_id",
 					year:"$year",
 					quarter:"$quarter",
+					formatted: {
+						$concat: [
+							{ $arrayElemAt: [['', 'Winter', 'Spring', 'Summer', 'Fall'], '$quarter']},
+							' ',
+							{ $substr: ['$year', 0, -1]}
+						]
+					},					
 					team: {
 						_id: "$team._id",
 						name: "$team.name",
-						hockeyType: "$team.hockeyType"
+						wasFormerPlayer: "$formerPlayer",
+						hockeyType: "$team.hockeyType",
 					}
 				},
+				activeSeason: {
+					$cond:[ 
+						{	$and:[
+								{$eq: ["$team.currentSeason", "$_id"]}, 
+								{$eq: ["$formerPlayer", false]}
+							]
+						},
+					true, false ]
+				},				
 				player:{
 					$arrayElemAt: ["$player", 0]
 				},
@@ -76,10 +97,23 @@ module.exports = playerId =>
 						jerseyNumber:"$player.jerseyNumber",
 						phone:"$player.phone",
 						email: "$player.email",
+						fullName: {$concat: ["$player.firstName", " ", "$player.lastName"]},
 						lastName:"$player.lastName",
 						firstName:"$player.firstName",
-						_id:"$player._id",
-					}	
+						_id:"$player._id",					
+					}
+				},
+				activeSeason: {
+					$addToSet: { $cond: [ {$eq: ["$activeSeason", true]}, "$season", 0 ]}
+				},
+				suspensions: {
+					$first: 
+						{$filter:{
+							input:"$player.suspensions",
+							as:"payment",
+							cond:{ $eq: ["$$payment.season", "$_id"]}
+						}	
+					}				
 				},
 				payment: {
 					$first: 
@@ -101,8 +135,18 @@ module.exports = playerId =>
 	{$group:
 		{
 			_id: "$basicInfo._id",
-			basicInfo: {$first: "$basicInfo"},
+			basicInfo: {$first: "$basicInfo" },
+			currentSeason: {
+				$first: {
+					$filter: {
+						input:"$activeSeason",
+						as: "season",
+						cond: {$ne: ["$$season", 0]}
+					}
+				}
+			},
 			payments: {$push: {season: "$_id", record: {$arrayElemAt:["$payment",0]}}},
+			suspensions: {$push: {season: "$_id", records: "$suspensions"}},
 			games: {$push: {checkIns: "$checkIns", season:"$_id", totalPlayed: "$totalPlayed"}}
 		}
 	}

@@ -10,6 +10,7 @@ import SnackBar from './snackbar.jsx';
 import TeamPage from './teams/index.jsx';
 import PlayerPage from './players/index.jsx';
 import GamesPage from './games/index.jsx';
+import SuspensionForm from './modals/SuspensionForm.jsx';
 
 import { Route, Link } from 'react-router-dom';
 
@@ -21,7 +22,7 @@ const style = {
 
 
 class Content extends Component{
-
+	
 	render(){
 		const { menuOpen, location } = this.props
 		const selectedCategory = location.pathname.length > 1;
@@ -36,6 +37,7 @@ class Content extends Component{
 						<TeamPage/>
 						<PlayerPage/>
 						<GamesPage/>
+				
 					</div>
 				</div>
 				<Modal/>

@@ -5,14 +5,33 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { RadioButton } from 'material-ui/RadioButton'
 import { Field, reduxForm } from 'redux-form';
 import { TextField, SelectField, DatePicker } from 'redux-form-material-ui';
-import { suspendPlayer, openSnackbar } from '../../actions/index';
+import { suspendPlayer, openSnackbar } from '../../../actions/index';
 
 
 let SuspensionForm = props => {
-  const { handleSubmit, error } = props;
-  
+  const { handleSubmit, error, initialValues: {suspensions} } = props;
+ 
   return (
     <form onSubmit={handleSubmit} className="form">
+      <div className="form-row">
+        <Field
+          component={SelectField}
+          fullWidth={true}
+          name="currentSeason[0]._id"
+          floatingLabelText="Team & Season"
+        >
+          {
+            suspensions.map(({season}, i) => 
+              <MenuItem 
+                primaryText={season.team.name}
+                secondaryText={season.formatted}
+                key={i} 
+                value={season._id}
+              />
+            )
+          }
+        </Field>
+      </div>
       <div className="form-row">
         <Field
           name="start" 
@@ -23,7 +42,6 @@ let SuspensionForm = props => {
         <Field
           name="end" 
           component={DatePicker}
-          fullWidth={true} 
           format={null}
           floatingLabelText="End Date"
         />
@@ -34,6 +52,13 @@ let SuspensionForm = props => {
           fullWidth={true}
           component={TextField}
           floatingLabelText="Reason for suspension"
+        />
+      </div>
+      <div className="btn-group">
+        <RaisedButton
+          type="submit"
+          label="Suspend Player"
+          secondary={true}
         />
       </div>
     </form>
@@ -47,4 +72,3 @@ export default reduxForm({
 
 
 })(SuspensionForm)
-

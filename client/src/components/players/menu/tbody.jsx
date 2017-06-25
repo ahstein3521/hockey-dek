@@ -12,62 +12,57 @@ import ProfileIcon from 'material-ui/svg-icons/social/person';
 
 import { Link } from 'react-router-dom';
 
+const filterProps = props => {
+  const { 
+    onCellClick,
+    rowNumber,
+    striped,
+    selected, 
+    onRowClick, 
+    onCellHover, 
+    onRowHover, 
+    onRowHoverExit, 
+    onCellHoverExit, 
+    hoverable, 
+    children,
+    ...rest } = props;
 
-class PlayerListTable extends Component{
-  static muiName = 'TableBody';
-
-  render(){
-    return (
-      <TableBody
-        preScanRows={false}
-        showRowHover={true}
-        displayRowCheckbox={false}
-      >
-        {
-          this.props.rows.map( player => (
-            <TableRow key={player._id}>
-              <TableRowColumn>
-                {player.lastName}
-              </TableRowColumn>
-              <TableRowColumn>
-                {player.firstName}
-              </TableRowColumn>
-              <TableRowColumn>
-                {player.email}
-              </TableRowColumn>
-              <TableRowColumn>
-                {player.phone}
-              </TableRowColumn>               
-              <TableRowColumn>
-                <span onClick={()=> this.props.fetchPlayerDetails(player)}>
-                  <Link to={
-                    {
-                      pathname:'/players/profile',
-                      state: {title:`${player.firstName} ${player.lastName}`}
-                    }
-                  }>
-                    <ProfileIcon/>
-                  </Link>
-                </span>
-              </TableRowColumn>                       
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    );      
-  }
-}     
-
-
-function mapStateToProps( state, ownProps){
-  const formatRows = sortRows();
-  const rows = ownProps.rows; 
-  return { rows: formatRows({ rows }, ownProps) }
+    return rest;
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchPlayerDetails }, dispatch)
+const PlayerListTable = props => {
+  
+  const { fetchPlayerDetails, ...player } = filterProps(props);
+  
+  return (
+    <TableRow>
+      <TableRowColumn>
+        {player.lastName}
+      </TableRowColumn>
+      <TableRowColumn>
+        {player.firstName}
+      </TableRowColumn>
+      <TableRowColumn>
+        {player.email}
+      </TableRowColumn>
+      <TableRowColumn>
+        {player.phone}
+      </TableRowColumn>               
+      <TableRowColumn>
+        <span onClick={()=> fetchPlayerDetails(player)}>
+          <Link to={
+            {
+              pathname:'/players/profile',
+              state: {title:`${player.firstName} ${player.lastName}`}
+            }
+          }>
+            <ProfileIcon/>
+          </Link>
+        </span>
+      </TableRowColumn>                       
+    </TableRow>
+  )
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerListTable)
+           
+export default PlayerListTable;
 

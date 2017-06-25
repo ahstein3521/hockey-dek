@@ -6,11 +6,11 @@ const paymentSchema = require('./payment');
 const waiverSchema = new Schema({ year:String },{timestamp:true})
 
 const suspensionSchema = new Schema({
-	from:Date,
-	to:Date,
+	start:Date,
+	end:Date,
 	reason:String,
-	season:Schema.Types.ObjectId
-}, {timestamps:true});
+	season:Schema.Types.ObjectId,
+});
 
 const nameFormat = {
 	type:String,

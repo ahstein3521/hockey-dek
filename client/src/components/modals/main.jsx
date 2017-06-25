@@ -44,11 +44,13 @@ class Modal extends Component {
         label="Submit"
         primary={true}
         onTouchTap={()=> handleSubmit(data)}
+        className="form-btn"
       />,
       <RaisedButton
         label="Cancel"
         secondary={true}
         onTouchTap={this.handleClose}
+        className="form-btn"
       />,      
     ];
 
@@ -57,8 +59,8 @@ class Modal extends Component {
         <Dialog
           titleStyle={{textAlign:'center'}}
           title={title}
-          
           actions={actions}
+          actionsContainerClassName="btn-group" 
           modal={false}
           open={this.props.open}
           onRequestClose={this.handleClose}

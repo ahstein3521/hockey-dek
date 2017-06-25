@@ -1,24 +1,24 @@
 import { createSelector } from 'reselect';
-import { orderBy } from 'lodash';
+import { orderBy, get as getFromPathStr } from 'lodash';
 
-const getRowData = state => state.rows;
-const getTableProps = (_, props) => props
+const getRowData = (state, { rowPathname }) => getFromPathStr(state, rowPathname, []);
+const getTableState = (state, { tableState }) => tableState; 
 
 
-export const sortRows = () =>
+export const makeRowSelector = () =>
  	createSelector(
-		[ getRowData, getTableProps ],
+		[ getRowData, getTableState ],
 			( rows, { sortCategory, direction, rowsPerPage, currentPage, searchText } ) => {
 			  const rangeStart = (currentPage * rowsPerPage) - (rowsPerPage);
   			const rangeEnd = rangeStart + rowsPerPage;
 				
 				//If user entered text into the search field, filter the rows array
 				//(Feature to be implement on the player list table)
-  			if (searchText.trim().length) {
-  				const regex = new RegExp(searchText, 'gi');
+  			// if (searchText.trim().length) {
+  			// 	const regex = new RegExp(searchText, 'gi');
   				
-  				return rows.filter(row => regex.test(row.fullName) )
-  			}
+  			// 	return rows.filter(row => regex.test(row.fullName) )
+  			// }
 
   			//Sort the rows by category and then return a slice of that array that coincides with the 
   			//current set of results selected
@@ -26,3 +26,16 @@ export const sortRows = () =>
 					.slice(rangeStart, rangeEnd);
 			}
 	)
+
+export const makeTableStateSelector = () => 
+ 	createSelector(
+		[ getRowData, getTableState, getTableConfig ],
+			( rows, table, { name } ) => {
+
+				return {
+					...table,
+					total: rows.length,
+					name
+				}
+			}
+	)		

@@ -9,7 +9,8 @@ const getGessage = ({values, form}) => {
 	const messages = {
 		CreateTeamForm: `A new team has been successfully created`,
 		UpdateTeamForm: 'Your team has been updated',
-		CreatePlayerForm: 'Player was successfully submitted' 
+		CreatePlayerForm: 'Player was successfully submitted',
+		SuspensionForm:'Player\'s suspension status has been updated.', 
 	};
 
 	return messages[form];

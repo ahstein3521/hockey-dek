@@ -32,10 +32,13 @@ const map = {
   },
   '/teams/roster': <noScript/>,
   '/teams/settings': <noScript/>,
+  
   '/players': {
     title:'Players',
     component:<PlayerMenu/>,
   },
+  
+  
   '/games':{
     title:'Start a new game',
     component:<noScript/>

@@ -5,6 +5,7 @@ import Toggle from 'material-ui/Toggle';
 
 const seasons = ['','Winter', 'Spring', 'Summer', 'Fall'];
 
+import { primary3Color } from '../../../../theme';
 
 export default class SeasonCard extends Component {
 
@@ -26,6 +27,7 @@ export default class SeasonCard extends Component {
         onExpandChange={this.handleExpandChange}
       >
         <CardHeader
+          style={{backgroundColor: primary3Color }}
           title={`${name}, ${hockeyType}`}
           subtitle={seasons[quarter]+" "+year}
           actAsExpander={true}

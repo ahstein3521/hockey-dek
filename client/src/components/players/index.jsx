@@ -5,7 +5,8 @@ import Paper from 'material-ui/Paper'
 import Profile from './profile/index.jsx';
 import AddPlayer from './add-players/main.jsx';
 import ToolBar from '../common/toolbar.jsx';
-	import PlayerList from './menu/index.jsx';
+import PlayerList from './menu/index.jsx';
+import SuspensionForm from './suspend-player/index.jsx';
 
 const TeamPage = () => (
 		<div>
@@ -14,6 +15,7 @@ const TeamPage = () => (
 				<Route exact path='/players' component= {PlayerList} />
 				<Route path='/players/profile' component= {Profile} />
 				<Route path= '/players/add' component={AddPlayer}/>
+				<Route path='/players/suspension' component={SuspensionForm} />
 			</Paper>
 		</div>
 	)

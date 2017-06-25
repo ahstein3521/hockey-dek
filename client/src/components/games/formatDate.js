@@ -23,6 +23,16 @@ const days = [
 ];
 
 export default function formatDate(d) {
+
+	if (!(d instanceof Date)){
+		
+		d = new Date(d);
+
+		if (d == 'Invalid Date'){
+			throw new Error('Argument forms an invalid date');
+		}
+	}
+
 	const year = d.getFullYear();
 	const monthIndex = d.getMonth();
 	const day = d.getDate();

@@ -3,6 +3,7 @@ import { reduxForm } from 'redux-form';
 
 import CreateTeamForm from './CreateTeam.jsx';
 import DeleteTeam from './deleteTeam.jsx';
+import SuspensionForm from './SuspensionForm.jsx';
 
 const mappings = {
 	default: {
@@ -27,6 +28,12 @@ const mappings = {
 		onSubmit:null,
 		reduxFormName: 'CreateTeamForm'
 	},
+	newSuspension: {
+		title: 'Suspend Player',
+		Children: SuspensionForm,
+		onSubmit: null,
+		reduxFormName: 'SuspensionForm',
+	}
 
 };
 
