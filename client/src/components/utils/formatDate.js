@@ -22,15 +22,10 @@ const days = [
 	'Saturday'
 ];
 
-export default function formatDate(d) {
+export default function formatDate(d, showDayOfWeek = true) {
 
 	if (!(d instanceof Date)){
-		
 		d = new Date(d);
-
-		if (d == 'Invalid Date'){
-			throw new Error('Argument forms an invalid date');
-		}
 	}
 
 	const year = d.getFullYear();
@@ -38,6 +33,10 @@ export default function formatDate(d) {
 	const day = d.getDate();
 	const dayOfWeek = days[d.getDay()];
 
-	return `${dayOfWeek}, ${months[monthIndex]} ${day}, ${year}`;
-}
+	const formattedDate = `${months[monthIndex]} ${day}, ${year}`;
 
+	if (showDayOfWeek) {
+		return `${dayOfWeek}, ${formattedDate}`;
+	}
+	return formattedDate;
+}

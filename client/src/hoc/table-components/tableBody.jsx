@@ -19,7 +19,7 @@ class CustomTableBody extends Component {
 		const { rows, rowActions, dispatch } = this.props;
 		const RowTemplate = this.props.rowComponent;
 		const actions = bindActionCreators(rowActions, dispatch);
-
+		
 		return	rows.map((rowData, i) => 
 				<RowTemplate key={i} {...rowData} {...actions}/>
 			) 	
@@ -33,9 +33,7 @@ class CustomTableBody extends Component {
 				showRowHover={true}
 				displayRowCheckbox={false}
 			>
-			{
-				this.props.isLoading ? this.renderSpinner() : this.renderRows()
-			}
+			{this.renderRows()}
 			</TableBody>
 		)	
 	}

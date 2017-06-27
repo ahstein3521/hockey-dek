@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const Seasons = mongoose.model('season');
 const ObjectId = mongoose.Types.ObjectId;
 
+const d = new Date();
+
 module.exports = seasonId => Seasons.aggregate([
   //Get all the games played this season
   { $match: { _id: ObjectId(seasonId) }},
@@ -54,7 +56,19 @@ module.exports = seasonId => Seasons.aggregate([
         phone: "$info.phone",
         amountPaid: "$info.payments.amount",
         amountComped: "$info.payments.comped",
-        checkIns:"$checkIns",           
+        checkIns:"$checkIns", 
+        suspended: {
+          $filter: {
+            input: "$info.suspensions",
+            as: "suspension",
+            cond: {
+              $and: [
+                {$gte: [d, "$$suspension.start"]},
+                {$lt: [d, "$$suspension.end"]}
+              ]
+            }
+          }
+        }          
       },
       comped:1,
       paid:1,

@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchRosters } from '../../../actions/index';
 import WizardFormFirstPage from './page1.jsx';
 import WizardFormSecondPage from './page2.jsx';
 
-class WizardForm extends Component {
+export default class WizardForm extends Component {
   
   state = { page: 1 }
   
@@ -13,22 +16,16 @@ class WizardForm extends Component {
   previousPage = () => 
     this.setState({ page: this.state.page - 1 })
   
-  onSubmit = (a,b,c) => {
-    console.log(a,b,c);
-  }
-
   render() {
-    const { onSubmit } = this.props
-    const { page } = this.state
+    const { page } = this.state;
+    const { history } = this.props;
     return (
       <div>
         {page === 1 && <WizardFormFirstPage onSubmit={this.nextPage}/>}
-        {page === 2 && <WizardFormSecondPage previousPage={this.previousPage} onSubmit={this.onSubmit}/>}
+        {page === 2 && <WizardFormSecondPage previousPage={this.previousPage} history={history}/>}
       </div>
     )
   }
 }
 
-const funcComp = () => <WizardForm/>
 
-export default funcComp;

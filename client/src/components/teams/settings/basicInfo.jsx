@@ -5,7 +5,7 @@ import { RadioButton } from 'material-ui/RadioButton'
 import { Field, reduxForm } from 'redux-form';
 import { TextField, SelectField, RadioButtonGroup } from 'redux-form-material-ui';
 import { updateTeam, openSnackbar } from '../../../actions/index';
-import validate from '../../forms/validation';
+import validate from '../../utils/validation';
 
 
 

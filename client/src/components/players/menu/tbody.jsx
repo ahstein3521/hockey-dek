@@ -12,26 +12,10 @@ import ProfileIcon from 'material-ui/svg-icons/social/person';
 
 import { Link } from 'react-router-dom';
 
-const filterProps = props => {
-  const { 
-    onCellClick,
-    rowNumber,
-    striped,
-    selected, 
-    onRowClick, 
-    onCellHover, 
-    onRowHover, 
-    onRowHoverExit, 
-    onCellHoverExit, 
-    hoverable, 
-    children,
-    ...rest } = props;
-
-    return rest;
-}
+import filterProps from '../../utils/filterTableProps';
 
 const PlayerListTable = props => {
-  
+ 
   const { fetchPlayerDetails, ...player } = filterProps(props);
   
   return (

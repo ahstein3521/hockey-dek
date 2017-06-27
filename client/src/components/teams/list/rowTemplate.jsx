@@ -9,7 +9,11 @@ import EditIcon from 'material-ui/svg-icons/content/create';
 
 import { Link } from 'react-router-dom';
 
-const RowTemplate = ({ submitTeamSearch, openModal, ...team}) => {
+import filterTableProps from '../../utils/filterTableProps';
+
+const RowTemplate = props => {
+
+  const { submitTeamSearch, openModal, ...team} = props;
 
   return (
     <TableRow key={team._id}>

@@ -5,7 +5,7 @@ import { RadioButton } from 'material-ui/RadioButton';
 import { RadioButtonGroup, DatePicker } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import formatDate from '../formatDate';
+import formatDate from '../../utils/formatDate';
 
 const validate = values => {
   const errors = {};

@@ -7,7 +7,7 @@ import playerReducer from './player/index';
 import snackbarReducer from './snackbar';
 import loadingReducer from './loading';
 import modalReducer from './modal';
-import tableReducer from './smartTable';
+import gameReducer from './games';
 
 const rootReducer = combineReducers({
 	auth: authReducer,
@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
 	teams: teamReducer,
 	player: playerReducer,
 	modal: modalReducer,
-	table: tableReducer,
+	game: gameReducer,
 });
 
 export default rootReducer;

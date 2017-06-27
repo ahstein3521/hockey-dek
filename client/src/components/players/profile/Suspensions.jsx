@@ -1,10 +1,10 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 
 import Card from './CardWrapper.jsx';
 import SadIcon from 'material-ui/svg-icons/social/mood-bad';
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
-import formatDate from '../../games/formatDate';
+import formatDate from '../../utils/formatDate';
 
 import { Link } from 'react-router-dom';
 export default class SuspensionList extends Component{
@@ -28,7 +28,7 @@ export default class SuspensionList extends Component{
           <RaisedButton
             secondary={true}
             icon={<SadIcon/>}
-            onTouchTap={()=> {}}
+            onTouchTap={(a,b,c)=> {console.log(a,b,c)}}
             label="New Suspension"
           />
         </Link>

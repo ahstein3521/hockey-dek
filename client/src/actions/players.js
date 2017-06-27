@@ -33,7 +33,7 @@ export function createPlayer(form, dispatch) {
 
 
 export function fetchPlayerDetails(player){
-	const fullName = player.firstName + ' ' + player.lastName;
+	
 
 	return dispatch => {
 
@@ -86,18 +86,13 @@ export function suspendPlayer(form, dispatch, props) {
 	
 	suspensions.forEach(suspension => {
 		if (suspension.season._id == newSuspension.season) {
-			alert('MAthc');
 			suspension.records.push(newSuspension);
 		}
 	})
 
-	const body = {
-		$push: {
-			suspensions: newSuspension
-		}
-	}
-	console.log(suspensions);
-	axios.put(url, body)
+	const update = { $push: { suspensions: newSuspension }}
+
+	axios.put(url, update)
 		.then(({data}) => 
 			dispatch({ type: UPDATE_PLAYER_INFO, payload: suspensions, category: 'suspensions' })
 		)

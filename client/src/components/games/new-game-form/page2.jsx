@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import MenuItem from 'material-ui/MenuItem';
 import { AutoComplete } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import { fetchRosters } from '../../../actions/index';
 import { formValueSelector } from 'redux-form';
-import formatDate from '../formatDate';
+import formatDate from '../../utils/formatDate';
 
 const GameForm2 = props =>{
   const { handleSubmit, previousPage } = props;
@@ -24,7 +24,7 @@ const GameForm2 = props =>{
           floatingLabelText={`Select a ${props.hockeyType} hockey team`}
           filter={AutoComplete.caseInsensitiveFilter}  
           maxSearchResults={5}
-          dataSourceConfig={{value:'_id',text:'name'}}
+          dataSourceConfig={{value:'currentSeason',text:'name'}}
         />
         <Field
           maxSearchResults={5}
@@ -33,7 +33,7 @@ const GameForm2 = props =>{
           name="team2"
           dataSource={props.teams}
           floatingLabelText="Select another team"
-          dataSourceConfig={{value:'_id',text:'name'}}
+          dataSourceConfig={{value:'currentSeason',text:'name'}}
         />        
       </div>  
       <div className="btn-group">
@@ -58,8 +58,10 @@ const GameForm2 = props =>{
 function mapStateToProps(state){
   const selector = formValueSelector('CreateGame');
   const teamList = state.teams.list;
+  
   const { hockeyType, date } = selector(state, 'hockeyType', 'date');
   const teams = teamList.filter(team => team.hockeyType === hockeyType); 
+  
   return { teams, hockeyType, date };
 }
 
@@ -68,6 +70,7 @@ const connectedGameForm = connect(mapStateToProps)(GameForm2)
 // Decorate with redux-form
 export default reduxForm({
   form: 'CreateGame',
+  onSubmit: fetchRosters,
   destroyOnUnmount: false
   
 })(connectedGameForm)

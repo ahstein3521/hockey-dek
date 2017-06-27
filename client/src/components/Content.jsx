@@ -37,7 +37,6 @@ class Content extends Component{
 						<TeamPage/>
 						<PlayerPage/>
 						<GamesPage/>
-				
 					</div>
 				</div>
 				<Modal/>

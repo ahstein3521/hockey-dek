@@ -2,7 +2,7 @@ export * from './auth';
 export * from './players';
 export * from './teams';
 export * from './snackbar';
-export * from './table';
+export * from './game';
 
 export function toggleMenu(){
 	return {type:"TOGGLE_MENU"};

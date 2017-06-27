@@ -10,6 +10,7 @@ const Team = mongoose.model('team');
 const checkAuthentication = ( req, res ) => {
   
   if(!req.user) {
+    console.log('!req.user');
     return res.send({ auth: { loggedIn:false, loading: false } });
   }
 
