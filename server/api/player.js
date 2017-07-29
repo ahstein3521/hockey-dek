@@ -62,25 +62,15 @@ Router.route('/names')
   })
 
 //Save updated player info to the db
-Router.route('/update/:_id')    
+Router.route('/update')    
   .put((req,res) => {
-    const {_id} = req.params;
+    const { query, update } = req.body;
       
-    Player.findByIdAndUpdate(_id, req.body )
+    Player.update(query, update)
       .exec()
-      .then(() => res.send(req.body))
+      .then(() => res.send(update))
       .catch(error => res.send({error:error}))
 })
-
-// Router.route('/suspend')
-//   .get((req, res) => {
-    
-//     Player.findByIdAndUpdate(_id, {$push: { suspensions : req.body }})
-//       .exec()
-//       .then(() => Player.findById(_id).exec())
-//       .then(player => res.send(player))
-//       .catch(err => res.send({error: err}))
-//   })
 
 
 module.exports = Router;  

@@ -8,7 +8,6 @@ const headings = [
 	{text:'Last Name' ,val:'lastName'},
 	{text:'First Name',val:'firstName'},
 	{text:'Email', val:'email'},
-	{text:'Phone' ,val:'phone' },
 	{text:'Profile' ,val:null }
 ]
 

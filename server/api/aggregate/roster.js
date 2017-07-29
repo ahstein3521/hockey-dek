@@ -34,11 +34,17 @@ module.exports = seasonId => Seasons.aggregate([
   { $group: {
       _id:"$players._id",
       info:{ $first:"$players" },
-      checkIns: { $sum: 
-        {$cond:[
-          { $setIsSubset: [["$players._id"], "$games.players"]},
-        1, 0
-      ]}},
+      checkIns: { 
+        $sum: { 
+          $cond: [
+            { $or: [
+              { $setIsSubset: [["$players._id"], "$games.team1.checkIns"] },
+              { $setIsSubset: [["$players._id"], "$games.team2.checkIns"] },
+            ]}, 
+            1, 0 
+          ]
+        }
+      },
       paid:{ $first: "$players.payments.amount" },
       comped: { $first: "$players.payments.comped"}, 
       teamId: { $first: "$team" },

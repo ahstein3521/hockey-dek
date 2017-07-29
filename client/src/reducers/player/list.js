@@ -1,4 +1,4 @@
-import { FETCH_PLAYER_LIST, UPDATE_PLAYER_LIST, ADD_PLAYER } from '../../actions/constants';
+import { FETCH_PLAYER_LIST, UPDATE_PLAYER_LIST_INDEX, ADD_PLAYER } from '../../actions/constants';
 import { findIndex } from 'lodash';
 
 export default function(state = [], action) {
@@ -11,7 +11,7 @@ export default function(state = [], action) {
 		case FETCH_PLAYER_LIST:
 			return payload;
 
-		case UPDATE_PLAYER_LIST:
+		case UPDATE_PLAYER_LIST_INDEX:
 			const index = findIndex(state, {_id: payload._id});
 			return [
 				...state.slice(0, index), 

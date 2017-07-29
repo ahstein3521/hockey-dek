@@ -5,7 +5,7 @@ import Subheader from 'material-ui/Subheader';
 
 
 
-const PlayerCategory = ({ title, list, onRequestDelete,...chipProps }) => (	
+const PlayerCategory = ({ title, list=[], onRequestDelete,...chipProps }) => (	
 	<div>
 		{	list.length > 0 &&
 			<div>
@@ -16,7 +16,7 @@ const PlayerCategory = ({ title, list, onRequestDelete,...chipProps }) => (
 							<Chip 
 								key={player._id}
 								style={{margin:5}}
-								onRequestDelete={() => onRequestDelete(player, i)}
+								onRequestDelete={() => onRequestDelete(player)}
 								{...chipProps}
 							>
 								{`${player.firstName} ${player.lastName}`}

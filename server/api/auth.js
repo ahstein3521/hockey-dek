@@ -19,15 +19,16 @@ const checkAuthentication = ( req, res ) => {
   Promise.all([
 
       Team.find({})
-        .populate({path:'currentSeason', select:'-games -players'})
+        .populate({ path:'currentSeason', select:'-players -games -formerPlayers' })
         .exec(),
       
-      Player.find({}, {firstName:1, lastName:1, email:1, phone:1}).exec()
+      Player.find({}, { firstName:1, lastName:1, email:1 }).exec()
     ])
     .then((data) => {
       const [teams, players] = data;
       res.send({ teams, players, auth });
     })
+    .catch(err => { throw err })
 };
 
 const logInUser = (req,res) => {

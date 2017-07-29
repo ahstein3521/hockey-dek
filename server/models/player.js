@@ -22,8 +22,9 @@ const playerSchema = new Schema({
 	firstName: nameFormat,
 	lastName: nameFormat,
 	email:{ 
-		type:String, 
-		unique:true
+		type:String,
+		trim: true, 
+		unique:true,
 	},
 	phone:{
 		type:String, 

@@ -8,8 +8,8 @@ module.exports = playerId =>
 		//Get seasons associated with player
 		{$match: 
       {$or: [
-          {players: {$in: [ ObjectId(playerId) ]}},
-          {formerPlayers: { $in: [ ObjectId(playerId) ]}}
+        {players: {$in: [ ObjectId(playerId) ]}},
+        {formerPlayers: { $in: [ ObjectId(playerId) ]}}
         ]
       }
 		},
@@ -80,7 +80,12 @@ module.exports = playerId =>
 				checkedIn:{
 					date: {$dateToString: { format: "%m-%d-%Y", date: "$games.date" }},
 					gameId: "$games._id",
-					attended: { $setIsSubset:[[ObjectId(playerId)], "$games.players"] }
+					attended: { 
+						 $or: [
+              { $setIsSubset: [[ObjectId(playerId)], "$games.team1.checkIns"] },
+              { $setIsSubset: [[ObjectId(playerId)], "$games.team2.checkIns"] },
+            ]
+					}
 				}
 			}
 		},
@@ -110,8 +115,8 @@ module.exports = playerId =>
 					$first: 
 						{$filter:{
 							input:"$player.suspensions",
-							as:"payment",
-							cond:{ $eq: ["$$payment.season", "$_id"]}
+							as:"suspension",
+							cond:{ $eq: ["$$suspension.season", "$_id"]}
 						}	
 					}				
 				},

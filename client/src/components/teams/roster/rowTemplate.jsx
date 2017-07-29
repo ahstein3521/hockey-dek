@@ -16,7 +16,7 @@ const TableRows = (props) => {
   
   const { fetchPlayerDetails, ...player } = filterProps(props);   
   const url = { pathname: '/players/profile', state: { title: player.fullName }}; 
-
+  
   return(
     <TableRow>
       <TableRowColumn colSpan={2}>

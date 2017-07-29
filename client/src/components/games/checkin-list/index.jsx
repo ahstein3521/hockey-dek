@@ -11,8 +11,9 @@ const rootStyle = {
 	justifyContent:'space-around'
 }
 
-const GameComponent = ({ game, handleCheckIn }) => {
-
+const GameComponent = ({ game, handleCheckIn, isLoading }) => {
+	if (isLoading) return <h2>.......Loading</h2>
+		
 	return(
 		<div style={rootStyle}>
 			<List {...game.teams[0]} onCheck={handleCheckIn}/>
@@ -21,8 +22,7 @@ const GameComponent = ({ game, handleCheckIn }) => {
 	)
 }
 function mapStateToProps(state){
-	
-	return { game: state.game }
+	return { game: state.game, isLoading: state.loading };
 }
 
 function mapDispatchToProps(dispatch) {

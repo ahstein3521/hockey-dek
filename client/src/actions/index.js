@@ -1,14 +1,14 @@
-export * from './auth';
-export * from './players';
+export * from './auth'; 
+export * from './game'; 
+export * from './payments'; 
+export * from './players'; 
+export * from './snackbar'; 
+export * from './suspensions';
 export * from './teams';
-export * from './snackbar';
-export * from './game';
 
-export function toggleMenu(){
-	return {type:"TOGGLE_MENU"};
-}
-
-//Mark the modals state as opened and specify a view
-export function openModal(view, data = null){
-	return { type: 'OPEN_MODAL', payload: { view, data } };
+export function openModal(view, data) {
+	return {
+		type: 'OPEN_MODAL',
+		payload: { view, data }
+	};
 }

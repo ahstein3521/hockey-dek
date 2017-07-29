@@ -2,29 +2,41 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
-import { RadioButton } from 'material-ui/RadioButton'
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import { Field, reduxForm } from 'redux-form';
 import { TextField, SelectField, DatePicker } from 'redux-form-material-ui';
 import { suspendPlayer, openSnackbar } from '../../../actions/index';
 
 
-let SuspensionForm = props => {
-  const { handleSubmit, error, initialValues: {suspensions} } = props;
- 
+const SuspensionForm = props => {
+  const { suspensions = [] } = props;
+
   return (
-    <form onSubmit={handleSubmit} className="form">
+    <form onSubmit={props.handleSubmit} className="form">
+      {
+        props.showDeleteButton && 
+        <div className='btn-group'>
+          <FlatButton
+            icon={<DeleteIcon/>}
+            label="Delete"
+            onTouchTap={() => props.openModal(props)}
+            secondary={true}
+          />
+        </div>
+      }
       <div className="form-row">
         <Field
           component={SelectField}
           fullWidth={true}
-          name="currentSeason[0]._id"
+          name="selectedSeasonId"
           floatingLabelText="Team & Season"
         >
           {
             suspensions.map(({season}, i) => 
               <MenuItem 
-                primaryText={season.team.name}
-                secondaryText={season.formatted}
+                primaryText={ season.team.name + ' - ' + season.formatted}
                 key={i} 
                 value={season._id}
               />
@@ -34,12 +46,14 @@ let SuspensionForm = props => {
       </div>
       <div className="form-row">
         <Field
+          autoOk={true}
           name="start" 
           component={DatePicker}
           format={null}
           floatingLabelText="Start Date"
         />
         <Field
+          autoOk={true}
           name="end" 
           component={DatePicker}
           format={null}
@@ -56,8 +70,14 @@ let SuspensionForm = props => {
       </div>
       <div className="btn-group">
         <RaisedButton
+          className="form-btn"
           type="submit"
-          label="Suspend Player"
+          label="Submit"
+          primary={true}
+        />
+        <RaisedButton
+          label="Reset"
+          onTouchTap={props.reset}
           secondary={true}
         />
       </div>
@@ -65,10 +85,4 @@ let SuspensionForm = props => {
   )
 }
 
-export default reduxForm({
-  form:'SuspensionForm',
-  onSubmit: suspendPlayer,
-  onSubmitSuccess: openSnackbar,
-
-
-})(SuspensionForm)
+export default SuspensionForm;

@@ -1,34 +1,41 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Card from './CardWrapper.jsx';
+import IconButton from 'material-ui/IconButton';
+import EditIcon from 'material-ui/svg-icons/content/create';
 import SadIcon from 'material-ui/svg-icons/social/mood-bad';
 import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
+import { List, ListItem } from 'material-ui/List';
 import formatDate from '../../utils/formatDate';
 
 import { Link } from 'react-router-dom';
-export default class SuspensionList extends Component{
-	render(){
-		const { player, openModal} = this.props;
-    const suspensions = player.suspensions || [];
 
-    const url = {
-      pathname: '/players/suspension',
-      state: {
-        player,
-        title: 'Suspend Player',
-        subtitle: player.basicInfo.fullName,
-      }
+function configRoute(formType, params) {
+  const subtitle = this.basicInfo.fullName;
+  const routes = {
+    newForm: { 
+      pathname: '/players/suspension/new',
+      state: { title: 'New Suspension', subtitle } 
+    },
+    editForm: {
+      pathname: `/players/suspension/edit/${params}`,
+      state: { title: 'Edit Suspension', subtitle }
     }
+  }
+  return routes[formType];
+}
 
-		return(
+const SuspensionList = ({player}) => {
+  const suspensions = player.suspensions || [];
+  const getFormRoute = configRoute.bind(player);
+
+	return(
 		<div style={{width:'90%', margin:'0 auto 20px', paddingBottom:10}}>
       <div className='btn-group'>
-        <Link to={url}>
+        <Link to={getFormRoute('newForm', null)}>
           <RaisedButton
             secondary={true}
             icon={<SadIcon/>}
-            onTouchTap={(a,b,c)=> {console.log(a,b,c)}}
             label="New Suspension"
           />
         </Link>
@@ -39,21 +46,31 @@ export default class SuspensionList extends Component{
 
           return (
             <Card season={season} key={i}>
-              <ul className="card-list">
+              <List>
               {
                 records.map((record, i) => (
-                  <li key={i}>
-                    <b>{`${formatDate(record.start)} - ${formatDate(record.end)}`}</b>
-                    <p>{record.reason}</p>
-                  </li>
+                  <ListItem 
+                    key={i}
+                    primaryText = {`${formatDate(record.start)} - ${formatDate(record.end)}`}
+                    rightIconButton = {
+                      <IconButton 
+                        containerElement={<Link to={getFormRoute('editForm', record._id)}/>}
+                        tooltip="Edit?"
+                        >
+                        <EditIcon/>
+                      </IconButton>  
+                    }
+                    secondaryText = {<p><b>Reason: </b>{record.reason}</p>}
+                  />
                 ))
               }
-              </ul>
+              </List>
             </Card>
           )
         })
 			}
 		</div>
-		)
-	}
-} 
+	)
+}
+
+export default SuspensionList;

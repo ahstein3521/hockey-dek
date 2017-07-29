@@ -21,5 +21,9 @@ const teamSchema = new Schema({
 
 teamSchema.plugin(titleCase, {fields: ['name']});
 
+teamSchema.virtual('slug').get(function(){
+	return kebabCase(`${this.name} ${this.hockeyType}`)
+	//TODO////////////////
+})
 
 module.exports = mongoose.model('team',teamSchema)

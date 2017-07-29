@@ -22,6 +22,7 @@ const seasonSchema = new Schema({
 		type: Schema.Types.ObjectId, 
 		ref: 'player'
 	}],
+
 	games:[{
 		type: Schema.Types.ObjectId, 
 		ref: 'game'

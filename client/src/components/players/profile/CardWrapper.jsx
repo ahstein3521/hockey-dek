@@ -3,7 +3,6 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
 
-const seasons = ['','Winter', 'Spring', 'Summer', 'Fall'];
 
 import { primary3Color } from '../../../../theme';
 
@@ -19,7 +18,7 @@ export default class SeasonCard extends Component {
   
 
   render() {
-    const {season: { team: { name, hockeyType }, quarter, year }} = this.props;
+    const {season: { team: { name, hockeyType }, formatted }} = this.props;
     return (
       <Card 
         style={{marginTop:20}}
@@ -29,7 +28,7 @@ export default class SeasonCard extends Component {
         <CardHeader
           style={{backgroundColor: primary3Color }}
           title={`${name}, ${hockeyType}`}
-          subtitle={seasons[quarter]+" "+year}
+          subtitle={formatted}
           actAsExpander={true}
           showExpandableButton={true}
         />

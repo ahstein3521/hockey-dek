@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -6,9 +6,6 @@ import { makeRowSelector } from '../../selectors/table';
 
 import { TableRow, TableHeaderColumn, TableBody } from 'material-ui/Table';
 
-import CircularProgress from 'material-ui/CircularProgress';
-
-import { get as getFromPathStr } from 'lodash';
 
 class CustomTableBody extends Component {
 	static muiName = 'TableBody';
@@ -33,7 +30,7 @@ class CustomTableBody extends Component {
 				showRowHover={true}
 				displayRowCheckbox={false}
 			>
-			{this.renderRows()}
+				{this.renderRows()}
 			</TableBody>
 		)	
 	}

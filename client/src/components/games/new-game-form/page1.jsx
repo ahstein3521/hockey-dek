@@ -19,6 +19,16 @@ const validate = values => {
   return errors;
 }
 
+function getNextPage(form, dispatch, props) {
+  const pathname = '/games/new/2';
+  const state = { 
+    title: `${form.hockeyType} hockey game`, 
+    subtitle: formatDate(form.date)
+  };
+
+  return props.history.push({ pathname, state })
+}
+
 const GameForm1 = props =>{
   const {handleSubmit} = props;
   return (
@@ -31,7 +41,8 @@ const GameForm1 = props =>{
         component={DatePicker}
         fullWidth={true} 
         format={null}
-        formatDate={formatDate} 
+        formatDate={formatDate}
+        autoOk={true} 
         floatingLabelText="Game Date"
       />
       <Field
@@ -59,5 +70,6 @@ const GameForm1 = props =>{
 export default reduxForm({
   form: 'CreateGame',
   destroyOnUnmount: false,
+  onSubmit: getNextPage,
   validate 
 })(GameForm1)

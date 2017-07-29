@@ -40,6 +40,7 @@ export function submitTeamSearch({ _id, currentSeason, name, hockeyType }){
 			.then(({data}) => {
 				
 				let { seasons, team:[teamInfo] } = data;
+				
 				let teamData =  { name, hockeyType, currentSeason, ...teamInfo };
 				const payload = { seasons, team: teamData };
 				
@@ -60,7 +61,7 @@ export function updateTeam(form, dispatch, props){
 
 export function updateTeamPlayers(currentSeason, players) {
 	const url = `${ROOT_URL}/team/update/players/${currentSeason}`;
-	console.log('before post', players)
+
 	return dispatch => {
 		axios.put(url, players)
 			.then(({data}) => {

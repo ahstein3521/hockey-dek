@@ -8,55 +8,92 @@ import BasicInfo from './basicInfo.jsx';
 import PlayerSetup from './players.jsx';
 
 import { tabStyles as styles } from '../../../styles/index';
-import { getInitialFormVals, getAllTeamIds } from '../../../selectors/updateTeam';
 import { updateTeamPlayers } from '../../../actions/index';
 
 class TeamSettings extends Component{
   
-  state = { value: 1 };
+  state = { 
+    tabValue: 1,
+    searchText: '',
+    added: [],
+    removed: [],
+  };
   
-  handleChange = (value) => this.setState({ value });
+  handleChange = (tabValue) => this.setState({ tabValue });
   
-  updatePlayers = players => {
-    const { teamInfo : { currentSeason: {_id}}} = this.props.settings;
-    this.props.updateTeamPlayers(_id, players);
+
+  addPlayer = ({playerData}) => 
+    this.setState({ added: [...this.state.added, playerData._id], searchText:''})
+  
+
+  undoRemovePlayer = player => {
+    let [...removed] = this.state.removed;
+    const index = removed.indexOf(player._id);
+    removed.splice(index, 1);
+
+    this.setState({ removed })
+  }
+
+  removePlayer = player => {
+    const [...added] = this.state.added;
+   
+    const addedIndex = added.indexOf(player._id);
+
+    if (addedIndex !== -1) {
+      added.splice( addedIndex, 1);
+    }
+    
+    
+    this.setState({ added, removed: [ ...this.state.removed, player._id ] });
+
+  }
+
+  handleReset = () => 
+    this.setState({ added: [], removed: [] })
+
+
+  updatePlayers = (players, season) => {  
+    this.props.updateTeamPlayers(season, players);
+    this.setState({ added: [], removed: [] });
   }
 
   render(){
-    const { settings, isLoading, teamsList } = this.props;
+    const { isLoading } = this.props;
+    const { tabValue, ...rest } = this.state;
     
     if(isLoading) return <h2>Loading....</h2>
     const updateTeamPlayers = this.updatePlayers;
-    const { availablePlayers, players, seasons, teamInfo } = settings;
-    const playerLists = { players, availablePlayers, updateTeamPlayers };
-    const formProps = { seasons, teamsList };
+
 
     return(      
       <Tabs
-        value={this.state.value}
+        value={this.state.tabValue}
         tabItemContainerStyle={styles.container}
         inkBarStyle={styles.inkbar}
         onChange={this.handleChange}
       >
         <Tab label="Basic Info" style={styles.tab} value={1}>
-          <BasicInfo initialValues={teamInfo} {...formProps}/>
+          <BasicInfo />
         </Tab>
         <Tab label="Current Players" style={styles.tab} value={2}>
-          <PlayerSetup {...playerLists}/>
+          <PlayerSetup
+            handleSubmit={this.updatePlayers}
+            handleReset={this.handleReset} 
+            updateInput={text => this.setState({searchText: text})}
+            undoRemovePlayer={this.undoRemovePlayer}
+            addPlayer={this.addPlayer}
+            removePlayer={this.removePlayer}
+            {...rest}
+          />
         </Tab>              
       </Tabs>
-
     )
   }
 }
 
-  function mapState({ loading, ...state }){
-    
-  return { 
-    settings: getInitialFormVals(state), 
-    teamsList: getAllTeamIds(state), 
-    isLoading: loading 
-  }
+  function mapState({ loading }){
+
+    return { isLoading: loading }
 }
 
 function mapDispatchToProps(dispatch) {

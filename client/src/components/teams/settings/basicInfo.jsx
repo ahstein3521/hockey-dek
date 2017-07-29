@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import MenuItem from 'material-ui/MenuItem'
 import RaisedButton from 'material-ui/RaisedButton';
 import { RadioButton } from 'material-ui/RadioButton'
@@ -13,7 +14,7 @@ const getById = (list, id) => list.find(({_id}) => _id === id);
 
 const UpdateTeamForm = props => {
 	const { handleSubmit, initialValues, change, seasons } = props;
-
+	
 	return (
 		<form onSubmit={handleSubmit} className="form">
 			<div className="form-row">
@@ -69,9 +70,18 @@ const UpdateTeamForm = props => {
 	)
 }
 
-export default reduxForm({
+function mapStateToProps({ teams }) {
+	return { 
+		initialValues: teams.selected.team, 
+		seasons: teams.selected.seasons 
+	}
+}
+
+const formWrapper = reduxForm({
 	form:'UpdateTeamForm',
 	onSubmit: updateTeam,
 	onSubmitSuccess: openSnackbar,
 	validate,
-})(UpdateTeamForm)
+})(UpdateTeamForm);
+
+export default connect(mapStateToProps)(formWrapper);

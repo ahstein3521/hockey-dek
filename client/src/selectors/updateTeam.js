@@ -1,48 +1,49 @@
 import { createSelector } from 'reselect';
-import { kebabCase } from 'lodash';
+
 
 const getPlayerList = state => state.player.list;
 
 const getTeamSelected = state => state.teams.selected;
 
-const getTeamList = state => state.teams.list;
+const getOwnProps = (x, { tabValue, searchText, ...ownProps}) => ownProps;
 
-export const getAllTeamIds = createSelector(
-	[getTeamSelected, getTeamList],
-	(selected, teamList) => {
-		
-		if (!selected.team) return;
 
-		return teamList.reduce((list, team) => {
-			if (team._id !== selected.team._id) { 
-				team.slug = kebabCase(`${team.name} ${team.hockeyType}`);
-				list.push(team);
-			}
-			return list;
-		}, []);
-	}
-)
 
-export const getInitialFormVals = createSelector(
-	[getPlayerList, getTeamSelected],
-	(playerList, selected) => {
-		if (!selected.team) return;
+export const getPlayerConfig = () => 
+	createSelector(
+		[getPlayerList, getTeamSelected, getOwnProps],
+		( players, selected, ownProps ) => {
+			
+			const availablePlayers = [];
+			const currentPlayers = []; 
+			const addedPlayers = [];
+			const removedPlayers = [];
 
-		if (!selected.team.players) {
+			players.forEach(player => {
+				
+				if (selected.team.players.some(p => p._id === player._id)) {
+					if (!ownProps.removed.includes(player._id)) {
+						currentPlayers.push(player)
+					}
+					else removedPlayers.push(player)
+				}
+				else {
+					//Player is available
+					if (ownProps.added.includes(player._id)) {
+						addedPlayers.push(player);
+					}
+					else {
+						availablePlayers.push(player)
+					} 
+				}
+			})
+
 			return { 
-				seasons: selected.seasons, 
-				players: [], 
-				teamInfo: selected.team , 
-				availablePlayers: playerList 
-			};
+				available:availablePlayers,
+				current:currentPlayers,
+				added:addedPlayers,
+				removed:removedPlayers
+			}
 		}
-		
-		const { seasons, team: { players, ...teamInfo }} = selected;
+	)
 
-		const playerIds = players.map(({_id}) => _id);
-
-		const availablePlayers = playerList.filter(({_id}) => !playerIds.includes(_id));
-
-		return { seasons, players, teamInfo, availablePlayers };
-	}
-)

@@ -8,7 +8,7 @@ import { openModal, submitTeamSearch } from '../../../actions/index';
 const headings = [
 	{text:'Team Name',val:'name', colSpan:2},
 	{text:'Hockey Type' ,val:'hockeyType'},
-	{text:'Current Season', val:'currentSeason.year'},
+	{text:'Current Season', val: ['currentSeason.year', 'currentSeason.quarter']},
 	{text:'Edit' ,val:null },
 	{text:'Delete' ,val:null }
 ]

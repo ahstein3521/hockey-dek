@@ -8,12 +8,12 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const getCheckins = require('./aggregate/player-checkins'); 
   
-Router.route('/show/:_id')
+Router.route('/show')
   .get((req,res) => {
    
-    Season.findById(req.params._id)
-      .populate({path:'players',select:'firstName lastName'})
-      .populate({path:'team',select:'name'})
+    Season.find({})
+      // .populate({path:'players',select:'firstName lastName'})
+      // .populate({path:'team',select:'name'})
       .exec()
       .then(data => res.send(data));
   })  
@@ -31,15 +31,21 @@ Router.route('/check')
   })  
 
 
-// Router.route('/show/:team/:quarter/:year')
+// Router.route('/update')
 //   .get((req,res) => {
-//     const {quarter, year, team} = req.params;
-//     Season.find({quarter, year, team})
-//       .populate('players', 'firstName lastName')
-//       .populate('formerPlayers', 'firstName lastName')
-//       .populate('team', 'name hockeyType')
-//       .exec()
-//       .then(data => res.send(data))
+//       const Game = mongoose.model('game');
+
+//       Game.find({})
+//         .exec()
+//         .then(games => {
+//           games.forEach(game => {
+//             console.log(game._id)
+//             Season.update({ oldGames: {$in: [game.oldId]}}, {$pull: {oldGames: {$in: [null]}}})
+//               .exec()
+//           })
+//           res.send('fixed') 
+//         })
+//         .catch(err => res.send(String(err)))
 //   }) 
 
 

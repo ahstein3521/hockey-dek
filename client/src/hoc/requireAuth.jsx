@@ -44,7 +44,7 @@ export default function(ComposedComponent){
     render(){
    
       const { loggedIn, loading, ...props } = this.props;
-    
+      
       if ( loading ){
 
         return this.renderSpinner();

@@ -19,7 +19,7 @@ Router.route('/search/:seasonId/:teamId')
       getRoster(seasonId), 
       Season
         .find({team: teamId})
-        .select('-games -players')
+        .select('-games -players -oldGames')
         .sort({ year: -1, quarter: -1 })
         .exec()
     ])

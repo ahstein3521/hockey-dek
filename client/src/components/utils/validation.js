@@ -33,7 +33,7 @@ export default function( values, { teamsList }) {
 		teamId = kebabCase(`${name} ${hockeyType}`);
 
 		if (some(teamsList, { slug: teamId })){
-			const message = `A ${hockeyType.toLowerCase()} hockey team name with this name already exists`; 
+			const message = `A ${hockeyType.toLowerCase()} hockey team with this name already exists`; 
 			errors.team.name = errors.name = message;
 		}
 	}
