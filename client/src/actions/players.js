@@ -27,13 +27,21 @@ export function selectPlayerTab(tabNumber) {
 	}
 }
 
-export function createPlayer(form, dispatch) {
-	
+export function createPlayer(form, dispatch, {teamList}) {
 	let { team, ...newPlayer } = form;
 	const resetForm = reset('CreatePlayerForm');
 
+	console.log(form, teamList)
 	if (team) {
-		newPlayer.payments = [ {season: team, paymentType: 'N/A'} ]
+		const teamMatch = teamList.find(t => t.currentSeason._id === team);
+		const { currentSeason: { quarter, year }} = teamMatch;
+		newPlayer.payments = [
+			{	
+				season: team, 
+				quarter,
+				year
+			}
+		]
 	}
 
 	const body = { seasonId: team, newPlayer };
@@ -44,7 +52,7 @@ export function createPlayer(form, dispatch) {
 		)
 		.then(() => dispatch(resetForm))
 		.catch(err => console.error(err, 'ERROR '))
-}
+ }
 
 
 

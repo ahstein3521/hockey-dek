@@ -18,7 +18,7 @@ const Label = ({val, text, onClick, ...rest}) => {
 	return(
 		<div 
 			onClick={() => onClick(val)}
-			style={{display:'flex', alignItems:'center', cursor}}>
+			style={{display:'flex', alignItems:'center', textAlign:'left',cursor}}>
 			{text}
 			<Arrow {...rest}/>
 		</div>

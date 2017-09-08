@@ -125,7 +125,12 @@ module.exports = playerId =>
 						{$filter:{
 							input:"$player.payments",
 							as:"payment",
-							cond:{ $eq: ["$$payment.season", "$_id"]}
+							cond:{ 
+								$and: [
+									{ $eq: ["$$payment.quarter", "$season.quarter"] },
+									{ $eq: ["$$payment.year", "$season.year"] }
+								]
+							}
 						}
 					}
 				}, 

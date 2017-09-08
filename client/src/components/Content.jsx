@@ -21,7 +21,7 @@ const style = {
 }
 
 
-class Content extends Component{
+class Content extends Component {
 	
 	render(){
 		const { menuOpen, location } = this.props
@@ -32,7 +32,8 @@ class Content extends Component{
 				<div className={menuOpen? 'content-wrapper': 'content-wrapper-expanded'}>
 					<div style={style} >
 						{
-							selectedCategory && <Route path='/' component={NavigationArrows}/>
+							selectedCategory && 
+								<Route path='/' component={NavigationArrows}/>
 						}
 						<TeamPage/>
 						<PlayerPage/>

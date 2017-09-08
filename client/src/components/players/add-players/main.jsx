@@ -73,12 +73,12 @@ let PlayerForm = props => {
 function mapStateToProps(state) {
 	return { teamList: state.teams.list }
 }
-
-PlayerForm = connect(mapStateToProps)(PlayerForm);
 	
-export default reduxForm({
+PlayerForm = reduxForm({
 	form:'CreatePlayerForm',
 	onSubmit: createPlayer,
 	onSubmitSuccess: openSnackbar,
 	validate
 })(PlayerForm);
+
+export default connect(mapStateToProps)(PlayerForm);

@@ -41,7 +41,7 @@ const SuspensionList = ({player}) => {
         </Link>
       </div> 		
 			{
-				player.suspensions.map(({records = [], season={}},i) => {
+				suspensions.map(({records = [], season={}},i) => {
           if (!records.length) return <noScript key={i}/>
 
           return (

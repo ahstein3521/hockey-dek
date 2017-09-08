@@ -14,8 +14,9 @@ const getGessage = ({values, form}) => {
 		EditSuspensionForm: 'Record updated',
 		UpdatePaymentForm: 'Payment has been updated' 
 	};
-
-	return messages[form];
+	if (messages[form]) return messages[form];
+	
+	return 'Form submitted successfully';
 };
 
 //Action to trigger the snackbar component once a form submits successfully

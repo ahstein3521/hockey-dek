@@ -4,17 +4,33 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const d = new Date();
 
+const getPaymentSum = kind =>
+  ({$sum: 
+    {$cond: [
+      {$and:[
+        {$eq:["$players.payments.kind", kind]},
+        {$eq:["$players.payments.quarter", "$quarter"]},
+        {$eq:["$players.payments.year", "$year"]}
+      ]}, 
+      "$players.payments.amount",0
+    ]}
+  })
+
+const getPaymentNum = kind =>
+  ({$push: 
+    {$cond: [
+      {$and:[
+        {$eq:["$players.payments.kind", kind]},
+        {$eq:["$players.payments.quarter", "$quarter"]},
+        {$eq:["$players.payments.year", "$year"]}
+      ]}, 
+      "$players.payments",0
+    ]}
+  })
+
 module.exports = seasonId => Seasons.aggregate([
   //Get all the games played this season
   { $match: { _id: ObjectId(seasonId) }},
-  //Destructure the players array in each Game document
-  { $unwind: "$games" },
-  { $lookup: { 
-    from:"games", 
-    localField:"games", 
-    foreignField:"_id", 
-    as:"games" }
-  },    
   { $unwind: "$players" },
   //Populate each playerId from the destructured array with player's info
   { $lookup: { 
@@ -27,32 +43,21 @@ module.exports = seasonId => Seasons.aggregate([
   { $unwind: "$players" },
   // //Destructure embedded 'payments' docs so they can be accessed
   { $unwind: "$players.payments"},
-  // Filter out any player's payment records from other seasons
-  { $match: { "players.payments.season": ObjectId(seasonId)}},
+  // // Filter out any player's payment records from other seasons
   //Group documents by player ids to total up the number of checkins for each player
-  { $unwind: "$games" },
   { $group: {
       _id:"$players._id",
       info:{ $first:"$players" },
-      checkIns: { 
-        $sum: { 
-          $cond: [
-            { $or: [
-              { $setIsSubset: [["$players._id"], "$games.team1.checkIns"] },
-              { $setIsSubset: [["$players._id"], "$games.team2.checkIns"] },
-            ]}, 
-            1, 0 
-          ]
-        }
-      },
-      paid:{ $first: "$players.payments.amount" },
-      comped: { $first: "$players.payments.comped"}, 
+      games: { $first: "$games" },
+      paid: getPaymentSum('payment'),
+      comped: getPaymentSum('credit'), 
       teamId: { $first: "$team" },
     }
   },
-  //Combine the players total checkins with the rest of the info needed to display on hte roster
+  // //Combine the players total checkins with the rest of the info needed to display on hte roster
   { $project: {
       player:{
+        teamId:'$teamId',
         _id: "$info._id",
         firstName:"$info.firstName",
         lastName: "$info.lastName",
@@ -60,37 +65,59 @@ module.exports = seasonId => Seasons.aggregate([
         jerseyNumber:"$info.jerseyNumber",
         email: "$info.email",
         phone: "$info.phone",
-        amountPaid: "$info.payments.amount",
-        amountComped: "$info.payments.comped",
-        checkIns:"$checkIns", 
+        amountPaid: "$paid",
+        amountComped: "$comped",
         suspended: {
-          $filter: {
-            input: "$info.suspensions",
-            as: "suspension",
-            cond: {
-              $and: [
-                {$gte: [d, "$$suspension.start"]},
-                {$lt: [d, "$$suspension.end"]}
-              ]
+          $anyElementTrue: {
+            $filter: {
+              input: "$info.suspensions",
+              as: "suspension",
+              cond: {
+                $and: [
+                  {$gte: [d, "$$suspension.start"]},
+                  {$lt: [d, "$$suspension.end"]}
+                ]
+              }
             }
           }
         }          
       },
-      comped:1,
-      paid:1,
-      teamId:1 
+      games: 1, 
     }
-  },  
-  //Create an array of every player, and get totals for amount paid / amount comped
+  },
+  {$unwind: '$games'},
+  { $lookup: { 
+    from:"games", 
+    localField:"games", 
+    foreignField:"_id", 
+    as:"games" }},
+  { $unwind: '$games' },  
+  { $group: {
+    _id: "$player",
+    checkins: {
+      $sum: {
+        $cond: [
+          { $or: [
+            { $setIsSubset: [["$player._id"], "$games.team1.checkIns"] },
+            { $setIsSubset: [["$player._id"], "$games.team2.checkIns"] },
+          ]}, 
+          1, 0 
+        ]
+      }
+      }
+    }
+  },     
+  //Create an array of every player, and get totals for amount paid / amount comped 
   { $group: { 
-      _id: "$teamId",
-      totalPaid: { $sum: '$paid'},
-      totalComped: {$sum: '$comped'},
+      _id: "$_id.teamId",
+      totalPaid: { $sum: '$_id.amountPaid'},
+      totalComped: {$sum: '$_id.amountComped'},
       players: {
-        $addToSet: '$player'
+        $push: {
+          player: '$_id',
+          checkins: '$checkins'
+        }
       }
     }
   }
   ]).exec()
-
-

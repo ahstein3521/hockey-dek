@@ -5,15 +5,11 @@ import injectTapEventPlugin from "react-tap-event-plugin";
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-
+import App from './src/app.jsx';
 import reducers from './src/reducers/index';
 
 import theme from './theme';
-
-import App from './src/app.jsx';
-
 import './style/main.scss';
-
 injectTapEventPlugin();
 
 const store = createStore(reducers, applyMiddleware(thunk));

@@ -58,6 +58,7 @@ const LeftMenu = props => {
               ListItems.map(({link, svg},i) => (
                 <ListItem
                   key={i}
+                  disabled={ isSubRoute(link) }
                   style = {menuItemStyle} 
                   primaryText={link.substr(1).toUpperCase()}
                   containerElement={<Link to={link}/>} 

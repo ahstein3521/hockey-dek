@@ -13,11 +13,9 @@ export default function(state = [], action) {
 
 		case UPDATE_PLAYER_LIST_INDEX:
 			const index = findIndex(state, {_id: payload._id});
-			return [
-				...state.slice(0, index), 
-				payload, 
-				...state.slice(index+1)
-			];	
+			const newState = state.slice();
+			newState[index] = payload;
+			return newState;
 	}
 	return state;
 }

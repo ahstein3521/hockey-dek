@@ -6,8 +6,82 @@ import {
 } from './constants';
 
 
+export function processPayment(kind) {
+	return function(values, dispatch) {
+		const url = `${ROOT_URL}/player/update`;
+		const { _id, season, context } = values; 
+		const { quarter, year, team } = season;
+		const amount = parseFloat(values.amount) * 100;
+		const payment = { 
+			amount,  
+			quarter, 
+			year,
+			kind
+		};
 
-export function createPayment(form, dispatch, props){
+		if (kind === 'payment') {
+			payment.paymentType = values.paymentType;
+		} else {
+			payment.reason = values.reason;
+		}
+
+		const query = { _id };
+		const update = {
+			$push: { payments: payment }
+		}
+		
+		dispatch({type: 'CLOSE_MODAL'});
+
+		axios.put(url, { query, update })
+			.then(() => {
+				if (context === 'game') {
+					dispatch({
+						type: 'GAMETIME_PAYMENT',
+						category: kind === 'payment'? 'paid' : 'comped',
+						playerId: _id,
+						team,
+						payment
+					})
+				}			
+			})
+	}
+}
+
+export function newPayment(values, dispatch) {
+	const url = `${ROOT_URL}/player/update`;
+	const { _id, season, paymentType, context } = values; 
+	const { quarter, year, team } = season;
+	const amount = parseFloat(values.amount) * 100;
+	const payment = { 
+		amount, 
+		paymentType, 
+		quarter, 
+		year, 
+		kind: 'payment'
+	};
+
+	const query = { _id };
+	const update = {
+		$push: { payments: payment }
+	}
+	dispatch({type: 'CLOSE_MODAL'});
+
+	axios.put(url, { query, update })
+		.then(() => {
+			if (context === 'game') {
+				dispatch({
+					type: 'GAMETIME_PAYMENT',
+					category: 'paid',
+					playerId: _id,
+					team,
+					payment
+				})
+			}			
+		})
+}
+
+
+export function updatePayment(form, dispatch, props){
 	const url = `${ROOT_URL}/player/update`;
 	const { payments } = props;
 	const amount = parseFloat(form.amount) * 100;

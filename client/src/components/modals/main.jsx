@@ -35,15 +35,20 @@ class Modal extends Component {
    
     const { view, open, data } = this.props;
   
-    const { title, Children } = modalMapping[view];
+    const { title, Children, hideActions, closeOnSubmit } = modalMapping[view];
     
     const handleSubmit = this.getAction().handleSubmit;
 
-    const actions = [
+    const defaultActions = [
       <RaisedButton
         label="Submit"
         primary={true}
-        onTouchTap={()=> handleSubmit(data)}
+        onTouchTap={()=> {
+          handleSubmit(data);
+          if (closeOnSubmit) {
+            this.handleClose()
+          }
+        }}
         className="form-btn"
       />,
       <RaisedButton
@@ -51,9 +56,20 @@ class Modal extends Component {
         secondary={true}
         onTouchTap={this.handleClose}
         className="form-btn"
-      />,      
+      />      
     ];
 
+    const alternativeAction = [
+      <RaisedButton
+        fullWidth={true}
+        label="Close"
+        onTouchTap={this.handleClose}
+        secondary={true}
+      /> 
+    ];
+
+    const actions = hideActions? alternativeAction : defaultActions;
+    
     return (
       <div>
         <Dialog

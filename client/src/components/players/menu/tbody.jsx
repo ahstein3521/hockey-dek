@@ -4,14 +4,8 @@ import { bindActionCreators } from 'redux';
 import { TableRow, TableRowColumn, TableBody } from 'material-ui/Table';
 
 import { fetchPlayerDetails } from '../../../actions/index';
-import { sortRows } from '../../../selectors/table';
-
-
 import ProfileIcon from 'material-ui/svg-icons/social/person';
-
-
 import { Link } from 'react-router-dom';
-
 import filterProps from '../../utils/filterTableProps';
 
 const PlayerListTable = props => {

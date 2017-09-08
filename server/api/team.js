@@ -2,95 +2,81 @@ const express = require('express');
 const Router = express.Router();
 
 const mongoose = require('mongoose');
-
 const Team = mongoose.model('team');
 const Season = mongoose.model('season');
 const Players = mongoose.model('player');
-
+const ObjectId = mongoose.Types.ObjectId;
 
 const getRoster = require('./aggregate/roster');
 
 
-Router.route('/search/:seasonId/:teamId')
-  .get((req, res) => {
-    const {seasonId, teamId} = req.params;
-    
-    Promise.all([
-      getRoster(seasonId), 
-      Season
-        .find({team: teamId})
-        .select('-games -players -oldGames')
-        .sort({ year: -1, quarter: -1 })
-        .exec()
-    ])
-    .then(data => {      
-      const [playerInfo, seasons] = data;
-         
-      res.send({ 
-        team: playerInfo,
-        seasons
-      })
-    });  
-})
 
-Router.route('/delete/:teamId')
-  .delete((req, res) => {
+// POST - create a new team
+function createTeam(req, res) {
+  const { season, team } = req.body;
 
-    const { teamId } = req.params;
+  const newTeam = new Team(team);
+  // pass a season object to the save method
+  // the teamSchema has a pre-save hook that creates a brand
+  // new season for a new team
+  newTeam.save({ season })
+    .then(() => 
+      res.send(newTeam)
+    )
+}
 
-    Team.findByIdAndRemove( teamId )
+// GET - fetch a current teams roster and past season data
+function fetchRoster(req, res) {  
+  const {seasonId, teamId} = req.query;
+  
+  Promise.all([
+    getRoster(seasonId), 
+    Season
+      .find({team: teamId})
+      .select('-games -players')
+      .sort({ year: -1, quarter: -1 })
       .exec()
-      .then(() => res.status(200).send(teamId +' was successfully removed'))
-      .catch(error => { throw error})
-  })
+  ])
+  .then(([team, seasons]) =>          
+    res.send({ team })
+  ); 
+}
+
+// PUT - update a team's info
+function updateTeam(req, res) {
+  const query = { team: req.params.teamId };
+  
+  Team.update(query, req.body)
+    .exec()
+    .then(() => 
+      res.status(200).send('team updated')
+    )
+    .catch(err => { throw err })
+}
+
+// DELETE - remove a team from the database
+function deleteTeam(req, res) {
+  
+  Team.findByIdAndRemove(req.params.teamId)
+    .exec()
+    .then(() => 
+      res.status(200).send('Team removed')
+    )
+    .catch(error => { throw error })
+}
+
+
+Router.route('/search')
+  .get(fetchRoster)
 
 Router.route('/create')
-  .post((req, res) => {
-    const { season, team } = req.body;
+  .post(createTeam)
 
-    Season.create(season)
-      .then( newSeason => {
-        team.currentSeason = newSeason;     
-        const newTeam = new Team(team)
-    
-        return newTeam.save();
-      })
-      .then(({currentSeason, _id}) => {
-        team._id = _id;
-        return Season.findByIdAndUpdate(currentSeason, {team: _id}).exec()
-      })
-      .then(() => res.send(team))
-      .catch(err => { throw err})   
-  })
+Router.route('/update/:teamId')
+  .put(updateTeam)
 
-Router.route('/update/basic-info/:teamId')
-  .put((req, res) => {
-    const { teamId } = req.params;
-    const query = { team: teamId };
-    const options = { multi: true, new: true, upsert: true }; 
-    
-    Team.findByIdAndUpdate(teamId, req.body)
-      .exec()
-      .then(() => {
-        res.status(200).send('team updated')
-      })
-      .catch(err => { throw err })
-  })
+Router.route('/delete/:teamId')
+  .delete(deleteTeam)
 
-
-Router.route('/update/players/:seasonId')
-  .put((req, res) => {
-    const { seasonId } = req.params;
-    
-    Season.updateRoster(seasonId, req.body, getRoster)
-      .then(team => res.send(team))
-  })  
-
-Router.route('/show')
-  .get((req,res) => {
-    Team.find({})
-      .exec()
-      .then(data => res.send(data))
-})  
 
 module.exports = Router;  

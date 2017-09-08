@@ -53,6 +53,7 @@ app.use('/auth', Routes.auth);
 app.use('/player',Routes.player);
 app.use('/team', Routes.team);
 app.use('/season', Routes.season);
+app.use('/game', Routes.game);
 
 app.get("*", function(req,res){
 	res.redirect("/");

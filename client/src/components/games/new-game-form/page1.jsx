@@ -1,20 +1,21 @@
 import React from 'react';
 import { reduxForm, Field } from 'redux-form';
+import { filterTeams } from '../../../actions/index';
 import MenuItem from 'material-ui/MenuItem';
-import { RadioButton } from 'material-ui/RadioButton';
-import { RadioButtonGroup, DatePicker } from 'redux-form-material-ui';
+
+import { SelectField, DatePicker } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
+import DropDowns from './dropdowns.jsx'
 
 import formatDate from '../../utils/formatDate';
 
 const validate = values => {
   const errors = {};
 
-  if (!values.date) {
-    errors.date = 'Please select a date';
-  }
-  if (!values.hockeyType) {
-    errors.hockeyType = 'Please select a hockey type';
+  for (let field in values) {
+    if (!values[field]) {
+      errors[field] = 'Please make a selection';
+    }
   }
   return errors;
 }
@@ -22,11 +23,12 @@ const validate = values => {
 function getNextPage(form, dispatch, props) {
   const pathname = '/games/new/2';
   const state = { 
-    title: `${form.hockeyType} hockey game`, 
-    subtitle: formatDate(form.date)
+    title: `${props.values.hockeyType} hockey game`, 
+    subtitle: formatDate(props.values.date)
   };
 
   return props.history.push({ pathname, state })
+
 }
 
 const GameForm1 = props =>{
@@ -36,23 +38,25 @@ const GameForm1 = props =>{
       className="form"
       onSubmit={handleSubmit}
     >
-      <Field
-        name="date" 
-        component={DatePicker}
-        fullWidth={true} 
-        format={null}
-        formatDate={formatDate}
-        autoOk={true} 
-        floatingLabelText="Game Date"
-      />
-      <Field
-        component={RadioButtonGroup}
-        name="hockeyType"
-        style={{paddingTop:25, marginBottom:10}}
-      >
-        <RadioButton  label="Dek" value="Dek"/>
-        <RadioButton label="Roller" value="Roller"/>
-      </Field>
+      <DropDowns/>
+      <div className='form-row'>
+        <Field
+          name="date" 
+          component={DatePicker}
+          format={null}
+          formatDate={formatDate}
+          autoOk={true} 
+          floatingLabelText="Game Date"
+        />
+        <Field
+          component={SelectField}
+          floatingLabelText="Hockey Type"
+          name="hockeyType"
+        >
+          <MenuItem primaryText="Dek" value="Dek"/>
+          <MenuItem primaryText="Roller" value="Roller"/>
+        </Field>
+      </div>
       <div className="btn-group">    
         <RaisedButton
           type="submit"
@@ -70,6 +74,7 @@ const GameForm1 = props =>{
 export default reduxForm({
   form: 'CreateGame',
   destroyOnUnmount: false,
-  onSubmit: getNextPage,
+  onSubmit: filterTeams,
+  onSubmitSuccess: getNextPage,
   validate 
 })(GameForm1)

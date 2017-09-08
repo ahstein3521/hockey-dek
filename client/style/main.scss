@@ -1,6 +1,3 @@
-
-
-
 body{
 	margin:0;
 	padding: 0;
@@ -33,6 +30,17 @@ body{
   		
 }
 
+.list-input {
+	border: none;
+	outline: none;
+	font-size: 15px;
+
+	&:hover {
+		border-bottom: 1px dotted;
+		
+	}
+}
+
 .form-row {
   display:flex;
   justify-content:space-between;
@@ -61,3 +69,21 @@ body{
 .payment-input {
 	color: green;
 }
+
+.table-header {
+	background-color: #C5CAE9;
+	th {
+		color: black !important;
+		font-weight: bold !important;
+	}
+}
+.table-btn {
+	height: 35px !important;
+	width: 35px !important;
+}
+
+
+// .table-header-col {
+// 	font-weight: bold;
+// 	color: black;
+// }

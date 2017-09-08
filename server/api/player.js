@@ -2,8 +2,13 @@ const express = require('express');
 const Router = express.Router();
 const mongoose = require('mongoose')
 const Player = mongoose.model('player');
-const Season = mongoose.model('season');
+
+const { getPastSeasons } = require('./player/common');
 const getPlayerProfile = require("./aggregate/player-profile");
+
+const getPayments = require('./player/payments');
+const getSuspensions = require('./player/suspensions');
+const getCheckins = require('./player/games');
 
 
 Router.route('/create')
@@ -25,34 +30,6 @@ Router.route('/create')
       .catch(err => { console.error('Error on /create', err)})
   })
 
-//Fetch detailed player info regarding game checkin history
-Router.route('/fetch/:_id')
-  .get((req, res) => {
-    
-    const playerId = req.params._id;
-   
-    getPlayerProfile( playerId )
-      .then(data => {
-        const [player] = data;
-
-        if (!player) {
-          return res.redirect(`/player/fetch/new/${playerId}`);
-        }
-
-        res.send(player);
-    })
-    .catch(error => res.send(String(error)))
-  })
-
-//Fetch players with 0 team history
-Router.route('/fetch/new/:_id')
-  .get((req,res) => {
-    Player.findById( req.params._id )
-      .exec()
-      .then(player => res.send({ basicInfo: player }))
-      .catch(err => {throw err})
-  })  
-
 //Fetch first and last names for player search autocomplete
 Router.route('/names')
   .get((req,res) => {
@@ -73,4 +50,8 @@ Router.route('/update')
 })
 
 
+Router.route('/fetch/:playerId/*').all(getPastSeasons);
+Router.route('/fetch/:playerId/suspensions').get(getSuspensions);
+Router.route('/fetch/:playerId/payments').get(getPayments);
+Router.route('/fetch/:playerId/games').get(getCheckins); 
 module.exports = Router;  

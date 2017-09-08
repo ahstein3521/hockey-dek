@@ -40,4 +40,22 @@ const playerSchema = new Schema({
 	suspensions:[suspensionSchema]
 })
 
+const defaultPayment = new Schema({ 
+	paymentType: { 
+		type: String, 
+		default: 'N/A' 
+	}
+})
+
+
+
+// Use for regular payments
+playerSchema.path('payments')
+	.discriminator('payment', defaultPayment)
+
+//Used for when a player is comped
+playerSchema.path('payments')
+	.discriminator('credit', new Schema({ reason: String }))
+
+
 module.exports = mongoose.model('player',playerSchema)

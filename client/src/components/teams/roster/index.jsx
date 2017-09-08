@@ -5,11 +5,11 @@ import TableBody from './rowTemplate.jsx';
 import { fetchPlayerDetails } from '../../../actions/index';
 
 const headings = [
-	{text:'Name',val:'lastName', colSpan:2},
-	{text:'#' ,val:'jerseyNumber'},
-	{text:'Check-ins',val:'checkIns'},
-	{text:'Paid' ,val:'amountPaid'},
-	{text:'Comped' ,val:'amountComped'},
+	{text:'Name',val:'player.lastName', colSpan:2},
+	{text:'#' ,val:'player.jerseyNumber'},
+	{text:'Check-ins',val:'checkins'},
+	{text:'Paid' ,val:'player.amountPaid'},
+	{text:'Comped' ,val:'player.amountComped'},
 	{text:'Suspended' ,val:null },
 	{text:'Waiver' ,val:null }
 ];

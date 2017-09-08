@@ -9,19 +9,24 @@ const getOwnProps = (x, { tabValue, searchText, ...ownProps}) => ownProps;
 
 
 
+
 export const getPlayerConfig = () => 
 	createSelector(
 		[getPlayerList, getTeamSelected, getOwnProps],
 		( players, selected, ownProps ) => {
-			
+			const team = selected.team;
+
 			const availablePlayers = [];
 			const currentPlayers = []; 
 			const addedPlayers = [];
 			const removedPlayers = [];
 
+			console.log(players, selected, ownProps);
+
 			players.forEach(player => {
 				
-				if (selected.team.players.some(p => p._id === player._id)) {
+				if (team.players && 
+					team.players.some(p => p._id === player._id)) {
 					if (!ownProps.removed.includes(player._id)) {
 						currentPlayers.push(player)
 					}

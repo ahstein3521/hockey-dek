@@ -22,6 +22,7 @@ export const makeRowSelector = () =>
 
   			//Sort the rows by category and then return a slice of that array that coincides with the 
   			//current set of results selected
+  			console.log('makeRowSelector');
 				return orderBy(rows, sortCategory, direction)
 					.slice(rangeStart, rangeEnd);
 			}
@@ -31,7 +32,7 @@ export const makeTableStateSelector = () =>
  	createSelector(
 		[ getRowData, getTableState, getTableConfig ],
 			( rows, table, { name } ) => {
-
+				console.log(rows, table, name, 'selector')
 				return {
 					...table,
 					total: rows.length,

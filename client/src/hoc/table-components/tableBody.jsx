@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { makeRowSelector } from '../../selectors/table';
+import { makeRowSelector } from './selector';
 
 import { TableRow, TableHeaderColumn, TableBody } from 'material-ui/Table';
 
@@ -15,7 +15,11 @@ class CustomTableBody extends Component {
 	renderRows() {
 		const { rows, rowActions, dispatch } = this.props;
 		const RowTemplate = this.props.rowComponent;
-		const actions = bindActionCreators(rowActions, dispatch);
+		let actions = {};
+		
+		if (rowActions) {
+			actions = bindActionCreators(rowActions, dispatch);
+		}
 		
 		return	rows.map((rowData, i) => 
 				<RowTemplate key={i} {...rowData} {...actions}/>
@@ -23,7 +27,7 @@ class CustomTableBody extends Component {
 	}
 
 	render() {
-
+		
 		return(	
 		  <TableBody
 				prescanRows={false}
@@ -35,10 +39,9 @@ class CustomTableBody extends Component {
 		)	
 	}
 }
+const formatRows = makeRowSelector();
 
-function mapStateToProps(state, ownProps) {
-	const formatRows = makeRowSelector();
-			
+function mapStateToProps(state, ownProps) {	
 	return { 
 		rows: formatRows(state, ownProps) 
 	}

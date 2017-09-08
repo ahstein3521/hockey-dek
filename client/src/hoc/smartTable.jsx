@@ -55,6 +55,7 @@ export default function(config) {
 
 
 			render(){
+				
 				if (this.props.isLoading) {
 					return (	
 						<CircularProgress 

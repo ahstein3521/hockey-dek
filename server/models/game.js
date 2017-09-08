@@ -5,7 +5,6 @@ const gameSchema = new Schema({
 	date:{
 		type:Date
 	},
-	oldId:String,
 	team1: {
 		info: { 
 			type: Schema.Types.ObjectId, 

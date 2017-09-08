@@ -14,8 +14,8 @@ import filterTableProps from '../../utils/filterTableProps';
 const RowTemplate = props => {
 
   const { submitTeamSearch, openModal, ...team} = props;
-
-  return (
+    
+    return (
     <TableRow key={team._id}>
     <TableRowColumn colSpan={2}>
       <b 
