@@ -5,9 +5,52 @@ const mongoose = require('mongoose');
 const Team = mongoose.model('team');
 const Season = mongoose.model('season');
 const Players = mongoose.model('player');
+const Game = mongoose.model('game');
 const ObjectId = mongoose.Types.ObjectId;
+const getCheckins = require('./aggregate/player-checkins'); 
 
+function newGame(req, res, next) {
+  let gameId;
+  console.log(req.body);
+  Game.create(req.body.game)
+    .then(game => {
+      const [team1, team2] = [game.team1.info, game.team2.info];
+      gameId = game._id;
 
+      return getCheckins([team1, team2])
+    })
+    .then(teams => {
+      let [t1, t2] = teams.slice();
+      if (t1._id === req.body.team1._id) {
+        t1.name = req.body.team1.name;
+        t2.name = req.body.team2.name;
+        t1.teamNumber = 'team1';
+        t2.teamNumber = 'team2';
+      } else {
+        t1.name = req.body.team2.name;
+        t2.name = req.body.team1.name;
+        t1.teamNumber = 'team2';
+        t2.teamNumber = 'team1';
+      }
+      res.send({teams:[t1, t2], gameId});
+    })
+}
+
+function handleCheckIn(req, res, next) {
+  const { gameId, playerId, selectedTab, isInputChecked } = req.body;
+  const action = isInputChecked? '$push' : '$pull';
+
+  const update = {
+    [action]: {
+      [`team${selectedTab}.checkIns`]: playerId
+    }
+  };
+
+  Game.findByIdAndUpdate(gameId, update)
+    .exec()
+    .then(() => res.send({gameId}).status(200))
+    .catch(err => { throw error })
+}
 
 //GET a list of teams for a new game
 function fetchTeams(req, res, next) {
@@ -63,7 +106,14 @@ function fetchTeams(req, res, next) {
   })
 }
 
+Router.route('/show').get((req,res) => {
+  const q = { year:2017, quarter: 2};
 
+  Game.findOne({_id: '59b41b9e7844080355c5eea4'})
+    .populate('team1.checkIns team1.info team2.info team2.checkIns')
+    .exec()
+    .then(x=>res.send(x))
+})
 
 function addPlayer(req, res, next) {
   const { quarter, year, _id } = req.body;
@@ -134,7 +184,8 @@ function addPlayer(req, res, next) {
     })  
 }
 
-
+Router.route('/new').post(newGame);
+Router.route('/check-in').put(handleCheckIn);
 Router.route('/teams').get(fetchTeams);
 Router.route('/add-player/:playerId').put(addPlayer);
 

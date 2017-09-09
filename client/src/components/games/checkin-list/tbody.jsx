@@ -7,7 +7,7 @@ import EditIcon from 'material-ui/svg-icons/content/create';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Checkbox from 'material-ui/Checkbox';
+import Checkbox from './checkbox.jsx';
 import { palette } from '../../../../theme';
 
 const { primary1Color, alternateTextColor } = palette;
@@ -19,16 +19,26 @@ const btnStyles = {
 }
 
 
+
 const PlayerListTable = props => {
-  const { removePlayerFromGame, openModal, ...player } = filterProps(props);
+  const { 
+    checkIns,
+    handleCheckIn,
+    removePlayerFromGame, 
+    openModal, 
+    ...player 
+  } = filterProps(props);
 
   const { _id, payments = [], comps = [], season, totals = {}} = player;
-  const initialValues = {season, _id, context: 'game' };
+  const initialValues = {season, _id };
 
   return (
     <TableRow key={_id} selectable={false}>
       <TableRowColumn colSpan={1}>
-        <Checkbox/>
+        <Checkbox 
+          onCheck={handleCheckIn}
+          playerId={_id} 
+        />
       </TableRowColumn>
       <TableRowColumn colSpan={2}>
         {player.fullName}

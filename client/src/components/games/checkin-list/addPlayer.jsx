@@ -2,7 +2,7 @@ import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import {List, ListItem} from 'material-ui/List';
 
-const format = n => '$' + (n/100).toFixed(2);
+const format = (n = 0) => '$' + (n/100).toFixed(2);
 
 const TableBanner = props => {
 	

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { handleCheckIn, addPlayerToGame } from '../../../actions/index';
+import { addPlayerToGame, selectGameTab } from '../../../actions/index';
 import { ListOne, ListTwo } from './teamTable.jsx';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { Route } from 'react-router-dom';
@@ -11,7 +11,6 @@ import axios from 'axios';
 class TeamLists extends Component {
 
 	state = { 
-		selectedTab: 1, 
 		availablePlayers: [], 
 		searchText: '' 
 	}
@@ -30,15 +29,16 @@ class TeamLists extends Component {
 		this.setState({ availablePlayers: arr });
 	}
 	addPlayer = player => {
-		const { selectedTab } = this.state;
-		const { location: { state: { quarter, year }}, team1, team2 } = this.props;
-		const team = selectedTab === 1? team1 : team2;
+		
+		const { selectedTab, location: { state: { quarter, year }}, team1, team2 } = this.props;
+		const team = this.props[`team${selectedTab}`];
+
 		const otherTeam = selectedTab === 1? team2 : team1;
-		const { _id, teamNumber } = team;
 		
-		const season = { quarter, year, _id, otherTeam };
 		
-		this.props.addPlayerToGame(player._id, season, teamNumber);
+		const season = { quarter, year, _id: team._id, otherTeam, team1, team2 };
+		console.log({ selectedTab, team, otherTeam });
+		this.props.addPlayerToGame(player._id, season, `team${selectedTab}`);
 		
 
 		this.setState({ searchText: '' });
@@ -46,13 +46,14 @@ class TeamLists extends Component {
 	updateInput = searchText => 
 		this.setState({ searchText })
 	
-	handleChange = n => 
-		this.setState({ selectedTab: n, searchText: '' })
-
+	handleChange = n => {
+		this.props.selectGameTab(n);
+		this.setState({ searchText: '' })
+	}
 
 	render() { 
-		const { isLoading, team1, team2 } = this.props;
-		const { selectedTab, availablePlayers } = this.state;
+		const { selectedTab, isLoading, team1, team2 } = this.props;
+		const { availablePlayers } = this.state;
 		
 		return (
 			<Tabs 
@@ -99,18 +100,20 @@ class TeamLists extends Component {
 }	
 
 function mapStateToProps(state) {
-	const { team1, team2 } = state.game;
+	const { team1, team2, gameId, selectedTab } = state.game;
 
 	return {
 		availablePlayers: state.player.list,
 		isLoading: state.loading,
+		selectedTab,
 		team1,
-		team2
+		team2,
+		gameId
 	}
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ addPlayerToGame }, dispatch);
+	return bindActionCreators({ addPlayerToGame, selectGameTab }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeamLists);

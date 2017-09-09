@@ -9,6 +9,7 @@ import {
 export function processPayment(kind) {
 	return function(values, dispatch) {
 		const url = `${ROOT_URL}/player/update`;
+
 		const { _id, season, context } = values; 
 		const { quarter, year, team } = season;
 		const amount = parseFloat(values.amount) * 100;
@@ -18,7 +19,8 @@ export function processPayment(kind) {
 			year,
 			kind
 		};
-
+		const url2 = `${ROOT_URL}/season/checkins?team1=${season._id}&team2=${season._id}`;
+		
 		if (kind === 'payment') {
 			payment.paymentType = values.paymentType;
 		} else {
@@ -29,21 +31,35 @@ export function processPayment(kind) {
 		const update = {
 			$push: { payments: payment }
 		}
-		
+				
 		dispatch({type: 'CLOSE_MODAL'});
 
 		axios.put(url, { query, update })
-			.then(() => {
-				if (context === 'game') {
-					dispatch({
-						type: 'GAMETIME_PAYMENT',
-						category: kind === 'payment'? 'paid' : 'comped',
-						playerId: _id,
-						team,
-						payment
-					})
-				}			
+			.then(() => axios.get(url2))
+			.then(res => {
+				const { players, totalComped, totalPaid } = res.data[0];
+				console.log({ team, r: res.data[0]})
+				dispatch({
+					type: 'UPDATE_GAME_PAYMENT',
+					payload: {
+						players,
+						totalPaid,
+						totalComped
+					}
+				})
 			})
+			.catch(e => console.log({error: e}))
+			// .then(() => {
+			// 	if (context === 'game') {
+			// 		dispatch({
+			// 			type: 'GAMETIME_PAYMENT',
+			// 			category: kind === 'payment'? 'paid' : 'comped',
+			// 			playerId: _id,
+			// 			team,
+			// 			payment
+			// 		})
+			// 	}			
+			// })
 	}
 }
 

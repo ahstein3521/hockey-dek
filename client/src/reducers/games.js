@@ -3,6 +3,8 @@ import { combineReducers } from 'redux';
 
 const defaultState = {
 	availableTeams: [],
+	selectedTab: 1,
+	checkIns: {},
 	team1: [],
 	team2: []
 }
@@ -23,36 +25,6 @@ function removePlayer(state, action) {
 
 }
 
-function processPayment(state, action) {
-	const { team, category, playerId, payment } = action;
-	const teamState = {...state[team]};
-		
-
-	teamState.players.forEach(player => {
-		if (player._id === playerId) {
-			if (category === 'paid') {
-				player.payments.push(payment);
-				teamState.totalPaid += payment.amount;
-			} else {
-				player.comps.push(payment);
-				teamState.totalComped += payment.amount;
-			}		
-			player.totals[category] += payment.amount;
-			player.totals.total += payment.amount;
-		}
-	})
-	return teamState;
-}
-
-function processPayment(state, action) {
-	const { team, player } = action;
-	const teamState = { ...state[team] };
-
-	teamState.players.push(player);
-
-	return teamState;
-}
-
 
 export default function (state = defaultState, action) {
 
@@ -63,10 +35,7 @@ export default function (state = defaultState, action) {
 		return {...state, availableTeams: action.payload };
 	
 	case 'FETCH_CHECKIN_LIST':	
-		return {...state, ...action.payload, checkIns: {}};
-
-	case 'GAMETIME_PAYMENT':
-		return {...state, [action.team]: processPayment(state, action)}
+		return { ...state, ...action.payload };
 	
 	case 'ADD_PLAYER_TO_GAME':
 		return { 
@@ -76,13 +45,20 @@ export default function (state = defaultState, action) {
 		};
 	case 'REMOVE_PLAYER_FROM_GAME':
 		return removePlayer(state, action);
-
+	case 'UPDATE_GAME_PAYMENT':
+		return {
+			...state,
+			[`team${state.selectedTab}`]: {...state[`team${state.selectedTab}`], ...action.payload },
+		}
+	case 'SELECT_GAME_TAB':
+		console.log(action);
+		return { ...state, selectedTab: action.tab };	
 	case 'UPDATE_CHECKIN':
 		return {
 			...state, 
 			checkIns: {
 				...state.checkIns, 
-				[action.payload.playerId]: action.payload.isInputChecked 
+				[action.playerId]: action.isInputChecked 
 			}
 		};
 	}

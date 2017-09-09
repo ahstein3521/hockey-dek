@@ -16,7 +16,6 @@ module.exports = ([team1, team2], isNew = false) => {
     player: {
     season:{
       _id:'$_id',
-      team: {$cond: [{$eq: ['$_id', ObjectId(team1)]}, 'team1', 'team2']},
       quarter: '$quarter',
       year: '$year',              
     },
@@ -45,7 +44,6 @@ module.exports = ([team1, team2], isNew = false) => {
       player: {
       season:{
         _id:'$_id',
-        team: {$cond: [{$eq: ['$_id', ObjectId(team1)]}, 'team1', 'team2']},
         quarter: '$quarter',
         year: '$year',              
       },
@@ -116,35 +114,35 @@ module.exports = ([team1, team2], isNew = false) => {
     lookup('players', '_id', 'players', 'players'),
     unwind('$players'),
     {$project: project2 },     
-    unwind('$payments'),
+   unwind('$player.payments'),
     {$group: {
       _id: "$player._id",
       player: { $first: '$player' },
       payments: { $addToSet: {
         $cond: [
-          {$eq: ["$payments.kind", 'payment']},
+          {$eq: ["$player.payments.kind", 'payment']},
           {
-            amount: '$payments.amount',
-            type: '$payments.paymentType',
-            date: {$dateToString: { format: "%m-%d-%Y", date: "$payments.date" }}
+            amount: '$player.payments.amount',
+            type: '$player.payments.paymentType',
+            date: {$dateToString: { format: "%m-%d-%Y", date: "$player.payments.date" }}
           },
           false  
         ]   
       }},
       comps: { $addToSet: {
         $cond: [
-          {$eq: ["$payments.kind", 'credit']},
+          {$eq: ["$player.payments.kind", 'credit']},
           {
-            amount: '$payments.amount',
-            reason: '$payments.reason',
-            date: {$dateToString: { format: "%m-%d-%Y", date: "$payments.date" }}
+            amount: '$player.payments.amount',
+            reason: '$player.payments.reason',
+            date: {$dateToString: { format: "%m-%d-%Y", date: "$player.payments.date" }}
           },
           false  
         ]   
       }},        
-      totalPaid: { $sum: {$cond: [{$eq: ['$payments.kind', 'payment']},'$payments.amount', 0]}},
-      totalComped: { $sum: {$cond: [{$eq: ['$payments.kind', 'credit']},'$payments.amount', 0]}},
-      totalSum: {$sum: '$payments.amount'}
+      totalPaid: { $sum: {$cond: [{$eq: ['$player.payments.kind', 'payment']},'$player.payments.amount', 0]}},
+      totalComped: { $sum: {$cond: [{$eq: ['$player.payments.kind', 'credit']},'$player.payments.amount', 0]}},
+      totalSum: {$sum: '$player.payments.amount'}
       }
     },
     {$group: {

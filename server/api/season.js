@@ -39,8 +39,18 @@ Router.route('/search').get((req,res) => {
     .then(seasons => res.send(seasons))
 });
 
+Router.route('/del').get((req,res) => {
+  Season.find({quarter:1, year:2016})
+    .populate('players')
+    .select('-games')
+    .exec()
+    .then(x => res.json(x))
+})
+
 Router.route('/create').post(function(req, res) {
-  const { seasons, gameSeasons } = req.body;
+  const { seasons, gameSeasons, players = [] } = req.body;
+
+  const query = { _id: {$in: players }}
   const update = {
     $push: {
       payments: {
@@ -50,10 +60,11 @@ Router.route('/create').post(function(req, res) {
       }
     }
   }
-  Players.update({_id: {$in: gameSeasons.players }}, update, {multi: true})
-    .exec();
+  const options = { multi: true };
+
 
   Season.create(seasons)
+    .then(() => Players.update(query, update, options).exec())
     .then(() => Season.create(gameSeasons)) 
     .then((t) => getCheckins([t[0]._id, t[1]._id], true))
     .then(teams => res.send(teams))
@@ -63,10 +74,12 @@ Router.route('/create').post(function(req, res) {
 // Get list of players, check if they can check in to a game
 Router.route('/checkins')
   .get((req, res) => {
-    const { team1, team2 } = req.query;
     
-    getCheckins([team1, team2])
+    const { team1, team2 } = req.query;
+    const ids = [team1, team2];
+    getCheckins(ids)
       .then(teams => res.send(teams))
+
   }) 
 
 
@@ -124,11 +137,13 @@ Router.route('/roster/add').put((req, res) => {
 
       //Player is currently on another team and needs to be swapped
       if (seasons.length !== 0) {
+        console.log('swapping')
         swapTeams(newSeason, playerId)
           .then(() => getCheckins([newSeason._id]))
           .then(x => res.send(x))
       }
       else {
+        console.log('adding');
         addToTeam(newSeason, playerId)
           .then(() => getCheckins([newSeason._id]))
           .then(x => res.send(x))  
@@ -160,9 +175,9 @@ function swapTeams(newSeason, playerId) {
 
   return Season.update(query, update1)
     .exec()
+    .then(x => console.log('found and swapped'))
     .then(() =>
-      Season.update({ _id }, update2).exec()
-    )
+      Season.update({ _id }, update2).exec())
 }
 
 function addToTeam(newSeason, playerId) {
