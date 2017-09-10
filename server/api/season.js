@@ -39,13 +39,7 @@ Router.route('/search').get((req,res) => {
     .then(seasons => res.send(seasons))
 });
 
-Router.route('/del').get((req,res) => {
-  Season.find({quarter:1, year:2016})
-    .populate('players')
-    .select('-games')
-    .exec()
-    .then(x => res.json(x))
-})
+
 
 Router.route('/create').post(function(req, res) {
   const { seasons, gameSeasons, players = [] } = req.body;
@@ -84,34 +78,34 @@ Router.route('/checkins')
 
 
 //Update a teams roster
-Router.route('/update/roster/:seasonId')
-  .put((req, res) => {
-    const { seasonId } = req.params;
-    const { added, removed, quarter, year } = req.body;
+// Router.route('/update/roster/:seasonId')
+//   .put((req, res) => {
+//     const { seasonId } = req.params;
+//     const { added, removed, quarter, year } = req.body;
 
-    const addPlayers = {
-      $push: { 
-        formerPlayers: { $each: removed }, 
-        players: { $each: added }         
-      }      
-    };
+//     const addPlayers = {
+//       $push: { 
+//         formerPlayers: { $each: removed }, 
+//         players: { $each: added }         
+//       }      
+//     };
 
-    const removePlayers = {
-      $pull: {
-        players: { $in: removed }, 
-        formerPlayers: { $in: added } 
-      }      
-    };
+//     const removePlayers = {
+//       $pull: {
+//         players: { $in: removed }, 
+//         formerPlayers: { $in: added } 
+//       }      
+//     };
 
 
-    Promise.all([
-      Season.update({ _id: seasonId }, addPlayers).exec(),
-      Season.update({ _id: seasonId }, removePlayers).exec(),
-    ])
-    .then((results) => {
-        res.send(results);  
-    })
-  })      
+//     Promise.all([
+//       Season.update({ _id: seasonId }, addPlayers).exec(),
+//       Season.update({ _id: seasonId }, removePlayers).exec(),
+//     ])
+//     .then((results) => {
+//         res.send(results);  
+//     })
+//   })      
 
 Router.route('/roster/remove').put((req, res) => {
   const { playerId, seasonId } = req.body;
@@ -123,13 +117,10 @@ Router.route('/roster/remove').put((req, res) => {
 })
 
 Router.route('/roster/add').put((req, res) => {
-  // const playerId = '59013aeb0248742238a787ff';
-  // const quarter = 2;
-  // const year = 2017;
-  // const seasonId1 = "5918b320bf71fe8fea57d3cb"
-  // const seasonId2 = "5918b320bf71fe8fea57d3cc";
-  const { newSeason, playerId } = req.body;
-  const { quarter, year } = newSeason;
+
+  const { season, playerId, teams } = req.body;
+  const { quarter, year } = season;
+  
   const query = { quarter, year, players: {$in: [ playerId ]} };
 
   Season.find(query)
@@ -137,25 +128,22 @@ Router.route('/roster/add').put((req, res) => {
 
       //Player is currently on another team and needs to be swapped
       if (seasons.length !== 0) {
-        console.log('swapping')
-        swapTeams(newSeason, playerId)
-          .then(() => getCheckins([newSeason._id]))
-          .then(x => res.send(x))
+        console.log('swapping', seasons.length)
+        return swapTeams(season, playerId, teams)
       }
       else {
         console.log('adding');
-        addToTeam(newSeason, playerId)
-          .then(() => getCheckins([newSeason._id]))
-          .then(x => res.send(x))  
+        return addToTeam(season, playerId, teams)
       }
     })
+    .then(x => res.send(x))
 
 })
 // Season.find({ _id: seasonId2 }).populate({path:'players', select:'firstName'}).exec()
 //           .then(x => res.send(x))
 //})
 
-function swapTeams(newSeason, playerId) {
+function swapTeams(newSeason, playerId, teams) {
   const { quarter, year, _id } = newSeason;
   
   //Find player's team for specific year & quarter
@@ -173,22 +161,27 @@ function swapTeams(newSeason, playerId) {
     $pull: { formerPlayers: playerId}
   };
 
+
   return Season.update(query, update1)
     .exec()
-    .then(x => console.log('found and swapped'))
-    .then(() =>
-      Season.update({ _id }, update2).exec())
+    .then(() => Season.update({ _id }, update2).exec())
+    .then(() => getCheckins(teams))
 }
 
-function addToTeam(newSeason, playerId) {
+function addToTeam(newSeason, playerId, teams) {
   const { quarter, year, _id } = newSeason;
   const newPayment = {
     quarter,
     year,
     kind: 'payment'
   }
+
+
   return Season.update(newSeason, { $push: { players: playerId }})
     .exec()
+    .then(() => Players.update({_id: playerId}, { $push: { payments: newPayment }}).exec())
+    .then(() => getCheckins(teams))
+      
 }
 
 module.exports = Router;

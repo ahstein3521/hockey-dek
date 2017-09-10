@@ -16,7 +16,6 @@ const validate = values => {
 export default reduxForm({
   form: 'CreateGame',
   onSubmit: fetchRosters,
-  destroyOnUnmount: false,
   validate
   
 })(FormTemplate)

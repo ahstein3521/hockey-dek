@@ -11,11 +11,14 @@ import TeamDropdown from './new-season/teamDropdown.jsx';
 import AddPlayers from './new-season/playerList.jsx'
 import { ListOne } from './checkin-list/teamTable.jsx';
 
-const GamePage = () => (
+const GamePage = (props) => {
+
+	return(
+
 		<div>
 			<Paper zDepth={3}>
 				<Route path='/games' component= {ToolBar}/>				
-				<Route exact path='/games' component={NewGameForm1} /> 
+				<Route exact path='/games' component={CheckInList} /> 
 				<Route exact path='/games/add-season' component={AddTeams}/>
 				<Route exact path='/games/add-season/1' component={TeamDropdown}/>
 				<Route exact path='/games/add-season/2' component={AddPlayers}/>
@@ -24,6 +27,6 @@ const GamePage = () => (
 			</Paper>
 		</div>
 	)
-
+}
 
 export default GamePage;

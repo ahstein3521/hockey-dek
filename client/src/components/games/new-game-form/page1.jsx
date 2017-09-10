@@ -9,6 +9,8 @@ import DropDowns from './dropdowns.jsx'
 
 import formatDate from '../../utils/formatDate';
 
+import CheckInList from '../checkin-list/index.jsx';
+
 const validate = values => {
   const errors = {};
 
@@ -68,6 +70,7 @@ const GameForm1 = props =>{
     </form>
   )
 }
+
 
 
 // Decorate with redux-form

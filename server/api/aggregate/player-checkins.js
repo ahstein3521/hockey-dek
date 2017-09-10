@@ -13,11 +13,13 @@ module.exports = ([team1, team2], isNew = false) => {
   const project1 = {
     quarter: 1,
     year: 1,
+    team:1,
     player: {
     season:{
       _id:'$_id',
       quarter: '$quarter',
-      year: '$year',              
+      year: '$year',
+      team: '$team'              
     },
     _id: '$players._id',
     fullName:{$concat:['$players.lastName',', ','$players.firstName']},
@@ -41,11 +43,13 @@ module.exports = ([team1, team2], isNew = false) => {
   const project2 = {
       quarter: 1,
       year: 1,
+      team: 1,
       player: {
       season:{
         _id:'$_id',
         quarter: '$quarter',
-        year: '$year',              
+        year: '$year', 
+        team: '$team'           
       },
       _id: '$players._id',
       fullName:{$concat:['$players.lastName',', ','$players.firstName']},
@@ -80,14 +84,17 @@ module.exports = ([team1, team2], isNew = false) => {
 
   if (isNew) {
     return Seasons.aggregate([
-      match1,
+      match1,     
       unwind('$players'),
       lookup('players', '_id', 'players', 'players'),
       unwind('$players'),
       {$project: project1 },
+      lookup('teams', '_id', 'player.season.team', 'team'),
       {$group: {
         _id: "$player.season._id",
-        teamNumber: {$first: "$player.season.team"},
+        team: { $first: {$arrayElemAt: ['$team', 0]}},
+        quarter: { $first: '$player.season.quarter' },
+        year: { $first: '$player.season.year' },
         players: {
             $push: {
               _id: "$_id",
@@ -103,18 +110,20 @@ module.exports = ([team1, team2], isNew = false) => {
             }
           }
         }
-      }            
+      },
+      { $sort: { 'team.name': 1 }}            
     ]).exec()
   }
 
 
   return Seasons.aggregate([
     match1,
+    // unwind('$teams'), 
     unwind('$players'),
     lookup('players', '_id', 'players', 'players'),
     unwind('$players'),
     {$project: project2 },     
-   unwind('$player.payments'),
+    unwind('$player.payments'),
     {$group: {
       _id: "$player._id",
       player: { $first: '$player' },
@@ -145,9 +154,12 @@ module.exports = ([team1, team2], isNew = false) => {
       totalSum: {$sum: '$player.payments.amount'}
       }
     },
+    lookup('teams', '_id', 'player.season.team', 'team'),
     {$group: {
       _id: "$player.season._id",
-      teamNumber: {$first: "$player.season.team"},
+      team: { $first: {$arrayElemAt: ['$team', 0]}},
+      quarter: { $first: '$player.season.quarter' },
+      year: { $first: '$player.season.year' },
       players: {
           $push: {
             _id: "$_id",
@@ -167,6 +179,7 @@ module.exports = ([team1, team2], isNew = false) => {
       totalPaid: {$sum: '$totalPaid'},
       totalComped: {$sum: '$totalComped'}  
       }
-    }
+    },
+    { $sort: { 'team.name': 1 }}
   ]).exec()
 }

@@ -3,7 +3,14 @@ const Schema = mongoose.Schema;
 
 const paymentSchema = require('./payment');
 
-const waiverSchema = new Schema({ year:String },{timestamp:true})
+const waiverSchema = new Schema({ 
+	year: Number,
+	createdAt: Date,
+	format: {
+		type: String,
+		enum: ['paper', 'online']
+	}
+})
 
 const suspensionSchema = new Schema({
 	start:Date,

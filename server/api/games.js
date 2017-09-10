@@ -9,32 +9,75 @@ const Game = mongoose.model('game');
 const ObjectId = mongoose.Types.ObjectId;
 const getCheckins = require('./aggregate/player-checkins'); 
 
-function newGame(req, res, next) {
-  let gameId;
-  console.log(req.body);
-  Game.create(req.body.game)
-    .then(game => {
-      const [team1, team2] = [game.team1.info, game.team2.info];
-      gameId = game._id;
 
-      return getCheckins([team1, team2])
+function f(req, res) {
+  const id = "59b53ef7e180a4023c2285b8";
+  let checkIns = {};
+  Game.findById(id)
+    .exec()
+    .then(x => {
+      const { team1, team2, _id} = x;
+  
+      const players = team1.checkIns.concat(team2.checkIns);
+
+      players.forEach( player => {
+        checkIns[player] = true;
+      })
+
+      return getCheckins([team1.info, team2.info])
+    })
+    .then(t => res.send({teams: t, gameId: id, checkIns}))
+}
+
+
+function findGame(req, res, next) {
+  let gameId;
+  let checkIns = {};
+  let { date, team1, team2 } = req.body.game;
+  date = new Date(date);
+  const y = date.getFullYear();
+  const d = date.getDate();
+  const m = date.getMonth();
+
+
+  const query = {
+    date: {"$gte": new Date(y, m, d), "$lt": new Date(y, m, d+1)},
+    $or: [
+      { 'team1.info': team1.info, 'team2.info': team2.info },
+      { 'team2.info': team1.info, 'team1.info': team2.info }
+    ]
+  }
+
+  Game.find(query).exec()
+    .then(games => {
+      if (!games.length) {
+        
+        return Game.create(req.body.game)
+          .then(game => {
+            const [team1, team2] = [game.team1.info, game.team2.info];
+            gameId = game._id;
+
+            return getCheckins([team1, team2])
+          })
+      } else {
+        const { team1, team2, _id } = games[0];
+
+        const players = team1.checkIns.concat(team2.checkIns);
+
+        players.forEach( player => {
+          checkIns[player] = true;
+        })
+        gameId = _id;
+
+        console.log('game exists')
+        return getCheckins([team1.info, team2.info])
+      }
     })
     .then(teams => {
-      let [t1, t2] = teams.slice();
-      if (t1._id === req.body.team1._id) {
-        t1.name = req.body.team1.name;
-        t2.name = req.body.team2.name;
-        t1.teamNumber = 'team1';
-        t2.teamNumber = 'team2';
-      } else {
-        t1.name = req.body.team2.name;
-        t2.name = req.body.team1.name;
-        t1.teamNumber = 'team2';
-        t2.teamNumber = 'team1';
-      }
-      res.send({teams:[t1, t2], gameId});
+      res.send({teams, gameId, checkIns});
     })
 }
+
 
 function handleCheckIn(req, res, next) {
   const { gameId, playerId, selectedTab, isInputChecked } = req.body;
@@ -106,87 +149,10 @@ function fetchTeams(req, res, next) {
   })
 }
 
-Router.route('/show').get((req,res) => {
-  const q = { year:2017, quarter: 2};
-
-  Game.findOne({_id: '59b41b9e7844080355c5eea4'})
-    .populate('team1.checkIns team1.info team2.info team2.checkIns')
-    .exec()
-    .then(x=>res.send(x))
-})
-
-function addPlayer(req, res, next) {
-  const { quarter, year, _id } = req.body;
-  const { playerId} = req.params;
-  // Team.findOne({name: 'Philadelphia Flyers'})
-  //   .populate({ path: 'currentSeason', populate: { path: 'players', select: 'firstName lastName'}})
-  //   .exec()
-  //   .then(x=> res.send(x))
-  const now = new Date();
-
-  Season.update({
-    quarter:2, 
-    year:2017, 
-    players: { $in: [playerId]}}, 
-    {$pull: {players: playerId}})
-    .exec()
-    .then(() =>
-      Season.update({ _id }, {$push: { players: playerId }}).exec()
-    )
-  
-
-
-  const select = {
-    suspensions: {
-      $elemMatch: { 
-        start: { $lte: now},
-        end: { $gt: now}
-      }
-    },
-    firstName:1,
-    lastName:1,
-    jerseyNumber:1,
-    payments:1,
-  };
-
-  Players.findById(req.params.playerId)
-    .select(select)
-    .lean()
-    .exec()
-    .then(x => {
-      const payments = [];
-      const comps = [];
-      const totals = { paid: 0, comped: 0, total: 0};
-      
-      x.payments.forEach(payment => {
-        if (payment.quarter === quarter && payment.year === year) {
-          let p = { date: payment.date.toDateString(), amount: payment.amount };
-          if (payment.kind === 'payment') {
-            p.type = payment.paymentType;
-            payments.push(p);
-            totals.paid+=payment.amount;
-          } else {
-            p.reason = payment.reason;
-            comps.push(p);
-            totals.comped += payment.amount
-          }
-          totals.total+=payment.amount;
-        }
-      })
-      x.suspended = x.suspensions? true : false;
-      x.fullName = x.lastName + ', ' + x.firstName;
-      if (!payments.length) {
-        let newPayment = { quarter, year, kind:'payment' };
-        payments.push(newPayment);
-        Player.findByIdAndUpdate(playerId, {$push: {payments: newPayment }})
-      }
-      res.send(Object.assign({}, x, {payments, comps, totals}))
-    })  
-}
-
-Router.route('/new').post(newGame);
+Router.route('/test').get(f);
+Router.route('/new').post(findGame);
 Router.route('/check-in').put(handleCheckIn);
 Router.route('/teams').get(fetchTeams);
-Router.route('/add-player/:playerId').put(addPlayer);
+
 
 module.exports = Router;

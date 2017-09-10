@@ -63,15 +63,13 @@ export function fetchRosters(form, dispatch, { history }) {
 			team1: {info: t1}, 
 			team2: {info:t2}, 
 			date: d
-		},
-		team1,
-		team2
+		}
 	}
 	
 	const nextView = {
 		pathname: '/games/check-in',
 		state: { 
-			title: `New ${hockeyType} Game`, 
+			title: `${hockeyType} Game`, 
 			subtitle: gameDate,
 			year,
 			quarter
@@ -84,12 +82,16 @@ export function fetchRosters(form, dispatch, { history }) {
 
 	axios.post('/game/new', body)
 		.then( ({data}) => {
+			console.log({ data });
 			dispatch({ 
 				type: 'FETCH_CHECKIN_LIST', 
 					payload: { 
 						team1: data.teams[0],
 						team2: data.teams[1],
-						gameId: data.gameId, 
+						gameId: data.gameId,
+						checkIns: data.checkIns,
+						quarter: data.teams[0].quarter,
+	 					year: data.teams[0].year,
 						gameDate 
 					}
 				})
@@ -100,37 +102,33 @@ export function fetchRosters(form, dispatch, { history }) {
 	
 }
 
+// export function fetchRosters(data) {
+// 	return { 
+// 		type: 'FETCH_CHECKIN_LIST', 
+// 		payload: { 
+// 			team1: data.teams[0],
+// 			team2: data.teams[1],
+// 			quarter: data.teams[0].quarter,
+// 			year: data.teams[0].year,
+// 			gameId: data.gameId,
+// 			checkIns: data.checkIns, 
+// 			gameDate: formatDate(new Date()) 
+// 		}
+// 	}	
+// }
 
+export function addPlayerToGame(playerId, season, teams) {
 
-export function addPlayerToGame(playerId, season, teamNumber) {
-	let { otherTeam, ...newSeason } = season;
-
-	otherTeam.players.forEach((player,i) => {
-		if (player._id === playerId) {
-			otherTeam.players.splice(i, 1);
-			otherTeam.totalPaid -= player.totals.paid
-			otherTeam.totalComped -= player.totals.comped;
-			console.log('found');
-		}
-	})
-	console.log({playerId, season, teamNumber});
 
 	return dispatch =>
-		axios.put('/season/roster/add', { newSeason, playerId})
+		axios.put('/season/roster/add', { season, playerId, teams })
 			.then(res => {
-				const { players, totalComped, totalPaid } = res.data[0]
-				console.log({ d: res.data[0] });
+
 				dispatch({
-					type: 'ADD_PLAYER_TO_GAME',
-					team: teamNumber,
-					otherTeam: {
-						teamNumber: 0,
-						update: null
-					},
+					type: 'FETCH_CHECKIN_LIST',
 					payload: {
-						players,
-						totalComped,
-						totalPaid
+						team1: res.data[0],
+						team2: res.data[1]
 					}
 				})
 			})
@@ -155,11 +153,11 @@ export function removePlayerFromGame({_id, season}) {
 }
 
 export function handleCheckIn(playerId, isInputChecked, game) {
-		console.log({ game, playerId, isInputChecked })
+		
 		return dispatch => 
 			axios.put('/game/check-in', {...game, playerId, isInputChecked})
 				.then((r) => {
-					console.log(r.data, 'GAME_ID')
+				
 					dispatch({ type: 'UPDATE_CHECKIN', playerId, isInputChecked })
 				})
 }

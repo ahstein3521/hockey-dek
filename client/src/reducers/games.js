@@ -4,9 +4,10 @@ import { combineReducers } from 'redux';
 const defaultState = {
 	availableTeams: [],
 	selectedTab: 1,
+	gameId: null,
 	checkIns: {},
-	team1: [],
-	team2: []
+	team1: {team: {name: null}},
+	team2: {team: {name: null}}
 }
 
 function removePlayer(state, action) {
@@ -36,15 +37,10 @@ export default function (state = defaultState, action) {
 	
 	case 'FETCH_CHECKIN_LIST':	
 		return { ...state, ...action.payload };
-	
-	case 'ADD_PLAYER_TO_GAME':
-		return { 
-			...state, 
-			[action.team]: {...state[action.team], ...action.payload },
-			[action.otherTeam.teamNumber]: { ...action.otherTeam.update }
-		};
+
 	case 'REMOVE_PLAYER_FROM_GAME':
 		return removePlayer(state, action);
+
 	case 'UPDATE_GAME_PAYMENT':
 		return {
 			...state,

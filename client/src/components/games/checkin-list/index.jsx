@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addPlayerToGame, selectGameTab } from '../../../actions/index';
+import GameForm from '../new-game-form/page1.jsx';
+import { addPlayerToGame, selectGameTab, fetchRosters } from '../../../actions/index';
 import { ListOne, ListTwo } from './teamTable.jsx';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { Route } from 'react-router-dom';
@@ -16,7 +17,7 @@ class TeamLists extends Component {
 	}
 	
 	componentWillMount() {
-		let { availablePlayers } = this.props;
+		let { availablePlayers, fetchRosters } = this.props;
 		let arr = [];
 
 		availablePlayers.forEach(player => {
@@ -26,19 +27,18 @@ class TeamLists extends Component {
 			arr.push({ _id, fullName })
 
 		})
+
 		this.setState({ availablePlayers: arr });
 	}
 	addPlayer = player => {
 		
-		const { selectedTab, location: { state: { quarter, year }}, team1, team2 } = this.props;
-		const team = this.props[`team${selectedTab}`];
+		const { selectedTab, quarter, year, team1, team2 } = this.props;
+		
+		const { _id } = this.props[`team${selectedTab}`];
+		const season = { quarter, year, _id };
+		const teams = [team1._id, team2._id];
 
-		const otherTeam = selectedTab === 1? team2 : team1;
-		
-		
-		const season = { quarter, year, _id: team._id, otherTeam, team1, team2 };
-		console.log({ selectedTab, team, otherTeam });
-		this.props.addPlayerToGame(player._id, season, `team${selectedTab}`);
+		this.props.addPlayerToGame(player._id, season, teams);
 		
 
 		this.setState({ searchText: '' });
@@ -52,15 +52,18 @@ class TeamLists extends Component {
 	}
 
 	render() { 
-		const { selectedTab, isLoading, team1, team2 } = this.props;
+		const { selectedTab, isLoading, team1, team2, gameId, history, location, match } = this.props;
+		const routerProps = { history, location, match };
 		const { availablePlayers } = this.state;
 		
+		if (!gameId) return <GameForm {...routerProps} />;
+
 		return (
 			<Tabs 
 				onChange={this.handleChange}
 				value={selectedTab}
 			>
-				<Tab label={team1.name} value={1}>
+				<Tab label={team1.team.name} value={1}>
 					<span>
 					{
 						selectedTab === 1 && 
@@ -77,7 +80,7 @@ class TeamLists extends Component {
 					}
 					</span>
 				</Tab>
-				<Tab label={team2.name} value={2}>
+				<Tab label={team2.team.name} value={2}>
 					<span>				
 					{
 						selectedTab === 2 && 
@@ -100,20 +103,17 @@ class TeamLists extends Component {
 }	
 
 function mapStateToProps(state) {
-	const { team1, team2, gameId, selectedTab } = state.game;
+	// const { team1, team2, gameId, quarter, year, selectedTab } = state.game;
 
 	return {
 		availablePlayers: state.player.list,
 		isLoading: state.loading,
-		selectedTab,
-		team1,
-		team2,
-		gameId
+		...state.game
 	}
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ addPlayerToGame, selectGameTab }, dispatch);
+	return bindActionCreators({ addPlayerToGame, selectGameTab, fetchRosters }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeamLists);
