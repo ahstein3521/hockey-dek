@@ -18,7 +18,8 @@ export default class SeasonCard extends Component {
   
 
   render() {
-    const {season: { team: { name, hockeyType }, formatted }} = this.props;
+    if (!this.props.season) return <noScript/>
+    const {season: { team, hockeyType, displayName }} = this.props;
     return (
       <Card 
         style={{marginTop:20}}
@@ -27,8 +28,8 @@ export default class SeasonCard extends Component {
       >
         <CardHeader
           style={{backgroundColor: primary3Color }}
-          title={`${name}, ${hockeyType}`}
-          subtitle={formatted}
+          title={`${team}, ${hockeyType}`}
+          subtitle={displayName}
           actAsExpander={true}
           showExpandableButton={true}
         />

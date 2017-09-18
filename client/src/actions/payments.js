@@ -63,6 +63,36 @@ export function processPayment(kind) {
 	}
 }
 
+export function deletePayment({val, index, i}) {
+	const url = `${ROOT_URL}/player/update`;
+
+	const category = val.kind === 'payment'? 'payments' : 'comps';
+	const total = val.kind === 'payment' ? 'totalPaid' : 'totalComped';
+	const query = { 'payments._id' : val._id };
+	const update = { 
+		$pull: { 
+			payments: {_id: {$in: [ val._id] }}
+		}
+	};
+	
+	return (dispatch, getState) => {
+		const { payments } = getState().player.selected;
+		payments[index][category].splice(i, 1);
+		payments[index][total] -= val.amount;
+		console.log({payments, category, val, i, index });
+
+		axios.put(url, { query, update })
+			.then(() => 
+				dispatch({
+					type: UPDATE_PLAYER_INFO, 
+					payload: payments, 
+					category: 'payments'
+				})
+			).then(() => dispatch({ type: 'CLOSE_MODAL' }))	
+	}
+}
+
+
 export function newPayment(values, dispatch) {
 	const url = `${ROOT_URL}/player/update`;
 	const { _id, season, paymentType, context } = values; 

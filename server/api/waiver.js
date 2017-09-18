@@ -36,3 +36,32 @@ exports.processOnlineWaiver = function(req, res) {
 		})
 } 
 
+
+exports.handleCheckWaiver = function(req, res) {
+	const { playerId } = req.body;
+	const now = new Date();
+
+	const waiver = { 
+		year: now.getFullYear(),
+		format: 'paper',
+		createdAt: now
+	}
+
+	Player.findByIdAndUpdate(playerId, { $push: { waivers: waiver }})
+		.exec()
+		.then(() => res.send('OK').status(200))
+		.catch((err) => throw err)
+}
+
+exports.handleUncheckWaiver = function(req, res) {
+	const { waiverId, playerId } = req.body;
+
+
+
+	Player.findByIdAndUpdate(playerId, { $pull: { waivers: { _id: { $in: [waiverId]}}}})
+		.exec()
+		.then(() => res.send('OK').status(200))
+		.catch((err) => throw err)
+
+}
+

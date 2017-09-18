@@ -13,17 +13,19 @@ import {
 
 
 
-export function selectPlayer(player){	
+export function selectPlayer({_id}){	
+	
 	return { 
-		type: SELECT_PLAYER, 
-		payload: player 
+		type: 'INIT_SELECT_PLAYER',
+		playerId: _id 
 	};
 }
 
 export function selectPlayerTab(tabNumber) {
+
 	return {
 		type: SELECT_PLAYER_TAB,
-		payload: tabNumber
+		tab: tabNumber
 	}
 }
 
@@ -55,55 +57,35 @@ export function createPlayer(form, dispatch, {teamList}) {
  }
 
 
-
-export function fetchPlayerDetails(player){
+export function updatePlayer( body, dispatch ) {
+	//const url = `${ROOT_URL}/player/update`;
+	console.log(body);
+	dispatch({
+		type: 'INIT_UPDATE_PLAYER_INFO',
+		player: body
+	});
+	// const query = { _id: body._id };
 	
-	return dispatch => {
+	// if (body.currTeamId !== body.season._id) {
+	// 	axios.put(`${ROOT_URL}/season/`)
+	// }
 
-		dispatch({ type: SET_LOAD_STATE, payload: true });
-
-		axios.get(`${ROOT_URL}/player/fetch/${player._id}`)
-			.then(({data}) => {
-
-				const basicInfo = { ...player, ...data.basicInfo };
-	
-				dispatch({type: SELECT_PLAYER, payload: {...data, basicInfo}})
-			})
-			.then(() => 	
-				dispatch({ type: SET_LOAD_STATE, payload: false })
-			)
-	}
-}
-
-export function updatePlayer( body, dispatch ){
-	const url = `${ROOT_URL}/player/update`;
-
-	const query = { _id: body._id };
-	const update = body;
-
-	axios.put(url, { query, update })
-		.then(()=> {
-			dispatch({ 
-				type: UPDATE_PLAYER_INFO, 
-				payload: body, 
-				category: 'basicInfo' 
-			})
-			return body;
-		})
-		.then(data => {
-			dispatch({ type: UPDATE_PLAYER_LIST_INDEX, payload:data})
-			return data;
-		})
-		.then(data => {
-			if(data.checkIns){
-				return dispatch({type: UPDATE_PLAYER_IN_ROSTER, payload:data})
-			}
-			return data;
-		})			
-		.then(() => {
-			dispatch({type:'OPEN_SNACKBAR',payload:'Player Updated'})
-		})
-		.catch(err => console.error("Something went wrong", err))
+	// axios.put(url, { query, update: body })
+	// 	.then(()=> {
+	// 		dispatch({ 
+	// 			type: UPDATE_PLAYER_INFO, 
+	// 			payload: body, 
+	// 			category: 'basicInfo' 
+	// 		})
+	// 		return body;
+	// 	})
+	// 	.then(data => 
+	// 		dispatch({ type: UPDATE_PLAYER_LIST_INDEX, payload:data})
+	// 	)		
+	// 	.then(() => {
+	// 		dispatch({type:'OPEN_SNACKBAR',payload:'Player Updated'})
+	// 	})
+	// 	.catch(err => console.error("Something went wrong", err))
 }
 
 

@@ -11,8 +11,8 @@ import { suspendPlayer, openSnackbar } from '../../../actions/index';
 
 
 const SuspensionForm = props => {
-  const { suspensions = [] } = props;
-
+  const { season, openModal } = props;
+  console.log({ season })
   return (
     <form onSubmit={props.handleSubmit} className="form">
       {
@@ -21,42 +21,33 @@ const SuspensionForm = props => {
           <FlatButton
             icon={<DeleteIcon/>}
             label="Delete"
-            onTouchTap={() => props.openModal(props)}
+            onTouchTap={openModal.bind( null , props)}
             secondary={true}
           />
         </div>
       }
       <div className="form-row">
         <Field
-          component={SelectField}
+          component={TextField}
           fullWidth={true}
-          name="selectedSeasonId"
+          name='seasonDisplay'
+          disabled={true}
           floatingLabelText="Team & Season"
-        >
-          {
-            suspensions.map(({season}, i) => 
-              <MenuItem 
-                primaryText={ season.team.name + ' - ' + season.formatted}
-                key={i} 
-                value={season._id}
-              />
-            )
-          }
-        </Field>
+        />
       </div>
       <div className="form-row">
         <Field
           autoOk={true}
-          name="start" 
+          name="startDate" 
           component={DatePicker}
-          format={null}
+          format={v => v? new Date(v) : new Date()}
           floatingLabelText="Start Date"
         />
         <Field
           autoOk={true}
-          name="end" 
+          name="endDate" 
           component={DatePicker}
-          format={null}
+          format={v => v? new Date(v) : new Date()}
           floatingLabelText="End Date"
         />
       </div>    

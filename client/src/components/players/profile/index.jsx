@@ -28,7 +28,7 @@ class PlayerTabs extends Component{
   render(){
     const { player, loading, openModal } = this.props;
     if (loading) return this.renderSpinner();
-      
+    
     return(
         <Tabs
           value={this.props.tab}
@@ -36,7 +36,7 @@ class PlayerTabs extends Component{
           onChange={this.handleChange}
         >
           <Tab label="Basic Info" style={styles.tab} value={1}>
-            <BasicInfo initialValues={player.basicInfo} />
+            <BasicInfo initialValues={player.basicInfo} teamList={player.teamList} />
           </Tab>
           <Tab label="Check-ins" style={styles.tab} value={2}>
             <CheckIns games={player.games}/>
@@ -45,7 +45,11 @@ class PlayerTabs extends Component{
             <PaymentList payments={player.payments} openModal={openModal}/>
           </Tab>
           <Tab label="Suspensions" style={styles.tab} value={4}>
-            <Suspensions player={player} />
+            <Suspensions 
+              suspensions={player.suspensions}
+              playerName={player.basicInfo.fullName} 
+              season={player.basicInfo.season} 
+            />
           </Tab>        
         </Tabs>
     )

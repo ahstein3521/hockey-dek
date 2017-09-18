@@ -55,6 +55,10 @@ const mappings = {
 		Children: NewPaymentForm,
 		reduxFormName: 'NewPaymentForm'
 	},
+	DeletePayment: {
+		title: 'Delete payment?',
+		onSubmit: 'deletePayment'
+	},
 	paymentHistory: {
 		title: 'Payments',
 		Children: PaymentHistory,

@@ -13,12 +13,12 @@ const NewSuspensionForm = reduxForm({
 	validate
 })(SuspensionForm);
 
-const selector = getNewFormVals();
 
-function mapStateToProps(state) {
-	const { initialValues, suspensions } = selector(state); 
-
-	return { initialValues, suspensions };
+function mapStateToProps(state, ownProps) {
+	const { location: { state: { season = {} }}} = ownProps;
+	const seasonDisplay = `${season.team} - ${season.displayName}`
+	
+	return {  initialValues: { season: season._id, seasonDisplay }};
 }
 
 export default connect(mapStateToProps)(NewSuspensionForm);

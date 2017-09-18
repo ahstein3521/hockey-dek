@@ -13,7 +13,7 @@ const seasonSchema = new Schema({
 		max:4
 	},	
 	year: Number,
-	
+	active: Boolean,
 	players:[{
 		type: Schema.Types.ObjectId, 
 		ref: 'player'

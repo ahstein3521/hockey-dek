@@ -54,25 +54,15 @@ exports.buildList = (seasons, isPaymentList) => {
 }
 
 
-exports.getPastSeasons = function(req, res, next) {
-  const { playerId } = req.params;
-  const { player } = req.session;
-  
-  if (!player || player._id !== playerId) {
-    Season.find({players: { $in: [playerId] }})
-      .populate({path:'team', select:'name hockeyType'})
-      .select('-games -players -formerPlayers')
-      .sort({year:-1, quarter:-1})
-      .exec()
-      .then( seasons => {
-        req.session.player = {
-          _id: playerId, 
-          seasons
-        }
-        next();
-      })
-  } else {
-    return next();
-  }
-}
+exports.getPastSeasons = (playerId) => 
+
+  Season.find({players: { $in: [playerId] }})
+    .populate({path:'team', select:'name hockeyType'})
+    .select('-players -formerPlayers')
+    .sort({year:-1, quarter:-1})
+    .exec()
+    .then( seasons => Promise.resolve({ playerId, seasons }))
+    .catch( err => Promise.reject(String(err)))
+
+
 

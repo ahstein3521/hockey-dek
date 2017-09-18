@@ -14,14 +14,14 @@ const $format = num => "$"+(num/100).toFixed(2);
 
 const TableRows = (props) => { 
   
-  const { fetchPlayerDetails, ...rest } = filterProps(props);
+  const { selectPlayer, ...rest } = filterProps(props);
   const { checkins, player } = rest;   
   const url = { pathname: '/players/profile', state: { title: player.fullName }}; 
   
   return(
     <TableRow>
       <TableRowColumn colSpan={2}>
-        <span onClick={()=> fetchPlayerDetails(player)}>
+        <span onClick={()=> selectPlayer(player)}>
           <Link to={url} >
             {player.fullName}
           </Link>

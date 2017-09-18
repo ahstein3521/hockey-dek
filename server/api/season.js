@@ -129,7 +129,7 @@ Router.route('/roster/add').put((req, res) => {
       //Player is currently on another team and needs to be swapped
       if (seasons.length !== 0) {
         console.log('swapping', seasons.length)
-        return swapTeams(season, playerId, teams)
+        return swapTeamsForGame(season, playerId, teams)
       }
       else {
         console.log('adding');
@@ -143,7 +143,50 @@ Router.route('/roster/add').put((req, res) => {
 //           .then(x => res.send(x))
 //})
 
-function swapTeams(newSeason, playerId, teams) {
+Router.route('/roster/swap').put((req, res) => {
+  const { playerId, newSeasonId, oldSeasonId } = req.body;
+  //Remove player from current roster, push to formerPlayers list
+  const update1 = {
+    $pull: { players: playerId },
+    $addToSet: { formerPlayers: playerId }
+  };
+  
+  //Add to new roster
+  const update2 = {
+    $addToSet: { players: playerId },
+    $pull: { formerPlayers: playerId}
+  };
+
+
+  Promise.all([
+    Season.findByIdAndUpdate(newSeasonId, update2).exec(),
+    Season.findByIdAndUpdate(oldSeasonId, update1).exec()
+  ])
+  .then(() => res.send('Player\'s teams swappped'))
+  .catch(err => {throw err})
+})
+
+Router.route('/roster/remove-player').put((req, res) => {
+
+  const update = {
+    $pull: { players: req.body.playerId },
+    $addToSet: { formerPlayers: req.body.playerId }
+  };
+  
+  Season.findByIdAndUpdate(req.body.seasonId, update)
+    .exec()
+    .then(() => res.send('Player removed'))
+})
+
+Router.route('/roster/add-player').put((req, res) => {
+  const { playerId, seasonId } = req.body;
+
+  Season.findByIdAndUpdate(seasonId, {$push: {players: playerId }})
+    .exec()
+    .then(() => res.send('Player removed'))
+})
+
+function swapTeamsForGame(newSeason, playerId, teams) {
   const { quarter, year, _id } = newSeason;
   
   //Find player's team for specific year & quarter

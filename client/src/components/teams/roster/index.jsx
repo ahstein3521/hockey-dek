@@ -2,7 +2,7 @@ import React from 'react';
 import smartTable from '../../../hoc/smartTable.jsx';
 import TableBody from './rowTemplate.jsx';
 
-import { fetchPlayerDetails } from '../../../actions/index';
+import { selectPlayer } from '../../../actions/index';
 
 const headings = [
 	{text:'Name',val:'player.lastName', colSpan:2},
@@ -18,7 +18,7 @@ const headings = [
 export default smartTable({
 	headings,
 	name: 'TeamRoster',
-	actions: { fetchPlayerDetails },
+	actions: { selectPlayer },
 	searchInputHintText: 'Filter players by name',
 	rowPathname: 'teams.selected.team.players',
 	category: 'lastName',

@@ -11,22 +11,15 @@ const getCheckins = require('./aggregate/player-checkins');
 
 
 function f(req, res) {
-  const id = "59b53ef7e180a4023c2285b8";
-  let checkIns = {};
-  Game.findById(id)
-    .exec()
-    .then(x => {
-      const { team1, team2, _id} = x;
-  
-      const players = team1.checkIns.concat(team2.checkIns);
-
-      players.forEach( player => {
-        checkIns[player] = true;
-      })
-
-      return getCheckins([team1.info, team2.info])
-    })
-    .then(t => res.send({teams: t, gameId: id, checkIns}))
+  Season.remove({quarter:1, year:2016}).then(() =>
+    Season.find({players: { $in: [req.params.playerId] }})
+      .populate({path:'team', select:'name hockeyType'})
+      .select('-players -formerPlayers')
+      .sort({year:-1, quarter:-1})
+      .exec()
+      .then( seasons => res.send(seasons))
+      .catch( err => Promise.reject(String(err)))
+    )
 }
 
 
@@ -149,7 +142,7 @@ function fetchTeams(req, res, next) {
   })
 }
 
-Router.route('/test').get(f);
+Router.route('/test/:playerId').get(f);
 Router.route('/new').post(findGame);
 Router.route('/check-in').put(handleCheckIn);
 Router.route('/teams').get(fetchTeams);

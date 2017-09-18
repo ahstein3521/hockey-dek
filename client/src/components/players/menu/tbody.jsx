@@ -10,7 +10,7 @@ import filterProps from '../../utils/filterTableProps';
 
 const PlayerListTable = props => {
  
-  const { fetchPlayerDetails, ...player } = filterProps(props);
+  const { selectPlayer, ...player } = filterProps(props);
   
   return (
     <TableRow>
@@ -27,7 +27,7 @@ const PlayerListTable = props => {
         {player.phone}
       </TableRowColumn>               
       <TableRowColumn>
-        <span onClick={()=> fetchPlayerDetails(player)}>
+        <span onClick={()=> selectPlayer(player)}>
           <Link to={
             {
               pathname:'/players/profile',

@@ -6,6 +6,7 @@ const Player = mongoose.model('player');
 const { getPastSeasons } = require('./player/common');
 const getPlayerProfile = require("./aggregate/player-profile");
 
+const getBasicInfo = require('./player/basicInfo')
 const getPayments = require('./player/payments');
 const getSuspensions = require('./player/suspensions');
 const getCheckins = require('./player/games');
@@ -50,7 +51,7 @@ Router.route('/update')
 })
 
 
-Router.route('/fetch/:playerId/*').all(getPastSeasons);
+Router.route('/fetch/:playerId').get(getBasicInfo);
 Router.route('/fetch/:playerId/suspensions').get(getSuspensions);
 Router.route('/fetch/:playerId/payments').get(getPayments);
 Router.route('/fetch/:playerId/games').get(getCheckins); 

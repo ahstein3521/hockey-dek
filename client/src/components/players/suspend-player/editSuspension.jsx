@@ -11,16 +11,17 @@ const EditSuspensionForm = reduxForm({
 	form:'EditSuspensionForm',
 	onSubmit: editSuspension,
 	onSubmitSuccess: openSnackbar,
-	validate,
-	warn
+	validate
 })(SuspensionForm);
 
-const selector = getEditFormVals();
 
 function mapStateToProps(state, ownProps) {
-	const { initialValues, suspensions } = selector(state, ownProps); 
-	const showDeleteButton = true;
-	return { initialValues, suspensions, showDeleteButton };
+	const { location: { state: { record, season }}} = ownProps;
+	const initialValues = {
+		...record,
+		seasonDisplay: `${season.team} - ${season.displayName}`
+	};
+	return { initialValues, season }
 }
 
 function mapDispatchToProps(dispatch) {

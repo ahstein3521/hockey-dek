@@ -2,86 +2,70 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Season = mongoose.model('season');
 const Games = mongoose.model('game');
-const buildList = require('./common').buildList;
+const { sortBy, groupBy, sample, sampleSize } = require('lodash');
 
+const seedGames = require('./seed-games');
 
+const formatDate = d => {
+  let date = new Date(d);
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+}
 
-const getGames = playerId =>
-  
-  function(_seasons) {
-    playerId = ObjectId(playerId);
-    let sIds = [];
-    let seasons = [];
-
-    _seasons.forEach(({_doc}) => {
-      sIds.push(ObjectId(_doc._id))
-      seasons.push(_doc)
-    })
-
-    const query = {
-      $or: [
-        {'team1.info': {$in: sIds}}, 
-        {'team2.info': {$in: sIds}}
-      ]
-    }
-    return Games.aggregate([
-        { $match: query },
-        // { $sort: { $date: 1 }},
-        { $project: {
-          date: {$dateToString: { format: "%m-%d-%Y", date: "$date"}},
-          season: {
-            $cond: 
-              [
-                { $setIsSubset: [ ['$team1.info'], sIds ] },
-                  '$team1.info', '$team2.info'
-              ]
-          },
-          attended: { 
-            $or: [
-              { $setIsSubset: [[playerId], "$team1.checkIns"] },
-              { $setIsSubset: [[playerId], "$team2.checkIns"] },
-            ]
-          }}
-        },
-        { $group: {
-            _id: '$season',
-            games: {
-              $push: {
-                gameId: '$_id',
-                date: '$date',
-                attended: '$attended'
-              }
-            },
-            total: {
-              $sum: {$cond: ['$attended', 1, 0]}
-            }
-          }
-        }
-      ])
-      .exec()
-      .then(games => ({games, seasons}))
-  }
+// module.exports = (req, res) => {
+//   seedGames(req, res, 'clear')
+// }
 
 module.exports = function(req, res) {
+
   const { playerId } = req.params;
-  const processGames = getGames(playerId);
-  
-  Season.find({ $or: [
-      {players: { $in: [playerId] }}, 
-      {formerPlayers: { $in: [playerId]}}
+  const seasonNames = { 1: 'Winter', 2:'Spring', 3:'Summer', 4:'Fall' };
+
+  // mongoose.model('player').find({firstName: 'Mel'}).exec().then(x => res.send(x))
+  //seedGames(req, res);
+  Season.find({ $or: [ 
+    {players: { $in: [playerId] }}, 
+    {formerPlayers: { $in: [playerId]}}
     ]
   })
-  .populate('team')
-  .select('team quarter year')
-  .sort({year: -1, quarter:-1})
-  .exec()
-  .then(processGames)
-  .then(({games, seasons}) => {
-    const list = buildList(seasons)
-    games.forEach(game => list.addGame(game));
-    res.send(list.getList());
-      //res.send(games);
-  })
-  
+    .populate({path:'team', select:'name hockeyType'})
+    .populate({path: 'games'})
+    .select('-players -formerPlayers')
+    .sort({year:-1, quarter:-1})
+    .lean()
+    .exec()
+    .then(seasons => {
+      var seasonArray = []
+      for (var i = 0; i < seasons.length; i++) {
+        let { _id, formatted, games, team, quarter, year } = seasons[i];
+        let season = { 
+          _id, 
+          quarter, 
+          displayName: seasonNames[quarter] + ' ' + year,
+          year, 
+          team: team.name,
+          playerId, 
+          hockeyType: team.hockeyType,
+          games: [],
+          totalAttended: 0 
+        };
+
+        for (var j = 0; j < games.length; j++) {
+              
+          let _team = games[i].team1.info == _id? games[j].team1 : games[j].team2;
+          let checkins = _team.checkIns;
+          let attended = checkins.filter(v => v == playerId);
+          season.games.push({
+            date: formatDate(games[j].date),
+            ts: Date.parse(games[j].date),
+            info: team.info,
+            attended: Boolean(attended.length),
+          })
+          season.totalAttended += attended.length;
+        }
+        season.games = sortBy(season.games, 'ts');
+        seasonArray.push(season);
+      }
+      res.send(seasonArray);
+    })      
 } 
 

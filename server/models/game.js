@@ -39,5 +39,21 @@ const gameSchema = new Schema({
 // })
 )
 
+gameSchema.pre('save', function(next) {
+	if (this.isNew) {
+		const s1 = this.team1.info;
+		const s2 = this.team2.info;
+
+		mongoose.model('season')
+			.update({_id: {$in: [s1, s2]}}, { $push: { games: this._id }}, {multi: true })
+			.exec()
+			.then(res => { 
+				next()
+			})
+	} else {
+		next()
+	}
+})
+
 
 module.exports = mongoose.model('game',gameSchema)

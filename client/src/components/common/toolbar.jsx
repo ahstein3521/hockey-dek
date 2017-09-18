@@ -40,7 +40,7 @@ const map = {
   
   
   '/games':{
-    title:'Start a new game',
+    title:'GAME',
     component:<noScript/>
   },
 

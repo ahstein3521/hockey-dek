@@ -24,17 +24,25 @@ let PlayerForm = props => {
 
 	return(
 		<form 
-			style={style.form}
+			className='form'
 			onSubmit={handleSubmit}>
-			<div style={style.formRow}>
-				<Field label="First name" name="firstName" component={renderTextField} />
-				<Field label="Last name"  name="lastName"  component={renderTextField} />
+			<div className='form-row'>
+				<Field 
+					floatingLabelText="First name" 
+					name="firstName" 
+					component={TextField} 
+				/>
+				<Field 
+					floatingLabelText="Last name"  
+					name="lastName"  
+					component={renderTextField} 
+				/>
 			</div>
-			<div style={style.formRow}>
+			<div className='form-row'>
 				<Field label="Phone number" name="phone" component={renderTextField} />
 				<Field label="Email" name="email" component={renderTextField} />
 			</div>
-			<div style={style.formRow}>
+			<div className='form-row'>
 				<Field
 					floatingLabelText="Team"
 					name="team"
@@ -59,13 +67,20 @@ let PlayerForm = props => {
 					component={renderTextField} 
 				/>
 			</div>
-			<RaisedButton 
-				fullWidth={true}
-				primary={true}
-				label="Create Player"
-				type="submit"
-				{...style.submitBtn}
-			/>
+			<div className='btn-group'>
+				<RaisedButton 
+					primary={true}
+					label="Create Player"
+					type="submit"
+					className='form-btn'
+				/>
+				<RaisedButton
+					label='Clear'
+					className='form-btn'
+					secondary={true}
+					onTouchTap={props.reset}
+				/>
+			</div>
 		</form>
 	)
 }	
