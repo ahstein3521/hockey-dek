@@ -34,13 +34,13 @@
   "description": "Hockey League management app",
   "devDependencies": {
     "babel-core": "^6.22.1",
-    "babel-loader": "^6.2.10",
+    "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.1.8",
     "babel-preset-react": "^6.22.0",
     "css-loader": "^0.28.3",
-    "extract-text-webpack-plugin": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.0",
     "faker": "^4.1.0",
     "file-loader": "^0.11.1",
     "html-webpack-plugin": "^2.26.0",
@@ -48,7 +48,7 @@
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.8",
-    "webpack": "^2.2.0",
-    "webpack-dev-middleware": "^1.9.0"
+    "webpack": "^3.6.0",
+    "webpack-dev-middleware": "^1.12.0"
   }
 }

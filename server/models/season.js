@@ -13,7 +13,10 @@ const seasonSchema = new Schema({
 		max:4
 	},	
 	year: Number,
-	active: Boolean,
+	active: {
+		type: Boolean,
+		default:true
+	},
 	players:[{
 		type: Schema.Types.ObjectId, 
 		ref: 'player'
@@ -35,6 +38,32 @@ const seasonSchema = new Schema({
     setters: true,
   }
 });
+
+
+seasonSchema.pre('save', function(next) {
+	if (this.isNew) {
+		let _id = this._id;
+		let team = this.team;
+		let query = {
+			_id: { $ne: _id},
+			team: this.team,
+			active: true
+		};
+		mongoose.model('season')
+			.update(query, {$set: {active: false}}, { multi: true })
+			.exec()
+			.then(() => 
+				mongoose.model('team')
+					.findByIdAndUpdate(team, {$set: { currentSeason: _id}})
+					.exec()
+			)
+			.then(() => next())
+
+	} else {
+		return next()
+	}
+})
+
 
 const seasonArray = [null, 'Winter','Spring','Summer', 'Fall' ];
 

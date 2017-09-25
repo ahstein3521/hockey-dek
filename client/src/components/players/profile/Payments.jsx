@@ -10,17 +10,14 @@ import DollarIcon from 'material-ui/svg-icons/editor/attach-money';
 import Avatar from 'material-ui/Avatar';
 import { grey200 } from 'material-ui/styles/colors';
 
-function $format(num, withSymbol = true) {
-  const formattedVal = (num/100).toFixed(2);
+const $format = num => 
+  (num/100).toFixed(2);
 
-  if (withSymbol) {
-    return '  $' + formattedVal;
-  } 
-  return formattedVal;
-}
 
-const renderPaymentRows = ({openModal, index}, val, i) => {
- 
+
+const renderPaymentRows = ({openModal, index, season}, val, i) => {
+  const amount = $format(val.amount);
+  const initialValues = { ...val, amount, season, currAmount: amount };
   return (
     <ListItem
       key={i}
@@ -28,9 +25,9 @@ const renderPaymentRows = ({openModal, index}, val, i) => {
       primaryText={
         <span style={{display:'flex', justifyContent:'space-around'}}>
           <p>{val.date}</p>
-          <p>{$format(val.amount)}</p>
+          <p>{`$${amount}`}</p>
           <p>{val.type}</p>
-          <IconButton onTouchTap={() => openModal('EditPayment', {val, index, i} )}>
+          <IconButton onTouchTap={() => openModal('EditPayment', {initialValues, index, i} )}>
             <EditIcon/>
           </IconButton>
           <IconButton onTouchTap={() => openModal('DeletePayment', {val, index, i })}>
@@ -41,16 +38,17 @@ const renderPaymentRows = ({openModal, index}, val, i) => {
     />
   )
 }
-const renderCompedRows = ({openModal,index}, val, i) => {
-
+const renderCompedRows = ({openModal,index, season}, val, i) => {
+  const amount = $format(val.amount);
+  const initialValues = { ...val, amount, season, currAmount: amount };
   return (
     <ListItem
       key={i}
       primaryText={
         <span style={{display:'flex', justifyContent:'space-around'}}>
           <p>{val.date}</p>
-          <p>{$format(val.amount)}</p>
-          <IconButton onTouchTap={() => openModal('EditComp', {val, index, i })}>
+          <p>{`$${amount}`}</p>
+          <IconButton onTouchTap={() => openModal('EditCredit', {initialValues, index, i })}>
             <EditIcon/>
           </IconButton>
           <IconButton onTouchTap={() => openModal('DeletePayment', {val, index, i })}>
@@ -69,19 +67,19 @@ const renderCompedRows = ({openModal,index}, val, i) => {
 
 const PaymentList = props => {
 
-	let { payments = [], openModal } = props;
+	let { payments = [], openModal, playerId } = props;
 
   if (!payments) return <noScript/>
   
 	return (
   	<div style={{width:'90%', margin:'0 auto 20px', padding:10}}>	
   		{
-  			payments.map((val, i) => (
-          <Card season={val.season} key={i}>
+  			payments.map(({ season, ...val}, i) => (
+          <Card season={season} key={i} openModal={openModal} playerId={playerId}>
             <List>
               <ListItem
                 primaryText='Paid: '
-                secondaryText={$format(val.totalPaid, true)}
+                secondaryText={'$'+$format(val.totalPaid)}
                 style={{ backgroundColor: grey200 }}
                 leftAvatar={<Avatar icon={<DollarIcon/>}/>}
                 nestedItems={ val.totalPaid ?
@@ -100,7 +98,7 @@ const PaymentList = props => {
                         </span>
                       }
                     />,
-                    ...val.payments.map(renderPaymentRows.bind(null, { openModal, index:i}))
+                    ...val.payments.map(renderPaymentRows.bind(null, { openModal, index:i, season}))
                   ] : []
                 }
               />
@@ -127,7 +125,7 @@ const PaymentList = props => {
                         </span>
                       }
                     />,
-                    ...val.comps.map(renderCompedRows.bind(null, {openModal, index:i}))
+                    ...val.comps.map(renderCompedRows.bind(null, {openModal, index:i, season}))
                   ] : []
                 }                
               />
@@ -141,32 +139,3 @@ const PaymentList = props => {
 }
     
 export default PaymentList;
-
-
-    // <List>
-    //   {
-    //     comps.map((p,i) => (
-    //       <ListItem
-    //         key={i}
-    //           primaryText={
-    //             <span style={{display:'flex'}}>
-    //             <p>
-    //               <b> Date: </b>
-    //               {' '+p.date+' |  '}
-    //             </p>
-    //             <p style={{marginLeft:5}}>
-    //               <b> {' Amount:'}</b>
-    //               {' $'+(p.amount/100).toFixed(2)}
-    //             </p>              
-    //             </span>
-              
-    //           }
-    //           secondaryText={
-    //             <p>
-    //               <b>Reason: </b> {p.reason}
-    //             </p>
-    //           }
-    //       />
-    //     ))
-    //   }       
-    //   </List>

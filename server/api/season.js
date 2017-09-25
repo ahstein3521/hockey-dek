@@ -76,6 +76,25 @@ Router.route('/checkins')
 
   }) 
 
+Router.route('/fix').get((req, res) => {
+
+  mongoose.model('game').find({}).then(x => res.send(x))
+  // Season.remove({ quarter: 3, year: 2017 })
+  //   .then(() => {
+  //     Season.find({ quarter: 2, year: 2017 })
+  //       .exec()
+  //       .then((seasons) => {
+  //         seasons.forEach(({_id, team}) => {
+  //           Season.update({_id }, {active: true}).exec();
+  //           mongoose.model('team').update({_id: team}, {currentSeason: _id}).exec()
+  //         })
+  //         mongoose.model('game').remove({})
+  //         res.send('........reset')
+  //       })
+  //   })
+  })
+
+  
 
 //Update a teams roster
 // Router.route('/update/roster/:seasonId')

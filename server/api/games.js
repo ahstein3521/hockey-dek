@@ -142,7 +142,24 @@ function fetchTeams(req, res, next) {
   })
 }
 
-Router.route('/test/:playerId').get(f);
+function deleteGame(req, res) {
+  const { gameId } = req.params;
+  const query = { games: { $in: [gameId] }}
+  const update = {
+    $pull: {
+      games: gameId
+    }
+  };
+
+  Game.findByIdAndRemove(gameId)
+    .then(() =>
+      Season.update(query, update, {multi: true}).exec()
+    )
+    .then(data => res.send(data))
+    .catch(err => { throw err });
+}
+
+Router.route('/:gameId').delete(deleteGame);
 Router.route('/new').post(findGame);
 Router.route('/check-in').put(handleCheckIn);
 Router.route('/teams').get(fetchTeams);

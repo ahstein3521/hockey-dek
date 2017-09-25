@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -18,11 +19,10 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-          use: [
-            {loader: "style-loader"}, 
-            {loader: "css-loader" }, 
-            {loader: "sass-loader"}
-          ]
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'sass-loader']
+        })
       },      
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -34,6 +34,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'client/index.html'
-    })
+    }),
+    new ExtractTextPlugin('style.css')
   ]
 };

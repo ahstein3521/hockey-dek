@@ -11,8 +11,8 @@ import { suspendPlayer, openSnackbar } from '../../../actions/index';
 
 
 const SuspensionForm = props => {
-  const { season, openModal } = props;
-  console.log({ season })
+  const { openModal } = props;
+  
   return (
     <form onSubmit={props.handleSubmit} className="form">
       {
@@ -21,7 +21,10 @@ const SuspensionForm = props => {
           <FlatButton
             icon={<DeleteIcon/>}
             label="Delete"
-            onTouchTap={openModal.bind( null , props)}
+            onTouchTap={() => {
+              props.history.goBack();
+              openModal({view:'deleteSuspension' , data: props.initialValues})
+            }}
             secondary={true}
           />
         </div>
@@ -38,14 +41,14 @@ const SuspensionForm = props => {
       <div className="form-row">
         <Field
           autoOk={true}
-          name="startDate" 
+          name="start" 
           component={DatePicker}
           format={v => v? new Date(v) : new Date()}
           floatingLabelText="Start Date"
         />
         <Field
           autoOk={true}
-          name="endDate" 
+          name="end" 
           component={DatePicker}
           format={v => v? new Date(v) : new Date()}
           floatingLabelText="End Date"

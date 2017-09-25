@@ -4,10 +4,9 @@ import { reduxForm } from 'redux-form';
 import CreateTeamForm from './CreateTeam.jsx';
 import DeleteTeam from './deleteTeam.jsx';
 import SuspensionForm from './SuspensionForm.jsx';
-import PaymentForm from './UpdatePayment.jsx';
-import NewPaymentForm from './AddPayment.jsx';
+import { NewPaymentForm, EditPaymentForm } from './AddPayment.jsx';
 import PaymentHistory from '../common/paymentHistory.jsx';
-import NewCreditForm from './AddCreditForm.jsx';
+import { AddCreditForm, EditCreditForm } from './AddCreditForm.jsx';
 import CreditHistory from './CreditHistory.jsx';
 import RemovePlayer from './removePlayerFromTeam.jsx';
 
@@ -45,15 +44,15 @@ const mappings = {
 		onSubmit: null,
 		reduxFormName: 'SuspensionForm',
 	},
-	UpdatePayment: {
-		title: 'Update Payment',
-		Children: PaymentForm,
-		reduxFormName: 'UpdatePaymentForm'
-	},
 	NewPayment: {
 		title: 'New Payment',
 		Children: NewPaymentForm,
 		reduxFormName: 'NewPaymentForm'
+	},
+	EditPayment: {
+		title: 'Edit Payment',
+		Children: EditPaymentForm,
+		reduxFormName: 'EditPaymentForm'
 	},
 	DeletePayment: {
 		title: 'Delete payment?',
@@ -71,8 +70,13 @@ const mappings = {
 	},
 	NewCredit: {
 		title: 'New Credit',
-		Children: NewCreditForm,
+		Children: AddCreditForm,
 		reduxFormName: 'NewCreditForm'
+	},
+	EditCredit: {
+		title: 'Edit credit',
+		Children: EditCreditForm,
+		reduxFormName: 'EditCreditForm'
 	},
 	RemovePlayer: {
 		title: 'Remove from team',

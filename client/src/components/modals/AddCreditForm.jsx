@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { RadioButton } from 'material-ui/RadioButton'
 import { Field, reduxForm } from 'redux-form';
 import { TextField, SelectField, RadioButtonGroup } from 'redux-form-material-ui';
-import { processPayment, openSnackbar } from '../../actions/index';
+import { processPayment, openSnackbar, updatePayment } from '../../actions/index';
 import PaymentHistory from '../common/paymentHistory.jsx';
 import validate from '../utils/validation';
 
@@ -48,10 +48,15 @@ let CreatePaymentForm = props => {
 	)
 }
 
-export default reduxForm({
+export const AddCreditForm = reduxForm({
 	form:'NewCreditForm',
 	onSubmit: newCredit,
 	onSubmitSuccess: openSnackbar,
-})(CreatePaymentForm)
+})(CreatePaymentForm);
+
+export const EditCreditForm = reduxForm({
+	form: 'EditCreditForm',
+	onSubmit: updatePayment
+})(CreatePaymentForm);
 
 

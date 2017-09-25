@@ -10,6 +10,8 @@ import DropDowns from './dropdowns.jsx'
 import formatDate from '../../utils/formatDate';
 
 import CheckInList from '../checkin-list/index.jsx';
+import Toolbar from './toolbar.jsx';
+
 
 const validate = values => {
   const errors = {};
@@ -36,38 +38,41 @@ function getNextPage(form, dispatch, props) {
 const GameForm1 = props =>{
   const {handleSubmit} = props;
   return (
-    <form 
-      className="form"
-      onSubmit={handleSubmit}
-    >
-      <DropDowns/>
-      <div className='form-row'>
-        <Field
-          name="date" 
-          component={DatePicker}
-          format={null}
-          formatDate={formatDate}
-          autoOk={true} 
-          floatingLabelText="Game Date"
-        />
-        <Field
-          component={SelectField}
-          floatingLabelText="Hockey Type"
-          name="hockeyType"
-        >
-          <MenuItem primaryText="Dek" value="Dek"/>
-          <MenuItem primaryText="Roller" value="Roller"/>
-        </Field>
-      </div>
-      <div className="btn-group">    
-        <RaisedButton
-          type="submit"
-          label="Next"
-          className="form-btn"
-          primary={true}
-        />
-      </div>
-    </form>
+    <span>
+      <Toolbar title='Start a new game, or find an old one.'/>
+      <form 
+        className="form"
+        onSubmit={handleSubmit}
+      >
+        <DropDowns/>
+        <div className='form-row'>
+          <Field
+            name="date" 
+            component={DatePicker}
+            format={null}
+            formatDate={formatDate}
+            autoOk={true} 
+            floatingLabelText="Game Date"
+          />
+          <Field
+            component={SelectField}
+            floatingLabelText="Hockey Type"
+            name="hockeyType"
+          >
+            <MenuItem primaryText="Dek" value="Dek"/>
+            <MenuItem primaryText="Roller" value="Roller"/>
+          </Field>
+        </div>
+        <div className="btn-group">    
+          <RaisedButton
+            type="submit"
+            label="Next"
+            className="form-btn"
+            primary={true}
+          />
+        </div>
+      </form>
+    </span>  
   )
 }
 

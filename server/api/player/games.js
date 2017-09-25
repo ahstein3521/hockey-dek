@@ -9,61 +9,82 @@ const formatDate = d => {
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
 }
 
-// module.exports = (req, res) => {
-//   seedGames(req, res, 'clear')
-// }
+const seasonNames = ['', 'Winter', 'Spring', 'Summer', 'Fall'];
 
 module.exports = function(req, res) {
+  const playerId = ObjectId(req.params.playerId);
 
-  const { playerId } = req.params;
-  const seasonNames = { 1: 'Winter', 2:'Spring', 3:'Summer', 4:'Fall' };
-
-  // mongoose.model('player').find({firstName: 'Mel'}).exec().then(x => res.send(x))
-  //seedGames(req, res);
-  Season.find({ $or: [ 
-    {players: { $in: [playerId] }}, 
-    {formerPlayers: { $in: [playerId]}}
-    ]
-  })
-    .populate({path:'team', select:'name hockeyType'})
-    .populate({path: 'games'})
-    .select('-players -formerPlayers')
-    .sort({year:-1, quarter:-1})
-    .lean()
-    .exec()
-    .then(seasons => {
-      var seasonArray = []
-      for (var i = 0; i < seasons.length; i++) {
-        let { _id, formatted, games, team, quarter, year } = seasons[i];
-        let season = { 
-          _id, 
-          quarter, 
-          displayName: seasonNames[quarter] + ' ' + year,
-          year, 
-          team: team.name,
-          playerId, 
-          hockeyType: team.hockeyType,
-          games: [],
-          totalAttended: 0 
-        };
-
-        for (var j = 0; j < games.length; j++) {
-              
-          let _team = games[i].team1.info == _id? games[j].team1 : games[j].team2;
-          let checkins = _team.checkIns;
-          let attended = checkins.filter(v => v == playerId);
-          season.games.push({
-            date: formatDate(games[j].date),
-            ts: Date.parse(games[j].date),
-            info: team.info,
-            attended: Boolean(attended.length),
-          })
-          season.totalAttended += attended.length;
-        }
-        season.games = sortBy(season.games, 'ts');
-        seasonArray.push(season);
+  Season.aggregate([
+    { $match: 
+      { $or: [
+        { players: {$in: [ playerId ]}},
+        { formerPlayers: { $in: [ playerId ]}}
+        ]
       }
-      res.send(seasonArray);
-    })      
-} 
+    },
+  {$unwind: '$games'},
+  { $lookup: { 
+    from:"games", 
+    localField:"games", 
+    foreignField:"_id", 
+    as:"games" }},
+  { $unwind: '$games' },
+  { $project: 
+    { 
+      quarter: 1,
+      year: 1,
+      team: 1,
+      displayName: {
+        $concat: [
+          { $arrayElemAt: [['', 'Winter', 'Spring', 'Summer', 'Fall'], '$quarter']},
+          ' ',
+          { $substr: ['$year', 0, -1]}
+        ]
+      },      
+      date: {$dateToString: { format: "%m-%d-%Y", date: "$games.date" }},
+      gameId: '$games._id',
+      attended: {
+        $or: [
+          { $setIsSubset: [[playerId], "$games.team1.checkIns"] },
+          { $setIsSubset: [[playerId], "$games.team2.checkIns"] },
+        ]
+      }
+    }
+  },
+  { $group:
+    {
+      _id: '$_id',
+      season: {
+        $first: {
+          team: '$team',
+          'quarter': '$quarter',
+          'year': '$year',
+          displayName: '$displayName',
+          _id: '$_id' 
+        } 
+      },
+      records: {
+        $push: {
+          date: '$date',
+          attended: '$attended'
+        }
+      },
+      totalAttended: { $sum: { $cond: ['$attended', 1, 0]}}
+    }
+  },
+  {$lookup: {from:"teams", foreignField:'_id', localField:'season.team', as:'season.team' }},
+  {$addFields: 
+    {
+      'season.team': {$arrayElemAt: ['$season.team', 0] }
+    }
+  },
+  {$addFields: 
+    {
+      'season.team': '$season.team.name',
+      'season.hockeyType': '$season.team.hockeyType'
+    }
+  }
+  ]).exec()
+  .then(x => res.send(x))
+}
 

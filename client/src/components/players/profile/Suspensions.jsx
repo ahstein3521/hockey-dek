@@ -10,22 +10,27 @@ import formatDate from '../../utils/formatDate';
 
 import { Link } from 'react-router-dom';
 
+const makeDate = d => {
+  d = new Date(d);
+  return `${d.getMonth() + 1} / ${d.getDate()} / ${d.getFullYear()}`;
+}
+
 const makeRouteConfig = subtitle =>
-  function({ record={}, season }, formType) {
+  function({ record={}, season,  playerId, index, i }, formType) {
     const routes = {
       newForm: { 
         pathname: '/players/suspension/new',
-        state: { title: 'New Suspension', subtitle, season } 
+        state: { title: 'New Suspension', subtitle, season, playerId } 
       },
       editForm: {
         pathname: `/players/suspension/edit/${record._id}`,
-        state: { title: 'Edit Suspension', subtitle, record, season }
+        state: { title: 'Edit Suspension', subtitle, record, season, index, i }
       }
     }
     return routes[formType];
   }
 
-const SuspensionList = ({suspensions, playerName, season}) => {
+const SuspensionList = ({suspensions, playerName, playerId, season}) => {
   if (!suspensions) return <noScript />;
 	
   const configRoute = makeRouteConfig(playerName);
@@ -33,7 +38,7 @@ const SuspensionList = ({suspensions, playerName, season}) => {
   return(
 		<div style={{width:'90%', margin:'0 auto 20px', paddingBottom:10}}>
       <div className='btn-group'>
-        <Link to={configRoute({ season }, 'newForm')}>
+        <Link to={configRoute({ season, playerId }, 'newForm')}>
           <RaisedButton
             secondary={true}
             icon={<SadIcon/>}
@@ -42,21 +47,20 @@ const SuspensionList = ({suspensions, playerName, season}) => {
         </Link>
       </div> 		
 			{
-				suspensions.map(({records = [] },i) => {
-          if (!records.length) return <noScript key={i}/>
-
+				suspensions.map(({records = [], season },index) => {
+        
           return (
-            <Card season={season} key={i}>
+            <Card season={season} key={index}>
               <List>
               {
                 records.map((record, i) => (
                   <ListItem 
                     key={i}
-                    primaryText = {`FROM: ${record.start} , UNTIL: ${record.end}`}
+                    primaryText = {`FROM: ${makeDate(record.start)} , UNTIL: ${makeDate(record.end)}`}
                     rightIconButton = {
                       <IconButton 
                         containerElement={
-                          <Link to={configRoute({record, season}, 'editForm')}/>
+                          <Link to={configRoute({record, season, index, i}, 'editForm')}/>
                         }
                         tooltip="Edit?"
                         >

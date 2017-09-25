@@ -18,7 +18,7 @@ const app = express();
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(MONGO_URI);
+mongoose.connect(MONGO_URI, { useMongoClient: true });
 mongoose.connection
     .once('openUri', () => console.log('Connected to MongoDB'))
     .on('error', error => console.log('Error connecting to MongoDB:', error));
@@ -36,14 +36,11 @@ app.use(session({
   })
 }));
 
-if (process.env.NODE_ENV === 'dev') {
+
   
-  const webpackMiddleware = require('../webpack.dev.middleware');
-  app.use(webpackMiddleware);
-}
-else{
-  app.use('/', express.static(path.join(__dirname, '../dist')));
-}
+const webpackMiddleware = require('../webpack.dev.middleware');
+
+app.use(webpackMiddleware);
 
 
 app.use(passport.initialize());

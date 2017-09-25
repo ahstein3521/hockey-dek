@@ -69,12 +69,11 @@ export function buildNewSeason(vals, dispatch, props) {
 		}
 	});
 
-
+	dispatch({ type: 'SET_LOAD_STATE', payload: true })
 	axios.post('/season/create', { seasons, gameSeasons, players: _players })
 		.then(({data}) => {
 			const gameDate = formatDate(date);
-				console.log(data,'data');
-
+				
 				if (data[0]._id == team1._id) {
 					team1 = { ...team1, ...data[0] };
 					team2 = { ...team2, ...data[1] };
@@ -82,25 +81,37 @@ export function buildNewSeason(vals, dispatch, props) {
 				else {
 					team1 = { ...team1, ...data[1] }
 					team2 = { ...team2, ...data[0] }					
-				}				
+				}
 
-				dispatch({ 
-					type: 'FETCH_CHECKIN_LIST', 
-					payload: { 
-						team1,
-						team2,
-						quarter,
-						year, 
-						gameDate
+
+				props.history.push('/games/check-in');				
+				const body = {
+					game: {
+						team1: {info: team1._id}, 
+						team2: {info:team2._id}, 
+						date: Date.parse(date)
 					}
-				})
-
-				props.history.push({
-					pathname: '/games/check-in',
-					state: { 
-						title: `New ${hockeyType} Game`, 
-						subtitle: gameDate,
-					}					
-				})
+				};			
+				axios.post('/game/new', body)
+					.then( ({data}) => {
+				
+						dispatch({ 
+							type: 'FETCH_CHECKIN_LIST', 
+								payload: { 
+									team1: data.teams[0],
+									team2: data.teams[1],
+									gameId: data.gameId,
+									checkIns: data.checkIns,
+									quarter,
+				 					year,
+									gameDate 
+								}
+							})
+						}
+					)
+				.then(() => dispatch({type:'SET_LOAD_STATE', payload: false}))
+				.catch(err => console.log({error: err}))
 		})
 }
+
+	

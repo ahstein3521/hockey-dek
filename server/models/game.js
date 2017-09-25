@@ -23,21 +23,20 @@ const gameSchema = new Schema({
 		checkIns:[{
 			type: Schema.Types.ObjectId, ref: 'player' 
 		}]	
-	},	
-}
-// {
-// 	  toJSON: {
-//   	virtuals:true,
-//     getters: true,
-//     setters: true,
-//   },
-//   toObject: {
-//   	virtuals:true,
-//     getters: true,
-//     setters: true,  	
-//   }
-// })
-)
+	}
+},	
+	{
+	  toJSON: {
+  	virtuals:true,
+    getters: true,
+    setters: true,
+  },
+  toObject: {
+  	virtuals:true,
+    getters: true,
+    setters: true,  	
+  }
+});
 
 gameSchema.pre('save', function(next) {
 	if (this.isNew) {
@@ -54,6 +53,30 @@ gameSchema.pre('save', function(next) {
 		next()
 	}
 })
+
+gameSchema.virtual('checkIns')
+	.get(function() {
+		return this.team1.checkIns.concat(this.team2.checkIns)
+	})
+
+gameSchema.statics.createRecord = function(gameId, playerId) {
+	const _this = this;
+
+	const formatDate = d => {
+  	let date = new Date(d);
+  	return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+	}
+
+	return this.findById(gameId)
+		.exec()
+		.then(function(game) {
+			console.log({game})
+			return {
+				attended: game.checkIns.includes(playerId),
+				date: formatDate(game.date),
+			}
+		})
+};
 
 
 module.exports = mongoose.model('game',gameSchema)

@@ -15,6 +15,7 @@ export default function(playerId, dispatch, getState) {
 	axios.get(route)
 		.then(({data}) => {
 			const [season, player] = data;
+			console.log({ season, player });
 			let payload = {
 				teamList: teams,
 				basicInfo:{
@@ -25,6 +26,8 @@ export default function(playerId, dispatch, getState) {
 						team: season && season.team? season.team.name : '',
 						hockeyType: season && season.team? season.team.hockeyType : '',
 						displayName: season ? season.formatted: '',
+						quarter: season ? season.quarter : -1,
+						year: season? season.year: -1,
 						_id: season? season._id : 'Inactive'
 					}
 				},
@@ -32,7 +35,7 @@ export default function(playerId, dispatch, getState) {
 				games: null,
 				payments: null
 			};
-			console.log('payload', payload);
+			
 			dispatch({ type: 'SELECT_PLAYER', payload })
 			dispatch({ type: 'SET_LOAD_STATE',  payload: false })
 		}).catch(err => console.warn(err))

@@ -1,13 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
-function priceSetter(val) {
-	if (typeof val === 'number') {
-		return val;
-	} else {
-		return parseInt(val.substr(1)) * 100;
-	}
-}
+
 //This schema will only be embedded within the playerScema
 
 
@@ -18,9 +12,7 @@ const paymentSchema = new Schema({
 	},
 	amount:{
 		type:Number,
-		default: 0,
-		get: v => "$" + (v/100).toFixed(2),
-		set: priceSetter	
+		default: 0	
 	}, 
 	year: Number,
 	quarter: {

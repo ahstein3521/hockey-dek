@@ -13,7 +13,7 @@ export default class GamesList extends Component{
 				games.map((val ={}, i) => (
 					<SeasonCard 
 						key={i}
-						season={{team: val.team, hockeyType: val.hockeyType, displayName:val.displayName}}
+						season={val.season}
 					>
 						<table >
             	<thead>
@@ -24,7 +24,7 @@ export default class GamesList extends Component{
             	</thead>
             	<tbody>
             	{
-              	val.games.map(({date, attended},j) => (
+              	val.records.map(({date, attended},j) => (
                 	<tr key={j}>
                   	<td>{date}</td>
                   	<td>{attended? 'Yes' : 'No'}</td>

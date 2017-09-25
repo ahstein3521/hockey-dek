@@ -16,8 +16,15 @@ const suspensionSchema = new Schema({
 	start:Date,
 	end:Date,
 	reason:String,
-	season:Schema.Types.ObjectId,
-});
+	quarter: Number,
+	year: Number
+},
+{ 
+	toJSON: {
+		getters: true,
+		setters: true,
+	}}
+);
 
 const nameFormat = {
 	type:String,

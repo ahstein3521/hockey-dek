@@ -17,7 +17,7 @@ const teamSchema = new Schema({
 	currentSeason: {
 		type:Schema.Types.ObjectId,
 		ref:'season'
-	}
+	},
 })
 
 teamSchema.plugin(titleCase, {fields: ['name']});

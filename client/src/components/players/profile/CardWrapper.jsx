@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
-
+import AddPaymentIcon from 'material-ui/svg-icons/editor/attach-money';
+import AddCompIcon from 'material-ui/svg-icons/action/payment';
 
 import { primary3Color } from '../../../../theme';
 
@@ -19,7 +20,11 @@ export default class SeasonCard extends Component {
 
   render() {
     if (!this.props.season) return <noScript/>
-    const {season: { team, hockeyType, displayName }} = this.props;
+    const {season: { team , hockeyType, displayName, quarter, year }, openModal, playerId} = this.props;
+    let initialValues = { year, quarter, playerId };
+
+    const title = team? `${team}, ${hockeyType}` : displayName;
+    const subtitle = team? displayName : '';
     return (
       <Card 
         style={{marginTop:20}}
@@ -28,11 +33,26 @@ export default class SeasonCard extends Component {
       >
         <CardHeader
           style={{backgroundColor: primary3Color }}
-          title={`${team}, ${hockeyType}`}
-          subtitle={displayName}
+          title={title}
+          subtitle={subtitle}
           actAsExpander={true}
           showExpandableButton={true}
         />
+        {
+          openModal && 
+          <CardActions>
+              <FlatButton 
+                label='Add a new payment'
+                icon={<AddPaymentIcon/>}
+                onTouchTap={() => openModal('NewPayment', { initialValues })}
+              />
+              <FlatButton
+                label='Add a new credit'
+                icon={<AddCompIcon/>}
+                onTouchTap={() => openModal('NewCredit', { initialValues })}
+              />         
+          </CardActions>
+        }
         <CardText expandable={true}>
           {this.props.children}
         </CardText>

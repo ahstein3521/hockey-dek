@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import GameForm from '../new-game-form/page1.jsx';
-import { addPlayerToGame, selectGameTab, fetchRosters } from '../../../actions/index';
+import { addPlayerToGame, selectGameTab, fetchRosters, startNewGame, deleteGame } from '../../../actions/index';
 import { ListOne, ListTwo } from './teamTable.jsx';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { Route } from 'react-router-dom';
 import AutoComplete from './addPlayer.jsx';
-import axios from 'axios';
+import Toolbar from './toolbar.jsx';
+import CircularProgress from 'material-ui/CircularProgress';
 
 class TeamLists extends Component {
 
@@ -52,13 +53,28 @@ class TeamLists extends Component {
 	}
 
 	render() { 
-		const { selectedTab, isLoading, team1, team2, gameId, history, location, match } = this.props;
+		const { 
+			selectedTab, 
+			isLoading,
+			gameDate, 
+			team1, 
+			team2, 
+			gameId, 
+			history, 
+			location, 
+			reset,
+			deleteGame,
+			match 
+		} = this.props;
 		const routerProps = { history, location, match };
 		const { availablePlayers } = this.state;
 		
+		if (isLoading) return <CircularProgress />;
 		if (!gameId) return <GameForm {...routerProps} />;
-
+		
 		return (
+			<span>
+			<Toolbar title={gameDate} deleteGame={deleteGame.bind(null, gameId)} reset={reset}/>
 			<Tabs 
 				onChange={this.handleChange}
 				value={selectedTab}
@@ -98,6 +114,7 @@ class TeamLists extends Component {
 					</span>
 				</Tab>
 			</Tabs>
+			</span>
 		)
 	}
 }	
@@ -113,7 +130,13 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ addPlayerToGame, selectGameTab, fetchRosters }, dispatch);
+	return bindActionCreators({ 
+		reset: startNewGame,
+		deleteGame,
+		addPlayerToGame, 
+		selectGameTab, 
+		fetchRosters 
+	}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeamLists);

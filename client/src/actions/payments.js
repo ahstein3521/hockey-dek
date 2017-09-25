@@ -8,6 +8,11 @@ import {
 
 export function processPayment(kind) {
 	return function(values, dispatch) {
+
+		if (!values.season) {
+			return newPayment(values, dispatch, kind);
+		}
+
 		const url = `${ROOT_URL}/player/update`;
 
 		const { _id, season, context } = values; 
@@ -93,66 +98,49 @@ export function deletePayment({val, index, i}) {
 }
 
 
-export function newPayment(values, dispatch) {
-	const url = `${ROOT_URL}/player/update`;
-	const { _id, season, paymentType, context } = values; 
-	const { quarter, year, team } = season;
+export function newPayment(values, dispatch, kind) {
+	const url = `${ROOT_URL}/player/payment/${values.playerId}`;
+
+
 	const amount = parseFloat(values.amount) * 100;
 	const payment = { 
 		amount, 
-		paymentType, 
-		quarter, 
-		year, 
-		kind: 'payment'
+		kind,
+		reason: values.reason,
+		paymentType: values.type, 
+		quarter: values.quarter, 
+		year: values.year,		 
 	};
 
-	const query = { _id };
-	const update = {
-		$push: { payments: payment }
-	}
 	dispatch({type: 'CLOSE_MODAL'});
 
-	axios.put(url, { query, update })
-		.then(() => {
-			if (context === 'game') {
-				dispatch({
-					type: 'GAMETIME_PAYMENT',
-					category: 'paid',
-					playerId: _id,
-					team,
-					payment
-				})
-			}			
-		})
+	axios.put(url, payment)
+		.then(({data}) => 
+			dispatch({ type: 'ADD_PAYMENT', payment: data })
+		)
 }
 
 
 export function updatePayment(form, dispatch, props){
 	const url = `${ROOT_URL}/player/update`;
-	const { payments } = props;
+
 	const amount = parseFloat(form.amount) * 100;
 
 	const query = { 'payments._id' : form._id };
 	const update = { 
 		$set: { 
 			'payments.$.amount': amount,
-			'payments.$.paymentType': form.paymentType 
+			'payments.$.paymentType': form.type 
 		}
 	};
 
-	for (let i = 0; i < payments.length; i++) {
-		if (payments[i].record._id === form._id) {
-			payments[i].record = { ...form, amount };
-			break;
-		}
-	}
 
 	axios.put(url, { query, update })
-		.then(({data}) => 
+		.then(() => 
 			dispatch({
-				type: UPDATE_PLAYER_INFO, 
-				payload: payments, 
-				category: 'payments'
+				type: 'EDIT_PAYMENT', 
+				payment: {...form, amount },
+				paymentIndex: [props.index, props.i]
 			})
 		).then(() => dispatch({ type: 'CLOSE_MODAL' }))
 

@@ -42,13 +42,18 @@ class PlayerTabs extends Component{
             <CheckIns games={player.games}/>
           </Tab>        
           <Tab label="Payments" style={styles.tab} value={3}>
-            <PaymentList payments={player.payments} openModal={openModal}/>
+            <PaymentList 
+              playerId={player.basicInfo._id}
+              payments={player.payments} 
+              openModal={openModal}
+            />
           </Tab>
           <Tab label="Suspensions" style={styles.tab} value={4}>
             <Suspensions 
               suspensions={player.suspensions}
               playerName={player.basicInfo.fullName} 
               season={player.basicInfo.season} 
+              playerId={player.basicInfo._id}
             />
           </Tab>        
         </Tabs>

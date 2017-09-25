@@ -102,20 +102,21 @@ export function fetchRosters(form, dispatch, { history }) {
 	
 }
 
-// export function fetchRosters(data) {
-// 	return { 
-// 		type: 'FETCH_CHECKIN_LIST', 
-// 		payload: { 
-// 			team1: data.teams[0],
-// 			team2: data.teams[1],
-// 			quarter: data.teams[0].quarter,
-// 			year: data.teams[0].year,
-// 			gameId: data.gameId,
-// 			checkIns: data.checkIns, 
-// 			gameDate: formatDate(new Date()) 
-// 		}
-// 	}	
-// }
+export function startNewGame() {
+	return { type: 'START_NEW_GAME' };
+}
+
+export function deleteGame(gameId) {
+	const route = `${ROOT_URL}/game/${gameId}`;
+
+	return dispatch => {
+		axios.delete(route)
+			.then(() => 
+				dispatch({ type: 'START_NEW_GAME' }))
+			.catch(e => console.warn({ error: e }))
+	}
+
+}
 
 export function addPlayerToGame(playerId, season, teams) {
 

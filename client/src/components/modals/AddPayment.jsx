@@ -5,8 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { RadioButton } from 'material-ui/RadioButton'
 import { Field, reduxForm } from 'redux-form';
 import { TextField, SelectField, RadioButtonGroup } from 'redux-form-material-ui';
-import { processPayment, openSnackbar } from '../../actions/index';
-import PaymentHistory from '../common/paymentHistory.jsx';
+import { processPayment, openSnackbar, updatePayment } from '../../actions/index';
 import validate from '../utils/validation';
 
 const normalize = (val, prevVal) => {
@@ -30,12 +29,13 @@ let CreatePaymentForm = props => {
 		<form onSubmit={props.handleSubmit} className="form">
 			<div className="form-row">
 				<Field
-					name="paymentType"
+					name="type"
 					component={SelectField}
 					floatingLabelText="Payment Type"
 				>
 					<MenuItem value="Cash" primaryText="Cash"/>
 					<MenuItem value="Check" primaryText="Check"/>
+					<MenuItem value="Debit Card" primaryText="Debit Card"/>
 					<MenuItem value="Credit Card" primaryText="Credit Card"/>
 				</Field>
 				<div>
@@ -53,9 +53,15 @@ let CreatePaymentForm = props => {
 	)
 }
 
-export default reduxForm({
+export const EditPaymentForm = reduxForm({
+	form: 'EditPaymentForm',
+	onSubmit: updatePayment
+})(CreatePaymentForm);
+
+
+export const NewPaymentForm = reduxForm({
 	form:'NewPaymentForm',
 	onSubmit: newPayment,
 	onSubmitSuccess: openSnackbar
-})(CreatePaymentForm)
+})(CreatePaymentForm);
 

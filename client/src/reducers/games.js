@@ -1,5 +1,3 @@
-// import { TOGGLE_MENU } from '../actions/constants';
-import { combineReducers } from 'redux';
 
 const defaultState = {
 	availableTeams: [],
@@ -9,6 +7,7 @@ const defaultState = {
 	team1: {team: {name: null}},
 	team2: {team: {name: null}}
 }
+//const defaultState1 = JSON.parse(localStorage.getItem('game'));
 
 function removePlayer(state, action) {
 	const { team1, team2 } = state;
@@ -31,11 +30,14 @@ export default function (state = defaultState, action) {
 
 	switch (action.type) {
 
+	case 'START_NEW_GAME':
+		return defaultState;
 
 	case 'FETCH_AVAILABLE_TEAMS':
 		return {...state, availableTeams: action.payload };
 	
 	case 'FETCH_CHECKIN_LIST':	
+		// localStorage.setItem('game', JSON.stringify({...state, ...action.payload}))
 		return { ...state, ...action.payload };
 
 	case 'REMOVE_PLAYER_FROM_GAME':

@@ -3,9 +3,6 @@ const Router = express.Router();
 const mongoose = require('mongoose')
 const Player = mongoose.model('player');
 
-const { getPastSeasons } = require('./player/common');
-const getPlayerProfile = require("./aggregate/player-profile");
-
 const getBasicInfo = require('./player/basicInfo')
 const getPayments = require('./player/payments');
 const getSuspensions = require('./player/suspensions');
@@ -48,8 +45,42 @@ Router.route('/update')
       .exec()
       .then(() => res.send(update))
       .catch(error => res.send({error:error}))
-})
+});
 
+Router.route('/payment/:playerId')
+  .put((req, res) => {
+    const { playerId } = req.params;
+
+    Player.findById(playerId)
+      .exec()
+      .then(player => player.payments.create(req.body))
+      .then(payment => res.send(payment))
+      .catch(e => res.send({ error: e }))
+  });  
+
+Router.route('/suspension/:playerId')  
+  .put((req, res) => {
+    const { playerId } = req.params;
+
+    Player.findById(playerId)
+      .exec()
+      .then(player => {
+        player.suspensions.push(req.body);
+        player.markModified('suspensions')
+        return player.save()
+      })
+      .then(player => {
+        const suspension = player.suspensions.pop();
+        res.send(suspension);
+      })
+      .catch(e => res.send({ error: e }))
+  }); 
+
+Router.route('/all/:playerId').get((req, res) => {
+    const { playerId } = req.params;
+
+    Player.findById(playerId).exec().then(x => res.send(x))
+})  
 
 Router.route('/fetch/:playerId').get(getBasicInfo);
 Router.route('/fetch/:playerId/suspensions').get(getSuspensions);
