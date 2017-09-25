@@ -47,6 +47,7 @@
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.1",
+    "uglify-js": "^2.8.29",
     "url-loader": "^0.5.8",
     "webpack": "^3.6.0",
     "webpack-dev-middleware": "^1.12.0"
