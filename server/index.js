@@ -37,10 +37,13 @@ app.use(session({
 }));
 
 
-  
-const webpackMiddleware = require('../webpack.dev.middleware');
+if (process.env.NODE_ENV === 'dev') {
+  const webpackMiddleware = require('../webpack.dev.middleware');
 
-app.use(webpackMiddleware);
+  app.use(webpackMiddleware);
+} else {
+  app.use('/', express.static(path.join(__dirname, '../dist')));
+}
 
 
 app.use(passport.initialize());
