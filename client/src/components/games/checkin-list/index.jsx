@@ -31,6 +31,8 @@ class TeamLists extends Component {
 
 		this.setState({ availablePlayers: arr });
 	}
+
+
 	addPlayer = player => {
 		
 		const { selectedTab, quarter, year, team1, team2 } = this.props;
@@ -82,7 +84,7 @@ class TeamLists extends Component {
 				<Tab label={team1.team.name} value={1}>
 					<span>
 					{
-						selectedTab === 1 && 
+						(selectedTab === 1 || selectedTab === 1.5) && 
 							<span>
 							<AutoComplete 
 								team={team1}
@@ -99,7 +101,7 @@ class TeamLists extends Component {
 				<Tab label={team2.team.name} value={2}>
 					<span>				
 					{
-						selectedTab === 2 && 
+						(selectedTab === 2 || selectedTab === 2.5) && 
 							<span>
 								<AutoComplete 
 									addPlayer={this.addPlayer}

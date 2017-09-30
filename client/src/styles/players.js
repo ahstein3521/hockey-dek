@@ -33,18 +33,3 @@ export const tabStyles = {
     background:accent2Color, 
   }  
 };
-
-export const basicInfoStyle = {
-  submitBtn:{
-    style:{marginTop:40},
-  },
-  formRow:{
-    display:'flex',
-    justifyContent:'space-around'
-  },
-  form:{
-    width:'80%',
-    margin:'10px auto',
-    padding: 10
-  }  
-}

@@ -22,6 +22,16 @@ module.exports = ([team1, team2], isNew = false) => {
       team: '$team'              
     },
     _id: '$players._id',
+    waivers: '$players.waivers',
+    waiver: {
+      $filter: {
+        input: '$players.waivers',
+        as: 'val',
+        cond: {
+          $eq: ['$$val.year', '$year']
+        }
+      }
+    },
     fullName:{$concat:['$players.lastName',', ','$players.firstName']},
       jerseyNumber:'$players.jerseyNumber',
       suspended: {
@@ -52,6 +62,7 @@ module.exports = ([team1, team2], isNew = false) => {
         team: '$team'           
       },
       _id: '$players._id',
+       waivers: '$players.waivers',
       fullName:{$concat:['$players.lastName',', ','$players.firstName']},
       jerseyNumber:'$players.jerseyNumber',
       suspended: {
@@ -68,6 +79,15 @@ module.exports = ([team1, team2], isNew = false) => {
           }
         }                                  
       },
+    waiver: {
+      $filter: {
+        input: '$players.waivers',
+        as: 'val',
+        cond: {
+          $eq: ['$$val.year', '$year']
+        }
+      }
+    },      
       payments: {
           $filter: {
             input: "$players.payments",
@@ -101,6 +121,7 @@ module.exports = ([team1, team2], isNew = false) => {
               season: "$player.season",
               fullName:"$player.fullName",
               jerseyNumber: "$player.jerseyNumber",
+              waiver: '$player.waiver',
               suspended:"$player.suspended",
               totals: {
                 paid:0,
@@ -164,6 +185,7 @@ module.exports = ([team1, team2], isNew = false) => {
           $push: {
             _id: "$_id",
             season: "$player.season",
+            waiver: '$player.waiver',
             fullName:"$player.fullName",
             jerseyNumber: "$player.jerseyNumber",
             suspended:"$player.suspended",

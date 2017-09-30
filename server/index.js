@@ -54,7 +54,7 @@ app.use('/player',Routes.player);
 app.use('/team', Routes.team);
 app.use('/season', Routes.season);
 app.use('/game', Routes.game);
-
+app.use('/waiver', Routes.waiver);
 app.get("*", function(req,res){
 	res.redirect("/");
 })

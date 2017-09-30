@@ -1,9 +1,11 @@
+const express = require('express');
+const Router = express.Router();
 const mongoose = require('mongoose');
 const Player = mongoose.model('player');
 
-exports.processOnlineWaiver = function(req, res) {
-	const { firstName, lastName, email } = req.body;
+const processOnlineWaiver = function(req, res) {
 	
+	const { firstName, lastName, email } = req.body;
 	const now = new Date()
 	const year = now.getFullYear();
 	
@@ -14,9 +16,9 @@ exports.processOnlineWaiver = function(req, res) {
 	}
 
 	const query = {
-		firstName: new RegExp(firstName, 'i'),
-		lastName: new RegExp(lastName, 'i'),
-		email: new RegExp(email, 'i')
+		firstName: new RegExp(firstName, 'gi'),
+		lastName: new RegExp(lastName, 'gi'),
+		email: new RegExp(email, 'gi')
 	};
 
 	Player.findOne(query)
@@ -37,31 +39,49 @@ exports.processOnlineWaiver = function(req, res) {
 } 
 
 
-exports.handleCheckWaiver = function(req, res) {
-	const { playerId } = req.body;
-	const now = new Date();
-
-	const waiver = { 
-		year: now.getFullYear(),
-		format: 'paper',
-		createdAt: now
+const handleCheckWaiver = function(req, res) {
+	const { playerId, year } = req.body;
+	
+	const query = { _id: playerId };
+	const update = {
+		$push: {
+			waivers: {
+				year,
+				format: 'paper',
+				createdAt: Date.now()
+			}
+		} 
 	}
 
-	Player.findByIdAndUpdate(playerId, { $push: { waivers: waiver }})
+	Player.update(query, update)
 		.exec()
-		.then(() => res.send('OK').status(200))
-		.catch((err) => throw err)
+		.then(() =>
+			Player.findById(playerId)
+				.select({waivers: { $elemMatch: {year}}})
+				.exec()
+				.then(x => res.send(x))
+				.catch(e => res.send(e).status(500))
+
+		)
 }
 
-exports.handleUncheckWaiver = function(req, res) {
+const handleUncheckWaiver = function(req, res) {
 	const { waiverId, playerId } = req.body;
 
+	const update = { $pull: { waivers: { _id: waiverId }}};
 
-
-	Player.findByIdAndUpdate(playerId, { $pull: { waivers: { _id: { $in: [waiverId]}}}})
+	Player.findByIdAndUpdate(playerId, update)
 		.exec()
 		.then(() => res.send('OK').status(200))
-		.catch((err) => throw err)
-
+		.catch((err) => { throw err })
 }
 
+
+Router.route('/')
+	.post(processOnlineWaiver)
+	.put(handleCheckWaiver);
+
+Router.route('/remove').put(handleUncheckWaiver);
+
+
+module.exports = Router;

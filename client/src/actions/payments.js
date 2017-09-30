@@ -43,7 +43,7 @@ export function processPayment(kind) {
 			.then(() => axios.get(url2))
 			.then(res => {
 				const { players, totalComped, totalPaid } = res.data[0];
-				console.log({ team, r: res.data[0]})
+			
 				dispatch({
 					type: 'UPDATE_GAME_PAYMENT',
 					payload: {

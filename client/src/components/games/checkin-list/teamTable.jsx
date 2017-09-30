@@ -2,7 +2,7 @@ import React from 'react';
 
 import smartTable from '../../../hoc/smartTable.jsx';
 import TableBody from './tbody.jsx';
-import { openModal, removePlayerFromGame, handleCheckIn } from '../../../actions/index';
+import { openModal, removePlayerFromGame, handleCheckIn, checkWaiverAtGame  } from '../../../actions/index';
 
 const headings = [
 	{text: 'Sign In', val: null},
@@ -16,11 +16,11 @@ const headings = [
 ]
 
 
-
+const actions = { openModal, removePlayerFromGame, handleCheckIn, checkWaiverAtGame };
 
 export const ListOne = smartTable({
 		headings,
-		actions: { openModal, removePlayerFromGame, handleCheckIn },
+		actions,
 		name: 'tl1',
 		rowPathname: 'game.team1.players',
 		category: 'fullName',
@@ -28,7 +28,7 @@ export const ListOne = smartTable({
 
 export const ListTwo = smartTable({
 		headings,
-		actions: { openModal, removePlayerFromGame, handleCheckIn },
+		actions,
 		name: 'tl2',
 		rowPathname: 'game.team2.players',
 		category: 'fullName',

@@ -57,12 +57,12 @@ export function createPlayer(form, dispatch, {teamList}) {
  }
 
 
-export function updatePlayer( body, dispatch ) {
+export function updatePlayer(formVals, dispatch ) {
 	//const url = `${ROOT_URL}/player/update`;
-	console.log(body);
+
 	dispatch({
 		type: 'INIT_UPDATE_PLAYER_INFO',
-		player: body
+		player: formVals
 	});
 	// const query = { _id: body._id };
 	

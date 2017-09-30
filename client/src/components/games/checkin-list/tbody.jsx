@@ -7,7 +7,8 @@ import EditIcon from 'material-ui/svg-icons/content/create';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Checkbox from './checkbox.jsx';
+import SignInBox from './checkbox.jsx';
+import Checkbox from 'material-ui/Checkbox';
 import { palette } from '../../../../theme';
 
 const { primary1Color, alternateTextColor } = palette;
@@ -24,18 +25,20 @@ const PlayerListTable = props => {
   const { 
     checkIns,
     handleCheckIn,
-    removePlayerFromGame, 
+    removePlayerFromGame,
+    checkWaiverAtGame,   
     openModal, 
     ...player 
   } = filterProps(props);
-
+  console.log('render')
   const { _id, payments = [], comps = [], season, totals = {}} = player;
   const initialValues = {season, _id };
+  const waiverArgs = { playerId: _id, waiver: player.waiver, year: season.year };
 
   return (
     <TableRow key={_id} selectable={false}>
       <TableRowColumn colSpan={1}>
-        <Checkbox 
+        <SignInBox 
           onCheck={handleCheckIn}
           playerId={_id} 
         />
@@ -47,7 +50,12 @@ const PlayerListTable = props => {
         {player.jerseyNumber}
       </TableRowColumn>
       <TableRowColumn>
-        True
+        <Checkbox
+          checked={ player.waiver && player.waiver.length === 1}
+          disabled={ player.waiver && player.waiver.format === 'online'}
+          onCheck={(evt, flag) => checkWaiverAtGame(waiverArgs, evt, flag)}
+          
+        />
       </TableRowColumn>
       <TableRowColumn style={{overflow:'none'}}>
         <span style={{verticalAlign:'super'}}>

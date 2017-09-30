@@ -42,14 +42,15 @@ export default function (state = defaultState, action) {
 
 	case 'REMOVE_PLAYER_FROM_GAME':
 		return removePlayer(state, action);
-
+	case 'UPDATE_GAME_TEAMS':
+		return { ...state, ...action.payload };
 	case 'UPDATE_GAME_PAYMENT':
 		return {
 			...state,
 			[`team${state.selectedTab}`]: {...state[`team${state.selectedTab}`], ...action.payload },
 		}
 	case 'SELECT_GAME_TAB':
-		console.log(action);
+		
 		return { ...state, selectedTab: action.tab };	
 	case 'UPDATE_CHECKIN':
 		return {

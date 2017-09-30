@@ -1,29 +1,28 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { updatePlayer } from '../../../actions/index';
-import { TextField, SelectField } from 'redux-form-material-ui';
+import { TextField, SelectField, Checkbox } from 'redux-form-material-ui';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { basicInfoStyle as style } from '../../../styles/index';
 
 
 let PlayerForm = props => {
 	const { handleSubmit, teamList } = props;
-
+	const waiver = props.initialValues.waiver;
 	return(
 		<form 
-			style={style.form}
+			className='form'
 			onSubmit={handleSubmit}>
-			<div style={style.formRow}>
+			<div className='form-row'>
 				<Field floatingLabelText="First name" name="firstName" component={TextField} />
 				<Field floatingLabelText="Last name"  name="lastName"  component={TextField} />
 			</div>
-			<div style={style.formRow}>
+			<div className='form-row'>
 				<Field floatingLabelText="Phone number" name="phone" component={TextField} />
 				<Field floatingLabelText="Email" name="email" component={TextField} />
 			</div>
-			<div style={style.formRow}>
+			<div className='form-row'>
 				<Field
 					floatingLabelText="Team"
 					component={SelectField}
@@ -49,6 +48,14 @@ let PlayerForm = props => {
 					name="jerseyNumber" 
 					component={TextField} 
 				/>				
+			</div>
+			<div className='form-row'>
+				<Field 
+					component={Checkbox}
+					disabled={waiver && waiver.format === 'online'}
+					label='Waiver signed?' 
+					name='waiverSigned'
+				/>
 			</div>
       <div className="btn-group">       
         <RaisedButton

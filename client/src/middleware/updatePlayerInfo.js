@@ -2,11 +2,39 @@ import axios from 'axios';
 
 export default function(player, dispatch, getState) {
 	
+	console.log({ player });
 
-	const { _id, firstName, lastName, fullName, email, phone } = player;
+	const { _id, firstName, lastName, fullName, email, phone, waiver } = player;
 
-	dispatch({ type: 'UPDATE_PLAYER_LIST_INDEX', payload: {_id, firstName, lastName, email, phone, fullName }});
+	const updateMessage = {
+		type: 'OPEN_SNACKBAR',
+		payload:`${firstName} ${lastName}'s info has been updated`
+	};
 
+	dispatch({ 
+		type: 'UPDATE_PLAYER_LIST_INDEX', 
+		payload: {_id, firstName, lastName, email, phone, fullName }
+	});
+
+	if (waiver && !player.waiverSigned) {
+
+		player.$pull = {
+			waivers: {
+				year: waiver.year
+			}
+		}
+	} else if (!waiver && player.waiverSigned) {
+		
+		player.$push = {
+			waivers: {
+				year: player.season.year,
+				createdAt: Date.now(),
+				format: 'paper'
+			}
+		}
+	}
+	
+	
 	if (player.currTeamId !== player.season._id) {
 		
 		if (player.currTeamId === 'Inactive') {
@@ -17,15 +45,22 @@ export default function(player, dispatch, getState) {
 			return swapTeams(player, dispatch, getState)
 		}
 	} else {
+
 		axios.put('/player/update', {query: { _id }, update: player })
 			.then(() => {
-				dispatch({ type: 'UPDATE_PLAYER_INFO', category: 'basicInfo', payload: player });
-				dispatch({ type: 'OPEN_SNACKBAR', payload: `${player.firstName +' '+player.lastName}'s info has been updated` });
+				
+				dispatch({ 
+					type: 'UPDATE_PLAYER_INFO', 
+					category: 'basicInfo', 
+					payload: player 
+				});
+				
+				dispatch(updateMessage);
 			})
 
-
+		}
 	}
-}
+
 
 
 function removeFromRoster(player, dispatch, getState) {
@@ -37,11 +72,22 @@ function removeFromRoster(player, dispatch, getState) {
 			_id: 'Inactive'
 		}
 	}
-	
-	axios.put('/season/roster/remove-player', body)
+		Promise.all([
+			axios.put('/player/update', {query: { _id: player._id }, update: player }),
+			axios.put('/season/roster/remove-player', body)
+		])	
 		.then(() =>{
-			dispatch({ type: 'UPDATE_PLAYER_INFO', category: 'basicInfo', payload });
-			dispatch({ type: 'OPEN_SNACKBAR', payload: `${player.firstName +' ' +player.lastName}'s info has been updated` })
+			
+			dispatch({ 
+				type: 'UPDATE_PLAYER_INFO', 
+				category: 'basicInfo', 
+				payload 
+			});
+			
+			dispatch({ 
+				type: 'OPEN_SNACKBAR', 
+				payload: `${player.firstName +' ' +player.lastName}'s info has been updated` 
+			});
 		})
 }
 
@@ -63,10 +109,13 @@ function addPlayerToRoster(player, dispatch, getState) {
 			hockeyType: newTeam.hockeyType
 		}
 	}
-	axios.put('/season/roster/add-player', body)
+		Promise.all([
+			axios.put('/player/update', {query: { _id: player._id}, update: player }),
+			axios.put('/season/roster/add-player', body)
+		])
 		.then(() => {
 			dispatch({ type: 'UPDATE_PLAYER_INFO', category: 'basicInfo', payload});
-			dispatch({ type: 'OPEN_SNACKBAR', payload: `${player.firstName + ' ' +player.lastName}'s info has been updated` })
+			dispatch(updateMessage);
 		})
 }
 
@@ -89,11 +138,13 @@ function swapTeams(player, dispatch, getState) {
 			hockeyType: newTeam.hockeyType
 		}
 	};
-
-	axios.put('/season/roster/swap', body)
+	Promise.all([
+		axios.put('/player/update', {query: {_id: player._id}, update: player }),
+		axios.put('/season/roster/swap', body)
+	])
 		.then(() => {
 			dispatch({ type: 'UPDATE_PLAYER_INFO', category: 'basicInfo', payload});
-			dispatch({ type: 'OPEN_SNACKBAR', payload: `${player.firstName + ' ' + player.lastName}'s info has been updated` })
+			dispatch(updateMessage)
 		})
 };
 

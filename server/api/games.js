@@ -9,6 +9,7 @@ const Game = mongoose.model('game');
 const ObjectId = mongoose.Types.ObjectId;
 const getCheckins = require('./aggregate/player-checkins'); 
 
+const Waiver = require('./waiver');
 
 function f(req, res) {
   Season.remove({quarter:1, year:2016}).then(() =>
@@ -158,6 +159,7 @@ function deleteGame(req, res) {
     .then(data => res.send(data))
     .catch(err => { throw err });
 }
+
 
 Router.route('/:gameId').delete(deleteGame);
 Router.route('/new').post(findGame);

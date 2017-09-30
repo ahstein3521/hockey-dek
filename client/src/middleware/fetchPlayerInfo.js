@@ -15,19 +15,27 @@ export default function(playerId, dispatch, getState) {
 	axios.get(route)
 		.then(({data}) => {
 			const [season, player] = data;
-			console.log({ season, player });
+			
+
+			const waiver = player.waivers.find(v => v.year === season.year);
+			const waiverSigned = waiver? true : false;
+			delete player.waivers;
+			console.log({ player, season })
+
 			let payload = {
 				teamList: teams,
 				basicInfo:{
 					...player,
+					waiver,
+					waiverSigned,
 					currTeamId: season? season._id : 'Inactive',
 					fullName: `${player.firstName} ${player.lastName}`,
 					season: {
 						team: season && season.team? season.team.name : '',
 						hockeyType: season && season.team? season.team.hockeyType : '',
-						displayName: season ? season.formatted: '',
-						quarter: season ? season.quarter : -1,
-						year: season? season.year: -1,
+						displayName: season? season.formatted : '',
+						quarter: season? season.quarter : -1,
+						year: season? season.year : -1,
 						_id: season? season._id : 'Inactive'
 					}
 				},
