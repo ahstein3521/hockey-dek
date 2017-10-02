@@ -31,15 +31,15 @@ const PlayerListTable = props => {
     ...player 
   } = filterProps(props);
  
-  const { _id, payments = [], comps = [], season, totals = {}} = player;
+  const { _id, payments = [], comps = [], season, totals = {}, waiver} = player;
   const initialValues = {season, _id };
-  const waiverArgs = { playerId: _id, waiver: player.waiver, year: season.year };
+  const waiverArgs = { playerId: _id, waiver, year: season.year };
   console.log(player);
   return (
     <TableRow key={_id} selectable={false}>
       <TableRowColumn colSpan={1}>
         <SignInBox 
-          disabled={!player.waiver || player.suspended}
+          disabled={!waiver || !waiver.length || player.suspended}
           onCheck={handleCheckIn}
           playerId={_id} 
         />
@@ -52,8 +52,8 @@ const PlayerListTable = props => {
       </TableRowColumn>
       <TableRowColumn>
         <Checkbox
-          checked={ player.waiver && player.waiver.length === 1}
-          disabled={ player.waiver && player.waiver.format === 'online'}
+          checked={ waiver && waiver.length === 1}
+          disabled={ waiver && waiver.format === 'online'}
           onCheck={(evt, flag) => checkWaiverAtGame(waiverArgs, evt, flag)}
           
         />
