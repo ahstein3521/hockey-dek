@@ -39,7 +39,7 @@ const PlayerListTable = props => {
     <TableRow key={_id} selectable={false}>
       <TableRowColumn colSpan={1}>
         <SignInBox 
-          disabled={!waiver || !waiver.length || player.suspended}
+          disabled={!waiver || waiver.length === 0 || player.suspended}
           onCheck={handleCheckIn}
           playerId={_id} 
         />
