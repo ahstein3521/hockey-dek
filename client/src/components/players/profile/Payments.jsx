@@ -13,7 +13,10 @@ import { grey200 } from 'material-ui/styles/colors';
 const $format = num => 
   (num/100).toFixed(2);
 
-
+const fixDate = v => {
+  const d = new Date(v);
+  return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+}
 
 const renderPaymentRows = ({openModal, index, season}, val, i) => {
   const amount = $format(val.amount);
@@ -24,9 +27,9 @@ const renderPaymentRows = ({openModal, index, season}, val, i) => {
       primaryTogglesNestedList={true}
       primaryText={
         <span style={{display:'flex', justifyContent:'space-around'}}>
-          <p>{val.date}</p>
+          <p>{fixDate(val.date)}</p>
           <p>{`$${amount}`}</p>
-          <p>{val.type}</p>
+          <p>{val.paymentType}</p>
           <IconButton onTouchTap={() => openModal('EditPayment', {initialValues, index, i} )}>
             <EditIcon/>
           </IconButton>
@@ -46,7 +49,7 @@ const renderCompedRows = ({openModal,index, season}, val, i) => {
       key={i}
       primaryText={
         <span style={{display:'flex', justifyContent:'space-around'}}>
-          <p>{val.date}</p>
+          <p>{fixDate(val.date)}</p>
           <p>{`$${amount}`}</p>
           <IconButton onTouchTap={() => openModal('EditCredit', {initialValues, index, i })}>
             <EditIcon/>
@@ -69,7 +72,7 @@ const PaymentList = props => {
 
 	let { payments = [], openModal, playerId } = props;
 
-  if (!payments) return <noScript/>
+  if (!payments) return <noScript />
   
 	return (
   	<div style={{width:'90%', margin:'0 auto 20px', padding:10}}>	

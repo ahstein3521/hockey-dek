@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import GameForm from '../new-game-form/page1.jsx';
 import { addPlayerToGame, selectGameTab, fetchRosters, startNewGame, deleteGame } from '../../../actions/index';
-import { ListOne, ListTwo } from './teamTable.jsx';
+import buildTable from './teamTable.jsx';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import { Route } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import AutoComplete from './addPlayer.jsx';
 import Toolbar from './toolbar.jsx';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -54,68 +53,55 @@ class TeamLists extends Component {
 		this.setState({ searchText: '' })
 	}
 
-	render() { 
-		const { 
-			selectedTab, 
-			isLoading,
-			gameDate, 
-			team1, 
-			team2, 
-			gameId, 
-			history, 
-			location, 
-			reset,
-			deleteGame,
-			match 
-		} = this.props;
-		const routerProps = { history, location, match };
-		const { availablePlayers } = this.state;
+	renderTable = (tab, team) => {
+		const { selectedTab } = this.props;
 		
-		if (isLoading) return <CircularProgress />;
-		if (!gameId) return <GameForm {...routerProps} />;
+		if (selectedTab !== tab) {
+			return <span />;
+		} else {
+			let Table = buildTable(tab);
+
+			return (
+				<span>
+					<AutoComplete 
+						team={team}
+						addPlayer={this.addPlayer}
+						updateInput={this.updateInput} 
+						{...this.props} 
+						{...this.state}
+					/>
+					<Table/>
+				</span>	
+
+			);
+		}
+	}
+
+	render() { 
+		const { team1, team2, gameId } = this.props;
+		
+		if (this.props.isLoading) return <CircularProgress />;
+		
+		if (!gameId) return <Redirect to='games/new/1'/>
 		
 		return (
 			<span>
-			<Toolbar title={gameDate} deleteGame={deleteGame.bind(null, gameId)} reset={reset}/>
-			<Tabs 
-				onChange={this.handleChange}
-				value={selectedTab}
-			>
-				<Tab label={team1.team.name} value={1}>
-					<span>
-					{
-						(selectedTab === 1 || selectedTab === 1.5) && 
-							<span>
-							<AutoComplete 
-								team={team1}
-								addPlayer={this.addPlayer}
-								updateInput={this.updateInput} 
-								{...this.props} 
-								{...this.state}
-								/>
-								<ListOne/>
-							</span>	
-					}
-					</span>
-				</Tab>
-				<Tab label={team2.team.name} value={2}>
-					<span>				
-					{
-						(selectedTab === 2 || selectedTab === 2.5) && 
-							<span>
-								<AutoComplete 
-									addPlayer={this.addPlayer}
-									team={team2}
-									updateInput={this.updateInput} 
-									{...this.props} 
-									{...this.state}
-									/>
-								<ListTwo/>
-							</span>
-					}
-					</span>
-				</Tab>
-			</Tabs>
+				<Toolbar 
+					title={this.props.gameDate} 
+					deleteGame={deleteGame.bind(null, gameId)} 
+					reset={this.props.reset}
+				/>
+				<Tabs 
+					onChange={this.handleChange}
+					value={this.props.selectedTab}
+				>
+					<Tab label={team1.team.name} value={1}>
+						{ this.renderTable(1, team1)}
+					</Tab>
+					<Tab label={team2.team.name} value={2}>
+						{ this.renderTable(2, team2) }
+					</Tab>
+				</Tabs>
 			</span>
 		)
 	}

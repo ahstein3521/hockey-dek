@@ -11,7 +11,7 @@ export default function(tab, dispatch, getState) {
 	if (!currState && tab !== 1) {
 		axios.get(route)
 			.then(res => {
-				
+				console.log({ detail: res.data });
 				dispatch({
 					type: 'FETCH_PLAYER_CATEGORY',
 					tab,

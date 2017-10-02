@@ -4,7 +4,8 @@ import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
 import AddPaymentIcon from 'material-ui/svg-icons/editor/attach-money';
 import AddCompIcon from 'material-ui/svg-icons/action/payment';
-
+import Receipt from 'material-ui/svg-icons/action/receipt';
+import axios from 'axios';
 import { primary3Color } from '../../../../theme';
 
 export default class SeasonCard extends Component {
@@ -17,7 +18,7 @@ export default class SeasonCard extends Component {
   
   handleReduce = () => this.setState({expanded: false});
   
-
+  
   render() {
     if (!this.props.season) return <noScript/>
     const {season: { team , hockeyType, displayName, quarter, year }, openModal, playerId} = this.props;
@@ -50,7 +51,13 @@ export default class SeasonCard extends Component {
                 label='Add a new credit'
                 icon={<AddCompIcon/>}
                 onTouchTap={() => openModal('NewCredit', { initialValues })}
-              />         
+              />
+              <a href={`/player/receipt?playerId=${playerId}&year=${year}&quarter=${quarter}`}>
+                <FlatButton
+                  label='Download a receipt'
+                  icon={<Receipt/>}
+                />  
+              </a>       
           </CardActions>
         }
         <CardText expandable={true}>

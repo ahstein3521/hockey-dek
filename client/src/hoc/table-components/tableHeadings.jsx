@@ -8,9 +8,9 @@ import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import { primary3Color } from '../../../theme';
 
 const Arrow = ({ direction, selected }) => {
-	if(!selected) return <noScript/>
-	if(direction === 'asc') return <ArrowDropDown/>
-	else return <ArrowDropUp/>	
+	if  (!selected) return <noScript />;
+	if (direction === 'asc') return <ArrowDropDown />;
+	else return <ArrowDropUp />	
 }
 
 const Label = ({val, text, onClick, ...rest}) => {

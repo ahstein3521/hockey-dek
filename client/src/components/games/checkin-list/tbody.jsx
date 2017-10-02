@@ -30,7 +30,7 @@ const PlayerListTable = props => {
     openModal, 
     ...player 
   } = filterProps(props);
-  console.log('render')
+ 
   const { _id, payments = [], comps = [], season, totals = {}} = player;
   const initialValues = {season, _id };
   const waiverArgs = { playerId: _id, waiver: player.waiver, year: season.year };

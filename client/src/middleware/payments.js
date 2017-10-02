@@ -1,5 +1,5 @@
 export function addPayment(action, dispatch, getState) {
-
+	console.log({ action }, 'middleware');
 	const { kind, amount, quarter, year } = action.payment;
 	const playerPayments = getState().player.selected.payments;
 	const paymentObject = playerPayments.find(v => 
@@ -30,11 +30,11 @@ export function editPayment(action, dispatch, getState) {
 	const [i, j] = action.paymentIndex;
 
 	if (payment.kind === 'payment') {
-		playerPayments[i].totalPaid -= currAmount;
+		playerPayments[i].totalPaid -= (+currAmount * 100);
 		playerPayments[i].totalPaid += payment.amount;
 		playerPayments[i].payments.splice(j, 1, payment)
 	} else {
-		playerPayments[i].totalComped -= currAmount;
+		playerPayments[i].totalComped -= (+currAmount * 100);
 		playerPayments[i].totalComped += payment.amount;
 		playerPayments[i].comps.splice(j, 1, payment)
 	}		

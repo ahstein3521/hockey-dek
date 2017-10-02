@@ -167,7 +167,7 @@ export function checkWaiverAtGame(values, event, isChecked) {
 	const { waiver, playerId, year } = values;
 	
 	const route = isChecked? '/waiver' : '/waiver/remove';
-	const body = isChecked? { year, playerId } : { playerId, waiverId: waiver[0]._id };
+	const body = { year, playerId }
 	
 
 
@@ -178,23 +178,23 @@ export function checkWaiverAtGame(values, event, isChecked) {
 		let team1 = { ..._game.team1 };
 		let team2 = { ..._game.team2 };
 
-		dispatch({ type: 'SET_LOAD_STATE', payload: true});
 		
+
 		axios.put(route, body)
-			.then(({data}) => {
+			.then(({data: { waivers }}) => {
 				
 				[team1, team2].forEach(team => {
 					
 					for (let i = 0; i < team.players.length; i++) {
 						if (team.players[i]._id === playerId) {
 							team.players[i].waiver = isChecked ? 
-								data.waivers.filter(v => v.year === year)
+								waivers.filter(v => v.year === year)
 								: null;
 						}
 					}
 				})
-				dispatch({ type: 'SET_LOAD_STATE', payload: false});
-				dispatch({ type: 'UPDATE_GAME_TEAMS', payload: { team1, team2, selectedTab: tab }});
+				
+				dispatch({ type: 'UPDATE_GAME_TEAMS', payload: { team1, team2, waiverUpdate: playerId }});
 
 			})
 	}

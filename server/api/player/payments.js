@@ -3,7 +3,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const Player = mongoose.model('player');
 const Seasons = mongoose.model('season');
 
-const { unionBy, pullAllWith, sortBy } = require('lodash');
+const { uniqBy, sortBy } = require('lodash');
 
 const getSeasons = playerId => {
   const query = { $or: [ 
@@ -15,7 +15,8 @@ const getSeasons = playerId => {
   return Seasons.find(query)
     .select('-games -players')
     .sort({ year: -1, quarter: -1})
-    .exec()  
+    .exec()
+    .then(docs => uniqBy(docs, 'formatted'))  
 }
 
 const getPayments = playerId => 
@@ -55,6 +56,7 @@ module.exports = function(req, res) {
           year,
           displayName: formatted
         },
+        _payments: payments,
         comps: payments.filter(pullCb.bind(null, season, 'credit')),
         payments: payments.filter(pullCb.bind(null, season, 'payment'))
       };

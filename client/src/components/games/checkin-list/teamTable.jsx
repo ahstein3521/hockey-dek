@@ -16,21 +16,39 @@ const headings = [
 ]
 
 
-const actions = { openModal, removePlayerFromGame, handleCheckIn, checkWaiverAtGame };
+const actions = { 
+	openModal, 
+	removePlayerFromGame, 
+	handleCheckIn, 
+	checkWaiverAtGame 
+};
 
-export const ListOne = smartTable({
+export default function(tabNumber) {
+
+	return smartTable({
 		headings,
 		actions,
-		name: 'tl1',
-		rowPathname: 'game.team1.players',
-		category: 'fullName',
-	})(TableBody)
+		rowPathname: `game.team${tabNumber}.players`,
+		name: 'TeamList',
+		category: 'fullName'
+	})(TableBody);
 
-export const ListTwo = smartTable({
-		headings,
-		actions,
-		name: 'tl2',
-		rowPathname: 'game.team2.players',
-		category: 'fullName',
-	})(TableBody)
+}
+
+
+// export const ListOne = smartTable({
+// 		headings,
+// 		actions,
+// 		name: 'tl1',
+// 		rowPathname: 'game.team1.players',
+// 		category: 'fullName',
+// 	})(TableBody)
+
+// export const ListTwo = smartTable({
+// 		headings,
+// 		actions,
+// 		name: 'tl2',
+// 		rowPathname: 'game.team2.players',
+// 		category: 'fullName',
+// 	})(TableBody)
 

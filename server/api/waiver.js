@@ -66,9 +66,9 @@ const handleCheckWaiver = function(req, res) {
 }
 
 const handleUncheckWaiver = function(req, res) {
-	const { waiverId, playerId } = req.body;
+	const { year, playerId } = req.body;
 
-	const update = { $pull: { waivers: { _id: waiverId }}};
+	const update = { $pull: { waivers: { year }}};
 
 	Player.findByIdAndUpdate(playerId, update)
 		.exec()

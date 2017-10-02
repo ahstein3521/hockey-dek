@@ -7,7 +7,7 @@ const getBasicInfo = require('./player/basicInfo')
 const getPayments = require('./player/payments');
 const getSuspensions = require('./player/suspensions');
 const getCheckins = require('./player/games');
-
+const downloadReceipt = require('../services/receipt');
 
 Router.route('/create')
   .post((req, res) => {
@@ -47,15 +47,24 @@ Router.route('/update')
       .catch(error => res.send({error:error}))
 });
 
+
+
 Router.route('/payment/:playerId')
   .put((req, res) => {
     const { playerId } = req.params;
 
     Player.findById(playerId)
       .exec()
-      .then(player => player.payments.create(req.body))
-      .then(payment => res.send(payment))
-      .catch(e => res.send({ error: e }))
+      .then(player => {
+        player.payments.push(req.body);
+        player.markModified('payments');
+        return player.save();        
+      })
+      .then(player => {
+        const payment = player.payments.pop();
+        res.send(payment);
+      })
+      .catch(e => res.send({ error: e }).status(500))
   });  
 
 Router.route('/suspension/:playerId')  
@@ -76,12 +85,13 @@ Router.route('/suspension/:playerId')
       .catch(e => res.send({ error: e }))
   }); 
 
-Router.route('/all/:playerId').get((req, res) => {
+Router.route('/record/:playerId').get((req, res) => {
     const { playerId } = req.params;
 
     Player.findById(playerId).exec().then(x => res.send(x))
 })  
 
+Router.route('/receipt').get(downloadReceipt)  
 Router.route('/fetch/:playerId').get(getBasicInfo);
 Router.route('/fetch/:playerId/suspensions').get(getSuspensions);
 Router.route('/fetch/:playerId/payments').get(getPayments);

@@ -2,149 +2,75 @@ const mongoose = require('mongoose')
 const Seasons = mongoose.model('season');
 const ObjectId = mongoose.Types.ObjectId;
 
-const now = new Date();
+  const now = new Date();
   const unwind = field => ({$unwind: field});
   const lookup = (_from, foreignField, localField, _as) =>
     ({$lookup: { from: _from, foreignField, localField, as:_as }})
 
 module.exports = ([team1, team2], isNew = false) => {
-  
-  const match1 = {$match: { _id: { $in: [ObjectId(team1), ObjectId(team2)]} }};
-  const project1 = {
-    quarter: 1,
-    year: 1,
-    team:1,
-    player: {
-    season:{
-      _id:'$_id',
-      quarter: '$quarter',
-      year: '$year',
-      team: '$team'              
-    },
-    _id: '$players._id',
-    waivers: '$players.waivers',
-    waiver: {
-      $filter: {
-        input: '$players.waivers',
-        as: 'val',
-        cond: {
-          $eq: ['$$val.year', '$year']
-        }
-      }
-    },
-    fullName:{$concat:['$players.lastName',', ','$players.firstName']},
-      jerseyNumber:'$players.jerseyNumber',
-      suspended: {
-        $anyElementTrue:{
-          $filter: {
-            input: "$players.suspensions",
-            as: "suspension",
-            cond: {
-              $and: [
-                {$gte: [now, "$$suspension.start"]},
-                {$lt: [now, "$$suspension.end"]}
-              ]
-            }
-          }
-        }                                  
-      }            
-    }         
-  }
-  const project2 = {
-      quarter: 1,
-      year: 1,
-      team: 1,
-      player: {
-      season:{
-        _id:'$_id',
-        quarter: '$quarter',
-        year: '$year', 
-        team: '$team'           
-      },
-      _id: '$players._id',
-       waivers: '$players.waivers',
-      fullName:{$concat:['$players.lastName',', ','$players.firstName']},
-      jerseyNumber:'$players.jerseyNumber',
-      suspended: {
-        $anyElementTrue:{
-          $filter: {
-            input: "$players.suspensions",
-            as: "suspension",
-            cond: {
-              $and: [
-                {$gte: [now, "$$suspension.start"]},
-                {$lt: [now, "$$suspension.end"]}
-              ]
-            }
-          }
-        }                                  
-      },
-    waiver: {
-      $filter: {
-        input: '$players.waivers',
-        as: 'val',
-        cond: {
-          $eq: ['$$val.year', '$year']
-        }
-      }
-    },      
-      payments: {
-          $filter: {
-            input: "$players.payments",
-            as: "payment",
-            cond: {
-              $and: [
-                {$eq: ['$$payment.year', '$year']},
-                {$eq: ["$$payment.quarter", '$quarter']}
-              ]}
-            }
-          }
-      }                     
-  };
 
-  if (isNew) {
-    return Seasons.aggregate([
-      match1,     
-      unwind('$players'),
-      lookup('players', '_id', 'players', 'players'),
-      unwind('$players'),
-      {$project: project1 },
-      lookup('teams', '_id', 'player.season.team', 'team'),
-      {$group: {
-        _id: "$player.season._id",
-        team: { $first: {$arrayElemAt: ['$team', 0]}},
-        quarter: { $first: '$player.season.quarter' },
-        year: { $first: '$player.season.year' },
-        players: {
-            $push: {
-              _id: "$_id",
-              season: "$player.season",
-              fullName:"$player.fullName",
-              jerseyNumber: "$player.jerseyNumber",
-              waiver: '$player.waiver',
-              suspended:"$player.suspended",
-              totals: {
-                paid:0,
-                comped:0,
-                total:0
+  return Seasons.aggregate([
+    {$match: { _id: { $in: [ ObjectId(team1), ObjectId(team2) ]} }},
+    unwind('$players'),
+    lookup('players', '_id', 'players', 'players'),
+    unwind('$players'),
+    {
+      $project: {
+        quarter: 1,
+        year: 1,
+        team: 1,
+        player: {
+          season: {
+            _id:'$_id',
+            quarter: '$quarter',
+            year: '$year', 
+            team: '$team'           
+          },
+          _id: '$players._id',
+          fullName:{$concat:['$players.lastName',', ','$players.firstName']},
+          jerseyNumber:'$players.jerseyNumber',
+          suspended: {
+            $anyElementTrue:{
+              $filter: {
+                input: "$players.suspensions",
+                as: "suspension",
+                cond: {
+                  $and: [
+                    {$gte: [now, "$$suspension.start"]},
+                    {$lt: [now, "$$suspension.end"]}
+                  ]
+                }
+              }
+            }                                  
+          },
+          waiver: {
+            $filter: {
+              input: '$players.waivers',
+              as: 'val',
+              cond: { $eq: ['$$val.year', '$year'] }
+            }
+          },      
+          payments: {
+            $filter: {
+              input: "$players.payments",
+              as: "payment",
+              cond: {
+                $and: [
+                  {$eq: ['$$payment.year', '$year']},
+                  {$eq: ["$$payment.quarter", '$quarter']}
+                ]
               }
             }
           }
         }
-      },
-      { $sort: { 'team.name': 1 }}            
-    ]).exec()
-  }
-
-
-  return Seasons.aggregate([
-    match1,
-    // unwind('$teams'), 
-    unwind('$players'),
-    lookup('players', '_id', 'players', 'players'),
-    unwind('$players'),
-    {$project: project2 },     
-    unwind('$player.payments'),
+      } 
+    },     
+    { $unwind: 
+      { 
+        path: '$player.payments', 
+        preserveNullAndEmptyArrays: true 
+      }
+    },
     {$group: {
       _id: "$player._id",
       player: { $first: '$player' },

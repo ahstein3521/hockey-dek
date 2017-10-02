@@ -42,7 +42,12 @@ module.exports = seasonId => Seasons.aggregate([
   //Destructure so populated player docs are objects rather than array
   { $unwind: "$players" },
   // //Destructure embedded 'payments' docs so they can be accessed
-  { $unwind: "$players.payments"},
+  { $unwind: 
+    {
+      path: "$players.payments", 
+      preserveNullAndEmptyArrays: true 
+    }
+  },
   // // Filter out any player's payment records from other seasons
   //Group documents by player ids to total up the number of checkins for each player
   { $group: {
@@ -85,13 +90,23 @@ module.exports = seasonId => Seasons.aggregate([
       games: 1, 
     }
   },
-  {$unwind: '$games'},
+  {$unwind: 
+    {
+      path: "$games", 
+      preserveNullAndEmptyArrays: true 
+    }
+  },
   { $lookup: { 
     from:"games", 
     localField:"games", 
     foreignField:"_id", 
     as:"games" }},
-  { $unwind: '$games' },  
+  {$unwind: 
+    {
+      path: "$games", 
+      preserveNullAndEmptyArrays: true 
+    }
+  }, 
   { $group: {
     _id: "$player",
     checkins: {

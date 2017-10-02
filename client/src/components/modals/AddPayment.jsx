@@ -29,7 +29,7 @@ let CreatePaymentForm = props => {
 		<form onSubmit={props.handleSubmit} className="form">
 			<div className="form-row">
 				<Field
-					name="type"
+					name="paymentType"
 					component={SelectField}
 					floatingLabelText="Payment Type"
 				>

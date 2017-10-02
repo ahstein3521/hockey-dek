@@ -9,7 +9,6 @@ import CheckInList from './checkin-list/index.jsx';
 import AddTeams from './new-season/teamsList.jsx';
 import TeamDropdown from './new-season/teamDropdown.jsx';
 import AddPlayers from './new-season/playerList.jsx'
-import { ListOne } from './checkin-list/teamTable.jsx';
 import checkForCurrGame from './new-game-form/hoc.jsx';
 const GamePage = (props) => {
 
@@ -21,6 +20,7 @@ const GamePage = (props) => {
 				<Route exact path='/games/add-season' component={checkForCurrGame(AddTeams)}/>
 				<Route exact path='/games/add-season/1' component={checkForCurrGame(TeamDropdown)}/>
 				<Route exact path='/games/add-season/2' component={checkForCurrGame(AddPlayers)}/>
+				<Route exact path='/games/new/1' component={checkForCurrGame(NewGameForm1)} />		
 				<Route exact path='/games/new/2' component={checkForCurrGame(NewGameForm2)} />
 				<Route path='/games/check-in' component={CheckInList} />  
 			</Paper>

@@ -17,17 +17,15 @@ export default function(playerId, dispatch, getState) {
 			const [season, player] = data;
 			
 
-			const waiver = player.waivers.find(v => v.year === season.year);
-			const waiverSigned = waiver? true : false;
+			player.waiver = player.waivers.find(v => v.year === season.year);
+			player.waiverSigned = player.waiver? true : false;
+			
 			delete player.waivers;
-			console.log({ player, season })
 
 			let payload = {
 				teamList: teams,
 				basicInfo:{
 					...player,
-					waiver,
-					waiverSigned,
 					currTeamId: season? season._id : 'Inactive',
 					fullName: `${player.firstName} ${player.lastName}`,
 					season: {
@@ -43,7 +41,7 @@ export default function(playerId, dispatch, getState) {
 				games: null,
 				payments: null
 			};
-			
+			console.log({ payload })
 			dispatch({ type: 'SELECT_PLAYER', payload })
 			dispatch({ type: 'SET_LOAD_STATE',  payload: false })
 		}).catch(err => console.warn(err))
