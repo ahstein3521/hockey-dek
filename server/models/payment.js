@@ -19,15 +19,24 @@ const paymentSchema = new Schema({
 		min: 1,
 		max: 4,
 		type:Number
-	}
+	},
+	kind: {
+		type: String,
+		enum: ['payment', 'credit'],
+		required: true
+	},
+	paymentType: {
+		type: String,
+		enum: ['Credit', 'Check', 'Debit Card', 'Credit Card']
+	},
+	reason: String
 },
-
+	
 { 
 	toJSON: {
 		getters: true,
 		setters: true,
-	},
-	discriminatorKey: 'kind'
+	}
 });
 
 // const playerPayment = new Schema({

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Checkbox from 'material-ui/Checkbox';
 
-const TableCheckbox = ({ checkIns, playerId, onCheck, ...game}) => 
+const TableCheckbox = ({ disabled, checkIns, playerId, onCheck, ...game}) => 
 	<Checkbox
 		checked={Boolean(checkIns[playerId])}
 		onCheck={(_, isChecked) => onCheck(playerId, isChecked, game)}
+		disabled={disabled}
 	/>
 
 function mapState(state) {

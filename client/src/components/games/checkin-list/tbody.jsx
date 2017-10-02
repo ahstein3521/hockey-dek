@@ -34,11 +34,12 @@ const PlayerListTable = props => {
   const { _id, payments = [], comps = [], season, totals = {}} = player;
   const initialValues = {season, _id };
   const waiverArgs = { playerId: _id, waiver: player.waiver, year: season.year };
-
+  console.log(player);
   return (
     <TableRow key={_id} selectable={false}>
       <TableRowColumn colSpan={1}>
         <SignInBox 
+          disabled={!player.waiver || player.suspended}
           onCheck={handleCheckIn}
           playerId={_id} 
         />

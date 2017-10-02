@@ -107,7 +107,7 @@ export function newPayment(values, dispatch, kind) {
 		amount, 
 		kind,
 		reason: values.reason,
-		paymentType: values.type, 
+		paymentType: values.paymentType, 
 		quarter: values.quarter, 
 		year: values.year,		 
 	};
@@ -130,11 +130,12 @@ export function updatePayment(form, dispatch, props){
 	const update = { 
 		$set: { 
 			'payments.$.amount': amount,
-			'payments.$.paymentType': form.type 
+			'payments.$.paymentType': form.paymentType 
 		}
 	};
 
-
+	console.log(form);
+	
 	axios.put(url, { query, update })
 		.then(() => 
 			dispatch({

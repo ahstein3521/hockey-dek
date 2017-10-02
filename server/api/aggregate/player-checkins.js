@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const Seasons = mongoose.model('season');
 const ObjectId = mongoose.Types.ObjectId;
 
-  const now = new Date();
   const unwind = field => ({$unwind: field});
   const lookup = (_from, foreignField, localField, _as) =>
     ({$lookup: { from: _from, foreignField, localField, as:_as }})
@@ -36,8 +35,8 @@ module.exports = ([team1, team2], isNew = false) => {
                 as: "suspension",
                 cond: {
                   $and: [
-                    {$gte: [now, "$$suspension.start"]},
-                    {$lt: [now, "$$suspension.end"]}
+                    {$gte: [new Date(), "$$suspension.start"]},
+                    {$lt: [new Date(), "$$suspension.end"]}
                   ]
                 }
               }
