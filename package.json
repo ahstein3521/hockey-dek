@@ -2,7 +2,7 @@
   "name": "hockey-dek",
   "version": "1.0.0",
   "main": "index.js",
-  "engine": {
+  "engines": {
     "node": "8.4.0"
   },
   "scripts": {
