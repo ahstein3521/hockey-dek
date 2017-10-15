@@ -49,17 +49,15 @@ if (process.env.NODE_ENV === 'dev') {
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', Routes.auth);
-app.use('/player',Routes.player);
-app.use('/team', Routes.team);
-app.use('/season', Routes.season);
-app.use('/game', Routes.game);
-app.use('/waiver', Routes.waiver);
+app.use('/auth', require('./api/auth'));
+app.use('/player', require('./api/player'));
+app.use('/team', require('./api/team'));
+app.use('/season', require('./api/season'));
+app.use('/game', require('./api/game'));
+app.use('/waiver', require('./api/waiver'));
 app.get("*", function(req,res){
 	res.redirect("/");
 })
-
-
 
 
 module.exports = app;
