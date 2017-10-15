@@ -25,28 +25,13 @@ function createTeam(req, res) {
     )
 }
 
-// GET - fetch a current teams roster and past season data
-function fetchRoster(req, res) {  
-  const {seasonId, teamId} = req.query;
-  
-  Promise.all([
-    getRoster(seasonId), 
-    Season
-      .find({team: teamId})
-      .select('-games -players')
-      .sort({ year: -1, quarter: -1 })
-      .exec()
-  ])
-  .then(([team, seasons]) =>          
-    res.send({ team })
-  ); 
-}
-
 // PUT - update a team's info
 function updateTeam(req, res) {
-  const query = { team: req.params.teamId };
   
-  Team.update(query, req.body)
+  const { id } = req.params.id;
+  console.log({ body: req.body, id });
+
+  Team.findByIdAndUpdate(req.body._id, req.body)
     .exec()
     .then(() => 
       res.status(200).send('team updated')
@@ -65,15 +50,92 @@ function deleteTeam(req, res) {
     .catch(error => { throw error })
 }
 
+Router.route('/clear').get((req, res) => {
+  Season.update({}, {games: []}, {multi:true}).exec();
+  mongoose.model('game').remove({}).then(x => res.send(x));
+})
 
-Router.route('/search')
-  .get(fetchRoster)
+function fetchRosterBySeasonId(req, res) {
+  const getGames = require('./aggregate/gameCount');
+  const { id } = req.params;
+
+  Promise.all([
+    Season.findById(id)
+      .populate('players')
+      .populate('team')
+      .select('players year quarter team')
+      .exec(),
+    getGames(id)
+  ])
+  .then(([{players, year, quarter, team, formatted}, gameCount])=> {
+    const games = gameCount.reduce((obj, val) => 
+      ({...obj, [val._id]: val.total }), {});
+
+    function handlePayments() {
+      let totals = {
+        payment: 0,
+        credit: 0
+      };
+
+      return (payments, kind, getTotals) => {
+        if (getTotals) return totals;
+
+         return payments.reduce((total, val) => {
+          if (val.year === year && val.quarter === quarter && val.kind === kind) {
+            totals[kind] += val.amount;
+            return total + val.amount
+          } else {
+            return total;
+          }
+         }, 0); 
+      }
+    }
+    
+    let getPayment = handlePayments();
+
+    let roster = players.map(player => {
+      let comped = getPayment(player.payments, 'credit');
+      let paid = getPayment(player.payments, 'payment');
+
+      return { 
+        _id: player._id,
+        firstName: player.firstName,
+        lastName: player.lastName,
+        email: player.email,
+        phone: player.phone,
+        suspended: player.isSuspended,
+        jerseyNumber: player.jerseyNumber,
+        waiver: player.waivers.find(v => v.year === year),
+        paid,
+        games: games[player._id],
+        comped,
+        total: comped + paid
+      };
+    });
+    const totals = getPayment(null, null, true);
+
+    res.send({
+      roster, 
+      totals, 
+      _id: team._id, 
+      name: team.name,
+      season: formatted, 
+      currentSeason: team.currentSeason,
+      slug: team.slug 
+    });
+  });
+};
+
+Router.route('/:id')
+  .get(fetchRosterBySeasonId)
+  .post(createTeam)
+  .put(updateTeam)
+  .delete(deleteTeam)
 
 Router.route('/create')
   .post(createTeam)
 
-Router.route('/update/:teamId')
-  .put(updateTeam)
+
 
 Router.route('/delete/:teamId')
   .delete(deleteTeam)

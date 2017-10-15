@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Paper from 'material-ui/Paper';
 import BasicInfo from './basicInfo.jsx';
-import PlayerSetup from './players.jsx';
+import PlayerSetup from './Roster.jsx';
 import { tabStyles as styles } from '../../../styles/index';
 
 
@@ -43,11 +43,14 @@ class TeamSettings extends Component {
           value={2}
           >
           <PlayerSetup/>
-        </Tab>              
+        </Tab>                      
       </Tabs>
     )
   }
 }
+
+
+
 
   function mapState({ loading }) {
     return { isLoading: loading }

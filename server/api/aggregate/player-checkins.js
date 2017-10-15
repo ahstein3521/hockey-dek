@@ -78,7 +78,7 @@ module.exports = ([team1, team2], isNew = false) => {
           {$eq: ["$player.payments.kind", 'payment']},
           {
             amount: '$player.payments.amount',
-            type: '$player.payments.paymentType',
+            type: '$player.payments.type',
             date: {$dateToString: { format: "%m-%d-%Y", date: "$player.payments.date" }}
           },
           false  

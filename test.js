@@ -1,20 +1,7 @@
-const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
-const Season = mongoose.model('season');
-const Games = mongoose.model('game');
-const { sortBy, groupBy, sample, sampleSize } = require('lodash');
+ 
+var playerId = ObjectId("59013aea0248742238a78728");
 
-const formatDate = d => {
-  let date = new Date(d);
-  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
-}
-
-const seasonNames = ['', 'Winter', 'Spring', 'Summer', 'Fall'];
-
-module.exports = function(req, res) {
-  const playerId = ObjectId(req.params.playerId);
-
-  Season.aggregate([
+var x = db.seasons.aggregate([
     { $match: 
       { $or: [
         { players: {$in: [ playerId ]}},
@@ -33,7 +20,7 @@ module.exports = function(req, res) {
     {
       gameTeam: {
         $cond: [
-          {$eq: [ '$games.team1.info', '$_id']},
+          {$setIsSubset: [ ['$games.team1.info'], ['$_id']]},
           '$games.team1',
           '$games.team2'
         ]
@@ -54,6 +41,7 @@ module.exports = function(req, res) {
       },      
       date: {$dateToString: { format: "%m-%d-%Y", date: "$games.date" }},
       gameId: '$games._id',
+      gameTeam: 1,
       attended: { $setIsSubset: [[playerId], "$gameTeam.checkIns"] },
     }
   },
@@ -71,6 +59,7 @@ module.exports = function(req, res) {
       },
       records: {
         $push: {
+          gameTeam: '$gameTeam',
           date: '$date',
           attended: '$attended'
         }
@@ -90,7 +79,4 @@ module.exports = function(req, res) {
       'season.hockeyType': '$season.team.hockeyType'
     }
   }
-  ]).exec()
-  .then(x => res.send(x))
-}
-
+  ]).toArray()

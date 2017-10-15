@@ -34,7 +34,7 @@ const PlayerListTable = props => {
   const { _id, payments = [], comps = [], season, totals = {}, waiver} = player;
   const initialValues = {season, _id };
   const waiverArgs = { playerId: _id, waiver, year: season.year };
-  console.log(player);
+
   return (
     <TableRow key={_id} selectable={false}>
       <TableRowColumn colSpan={1}>

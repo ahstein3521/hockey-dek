@@ -29,7 +29,7 @@ const renderPaymentRows = ({openModal, index, season}, val, i) => {
         <span style={{display:'flex', justifyContent:'space-around'}}>
           <p>{fixDate(val.date)}</p>
           <p>{`$${amount}`}</p>
-          <p>{val.paymentType}</p>
+          <p>{val.type}</p>
           <IconButton onTouchTap={() => openModal('EditPayment', {initialValues, index, i} )}>
             <EditIcon/>
           </IconButton>

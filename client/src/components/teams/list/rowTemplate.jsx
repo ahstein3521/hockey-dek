@@ -13,14 +13,14 @@ import filterTableProps from '../../utils/filterTableProps';
 
 const RowTemplate = props => {
 
-  const { submitTeamSearch, openModal, ...team} = props;
+  const { fetchRoster, openModal, submitTeamSearch, ...team} = props;
     
     return (
     <TableRow key={team._id}>
     <TableRowColumn colSpan={2}>
       <b 
         style={{cursor:'pointer'}}
-        onClick={()=> submitTeamSearch(team)}
+        onClick={()=> fetchRoster(team.currentSeason._id)}
       >
         <Link to={
           {
@@ -38,7 +38,7 @@ const RowTemplate = props => {
         {team.currentSeason.formatted}
       </TableRowColumn>
       <TableRowColumn>
-        <span onClick={() => submitTeamSearch(team)}>
+        <span onClick={() => submitTeamSearch(team._id)}>
           <Link to={
           {
             pathname:'/teams/settings', 

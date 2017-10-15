@@ -40,6 +40,7 @@ Router.route('/search').get((req,res) => {
 
 
 
+
 Router.route('/create').post(function(req, res) {
   const { seasons, gameSeasons, players = [] } = req.body;
 
@@ -60,24 +61,6 @@ Router.route('/checkins')
       .then(teams => res.send(teams))
 
   }) 
-
-Router.route('/fix').get((req, res) => {
-
-  mongoose.model('game').find({}).then(x => res.send(x))
-  // Season.remove({ quarter: 3, year: 2017 })
-  //   .then(() => {
-  //     Season.find({ quarter: 2, year: 2017 })
-  //       .exec()
-  //       .then((seasons) => {
-  //         seasons.forEach(({_id, team}) => {
-  //           Season.update({_id }, {active: true}).exec();
-  //           mongoose.model('team').update({_id: team}, {currentSeason: _id}).exec()
-  //         })
-  //         mongoose.model('game').remove({})
-  //         res.send('........reset')
-  //       })
-  //   })
-  })
 
   
 
@@ -158,6 +141,48 @@ Router.route('/roster/add-player').put((req, res) => {
     .then(() => res.send('Player removed'))
 })
 
+Router.route('/roster/add-many').put((req, res) => {
+  const { seasonId, newPlayers, quarter, year } = req.body;
+
+  const update = { 
+    $pullAll: { formerPlayers: newPlayers },
+    $addToSet: { players: { $each: newPlayers }}
+  };
+
+  const query = {
+    quarter,
+    year,
+    _id: {$ne: seasonId},
+    players: {$in: newPlayers}
+  };
+
+  const update1 = {
+    $pullAll: { players: newPlayers },
+    $addToSet: { formerPlayers: { $each: newPlayers }}    
+  };
+
+  Season.update(query, update1, {multi: true}).exec()
+    .then(() => 
+      Season.findByIdAndUpdate(seasonId, update).exec()
+    )
+    .then(() => res.send('success'))
+    .catch(err => res.send(err).status(500))
+          
+});
+
+Router.route('/roster/remove-many').put((req, res) => {
+  const { seasonId, oldPlayers } = req.body;
+
+  const update = { 
+    $pullAll: { players: oldPlayers },
+    $addToSet: { formerPlayers: { $each: oldPlayers }}
+  };
+
+  Season.findByIdAndUpdate(seasonId, update)
+    .exec()
+    .then(() => res.send('added players'))
+});
+
 function swapTeamsForGame(newSeason, playerId, teams) {
   const { quarter, year, _id } = newSeason;
   
@@ -191,5 +216,15 @@ function addToTeam(newSeason, playerId, teams) {
     .then(() => getCheckins(teams))
       
 }
+
+Router.route('/').get((req, res) => {
+
+  Season.find(req.query)
+    .sort({year: -1, quarter:-1})
+    .exec()
+    .then(data => res.send(data))
+    .catch(err => res.send(err).status(500))
+
+});
 
 module.exports = Router;

@@ -1,6 +1,7 @@
 import { ROOT_URL } from '../constants';
 import axios from 'axios';
 import formatDate from '../../components/utils/formatDate';
+import sortBy from 'lodash';
 
 function buildQuery(object) {
 	let arr = [];
@@ -55,13 +56,20 @@ export function filterTeams(values, dispatch, props) {
 
 export function fetchRosters(form, dispatch, { history }) {
 	let { team1, team2, date, hockeyType, year, quarter } = form;
-	const [t1, t2] = [team1._id, team2._id]
+	// const [t1, t2] = [team1._id, team2._id]
 	const gameDate = formatDate(date);
 	const d = Date.parse(date);
+
+	let [t1, t2] = [team1, team2];
+
+	if (t1.name > t2.name) {
+		[t1, t2] = [t2, t1];
+	}
+	console.log({ t1, t2 })
 	const body = {
 		game: {
-			team1: {info: t1}, 
-			team2: {info:t2}, 
+			team1: {info: t1._id}, 
+			team2: {info:t2._id}, 
 			date: d
 		}
 	}

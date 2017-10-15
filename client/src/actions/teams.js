@@ -1,6 +1,7 @@
 import { SubmissionError } from 'redux-form';
 import axios from 'axios';
 import { 
+	FETCH_TEAM_LIST,
 	FETCH_TEAM_ROSTER, 
 	ROOT_URL, 
 	SET_LOAD_STATE, 
@@ -32,7 +33,7 @@ function getTeam(team) {
 	const { currentSeason, _id } = team;
 	const [tId, sId] = [_id, currentSeason._id];
 	const query = `seasonId=${sId}&teamId=${tId}&roster=true`;
-
+	console.log({ sId, tId });
 	return axios.get(`${ROOT_URL}/team/search?${query}`);
 }
 
@@ -45,59 +46,101 @@ function getAvailablePlayers(team) {
 }
 
 
-export function submitTeamSearch(team){
-	
-	const { name, hockeyType, currentSeason, _id } = team;	
+export function submitTeamSearch(teamId){
 		
+	return (dispatch, getState) => {
+
+		dispatch({ type: SET_LOAD_STATE, payload: true });
+
+		axios.get(`${ROOT_URL}/season?team=${teamId}`)
+			.then((response) => {
+				const team = getState().teams.list.find(v => v._id === teamId);
+				const payload = {
+					seasons: response.data,
+					...team
+				};
+				dispatch({ type: 'FETCH_TEAM_SETTINGS', payload });
+				dispatch({ type: SET_LOAD_STATE, payload: false })
+			
+			})
+			.catch(e => { console.error(e)})
+	}
+}
+
+export function fetchRoster(seasonId) {
+	const url = `${ROOT_URL}/team/${seasonId}`;
+
 	return dispatch => {
 
 		dispatch({ type: SET_LOAD_STATE, payload: true });
 
-		axios.all([ getAvailablePlayers(team), getTeam(team)])
-			.then(axios.spread((players, response) => {
-				
-				let { seasons, team:[teamInfo] } = response.data;
-				
-				let teamData =  { name, hockeyType, currentSeason, _id, ...teamInfo };
-				
-				const payload = { 
-					seasons, 
-					team: teamData, 
-					availablePlayers: players.data
-				};
-				
-				dispatch({type: FETCH_TEAM_ROSTER, payload });
-			
-			})
-		)
-		.then(() =>
-			dispatch({ type: SET_LOAD_STATE, payload: false })
-		)
-		.catch(e => { console.error(e)})
-	}
-}
-
-
-export function updateTeam(form, dispatch, props){
-	const url = `${ROOT_URL}/team/update/basic-info/${form.currentSeason.team}`;
-	
-	axios.put(url, form)
-			.then(({data}) => console.log('Response', data))
-}
-
-export function updateRoster(currentSeason, players) {
-	const { _id, quarter, year } = currentSeason;
-	const reqBody = { ...players, quarter, year };
-	const url = `${ROOT_URL}/season/update/roster/${_id}`;
-	
-	return dispatch => {
-		axios.put(url, reqBody)
+		axios.get(url)
 			.then(({data}) => {
-				console.log(data)
-				// const payload = data[0];
-				dispatch({type:'UPDATE_ROSTER', payload: players })
+				console.log({ data });
+				dispatch({ type: FETCH_TEAM_ROSTER, payload: data });
+				dispatch({ type: SET_LOAD_STATE, payload: false });
 			})
+			.catch(err => console.log(err))
 	}
+}
+
+export function updateTeam(form, dispatch) {
+	const url = `${ROOT_URL}/team/${form._id}`;
+	
+	const { seasons, ...update } = form;
+
+	
+		axios.put(url, update)
+			.then(({data}) => 
+				dispatch({ 
+					type: 'UPDATE_TEAM', 
+					nextType: FETCH_TEAM_LIST,
+					update
+				})
+			)
+}
+
+// export function updateRoster(currentSeason, players) {
+// 	const { _id, quarter, year } = currentSeason;
+// 	const reqBody = { ...players, quarter, year };
+// 	const url = `${ROOT_URL}/season/update/roster/${_id}`;
+	
+// 	return dispatch => {
+// 		axios.put(url, reqBody)
+// 			.then(({data}) => {
+// 				console.log(data)
+// 				// const payload = data[0];
+// 				dispatch({type:'UPDATE_ROSTER', payload: players })
+// 			})
+// 	}
+// }
+
+export function updateTeamLineup(values, dispatch, props) {
+	const { currSeason } = props;
+	const { players } = values;
+	let newPlayers = [], oldPlayers = [];
+	const { _id, quarter, year } = currSeason;
+	players.forEach(player => {
+		let index = currSeason.players.indexOf(player._id);
+		if (index === -1) {
+			newPlayers.push(player._id);
+		} else {
+			currSeason.players.splice(index, 1);
+		}
+
+	});
+
+	oldPlayers = currSeason.players;
+	
+	axios.put('/season/roster/remove-many', {oldPlayers, seasonId:_id })
+		.then(() =>
+			axios.put('/season/roster/add-many', {newPlayers, seasonId: _id, quarter, year})
+				.then((res) => {
+					console.log({ res });
+					dispatch({ type: 'OPEN_SNACKBAR', payload: 'ROSTER_UPDATED' })
+				})
+		)
+
 }
 
 export function deleteTeam(team) {

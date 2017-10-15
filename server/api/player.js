@@ -31,6 +31,7 @@ Router.route('/create')
 //Fetch first and last names for player search autocomplete
 Router.route('/names')
   .get((req,res) => {
+    
     Player.find({}, {firstName:1, lastName:1})
       .exec()
       .then(data => res.send(data))

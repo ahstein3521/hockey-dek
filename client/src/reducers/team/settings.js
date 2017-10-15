@@ -5,6 +5,7 @@ export default function(state = {}, action){
 	
 	switch(type){
 		case 'FETCH_TEAM_SETTINGS':
+			console.log({action});
 			return payload;
 	}
 	return state;		

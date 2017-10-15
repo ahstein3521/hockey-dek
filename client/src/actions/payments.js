@@ -27,7 +27,7 @@ export function processPayment(kind) {
 		const url2 = `${ROOT_URL}/season/checkins?team1=${season._id}&team2=${season._id}`;
 		
 		if (kind === 'payment') {
-			payment.paymentType = values.paymentType;
+			payment.type = values.type;
 		} else {
 			payment.reason = values.reason;
 		}
@@ -107,7 +107,7 @@ export function newPayment(values, dispatch, kind) {
 		amount, 
 		kind,
 		reason: values.reason,
-		paymentType: values.paymentType, 
+		type: values.type, 
 		quarter: values.quarter, 
 		year: values.year,		 
 	};
@@ -130,7 +130,7 @@ export function updatePayment(form, dispatch, props){
 	const update = { 
 		$set: { 
 			'payments.$.amount': amount,
-			'payments.$.paymentType': form.paymentType 
+			'payments.$.type': form.type 
 		}
 	};
 

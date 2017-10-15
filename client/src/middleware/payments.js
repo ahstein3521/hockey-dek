@@ -7,7 +7,7 @@ export function addPayment(action, dispatch, getState) {
 	const d = new Date();
 	
 	action.payment.date = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
-	action.payment.type = action.payment.paymentType;
+	
 
 	if (kind === 'payment') {
 		paymentObject.totalPaid += amount;

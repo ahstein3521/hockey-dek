@@ -72,7 +72,7 @@ const UpdateTeamForm = props => {
 
 function mapStateToProps({ teams }) {
 	return { 
-		initialValues: teams.selected.team, 
+		initialValues: teams.selected, 
 		seasons: teams.selected.seasons 
 	}
 }

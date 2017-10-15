@@ -25,9 +25,9 @@ const paymentSchema = new Schema({
 		enum: ['payment', 'credit'],
 		required: true
 	},
-	paymentType: {
+	type: {
 		type: String,
-		enum: ['Credit', 'Check', 'Debit Card', 'Credit Card']
+		enum: ['Cash', 'Credit', 'Check', 'Debit Card', 'Credit Card']
 	},
 	reason: String
 },

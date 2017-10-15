@@ -11,8 +11,10 @@ export default function(state = {}, action){
 	switch (type) {
 		case FETCH_TEAM_ROSTER:
 			return payload
-		case UPDATE_ROSTER:
-			return {...state, team: {...state.team, ...payload}}
+		case 'FETCH_TEAM_SETTINGS':
+			return {...state, ...payload };	
+		// case UPDATE_ROSTER:
+		// 	return {...state, team: {...state.team, ...payload}}
 		case UPDATE_PLAYER_IN_ROSTER:
 			const players = replaceIndex(state.team.players, payload);
 			return {...state, team:{...state.team, players}}	

@@ -5,11 +5,11 @@ import TableBody from './rowTemplate.jsx';
 import { selectPlayer } from '../../../actions/index';
 
 const headings = [
-	{text:'Name',val:'player.lastName', colSpan:2},
-	{text:'#' ,val:'player.jerseyNumber'},
+	{text:'Name',val:'lastName', colSpan:2},
+	{text:'#' ,val:'jerseyNumber'},
 	{text:'Check-ins',val:'checkins'},
-	{text:'Paid' ,val:'player.amountPaid'},
-	{text:'Comped' ,val:'player.amountComped'},
+	{text:'Paid' ,val:'paid'},
+	{text:'Comped' ,val:'comped'},
 	{text:'Suspended' ,val:null },
 	{text:'Waiver' ,val:null }
 ];
@@ -20,6 +20,6 @@ export default smartTable({
 	name: 'TeamRoster',
 	actions: { selectPlayer },
 	searchInputHintText: 'Filter players by name',
-	rowPathname: 'teams.selected.team.players',
+	rowPathname: 'teams.selected.roster',
 	category: 'lastName',
 })(TableBody);
