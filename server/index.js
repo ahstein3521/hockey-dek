@@ -53,7 +53,7 @@ app.use('/auth', require('./api/auth'));
 app.use('/player', require('./api/player'));
 app.use('/team', require('./api/team'));
 app.use('/season', require('./api/season'));
-app.use('/game', require('./api/game'));
+app.use('/game', require('./api/games'));
 app.use('/waiver', require('./api/waiver'));
 app.get("*", function(req,res){
 	res.redirect("/");
