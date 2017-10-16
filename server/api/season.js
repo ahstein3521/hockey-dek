@@ -217,14 +217,28 @@ function addToTeam(newSeason, playerId, teams) {
       
 }
 
-Router.route('/').get((req, res) => {
+Router.route('/')
+  .get((req, res) => {
 
-  Season.find(req.query)
-    .sort({year: -1, quarter:-1})
-    .exec()
-    .then(data => res.send(data))
-    .catch(err => res.send(err).status(500))
+    Season.find(req.query)
+      .sort({year: -1, quarter:-1})
+      .exec()
+      .then(data => res.send(data))
+      .catch(err => res.send(err).status(500))
 
-});
+  })
+  .post((req, res) => {
+
+    let players;
+
+    Season.findOne({ active: true, team: req.body.team })
+      .exec()
+      .then(doc => {
+        players = doc.players;
+        return Season.create(req.body)
+      })
+      .then(newSeason => res.send({...newSeason, oldPlayers: players}))
+      .catch(err => { throw err });
+  })
 
 module.exports = Router;

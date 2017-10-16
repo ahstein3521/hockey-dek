@@ -100,6 +100,29 @@ export function updateTeam(form, dispatch) {
 			)
 }
 
+export function newSeasonForTeam(values, dispatch, props) {
+	const team = props.location.state.seasons[0].team;
+	const newSeason = { ...values, team };
+
+	axios.post('/season', newSeason)
+		.then(res => {
+
+			dispatch({ type: 'UPDATE_TEAM_SEASON', nextType: FETCH_TEAM_LIST, team, newSeason: res.data._doc })
+			
+			const route = {
+				pathname: '/teams/new-roster',
+				state: {
+					data: res.data,
+					title: 'Roster'
+				}
+			};
+			props.history.push(route)
+			
+
+		})
+	
+
+}
 // export function updateRoster(currentSeason, players) {
 // 	const { _id, quarter, year } = currentSeason;
 // 	const reqBody = { ...players, quarter, year };
@@ -142,6 +165,25 @@ export function updateTeamLineup(values, dispatch, props) {
 		)
 
 }
+
+
+export function newSeasonLineup(values, dispatch, props) {
+	const {quarter, year, _id } = values._doc;
+	const players = values.players.map(v => v._id);
+
+
+	axios.put('/season/roster/add-many', {newPlayers: players, seasonId: _id, quarter, year})
+		.then((res) => {
+			console.log({ res });
+			dispatch({ type: 'OPEN_SNACKBAR', payload: 'ROSTER UPDATED' });
+			props.history.push('/teams');
+		})
+
+	console.log({ values, props });
+
+}
+
+
 
 export function deleteTeam(team) {
 	

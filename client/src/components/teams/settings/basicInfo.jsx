@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import MenuItem from 'material-ui/MenuItem'
+import MenuItem from 'material-ui/MenuItem';
+import { Link } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import { RadioButton } from 'material-ui/RadioButton'
 import { Field, reduxForm } from 'redux-form';
@@ -49,7 +50,11 @@ const UpdateTeamForm = props => {
 				</Field>
 
 				<div style={{width:'40%', paddingTop:25}}>
-					<p>Create a new season?</p>
+					<Link to={
+						{pathname:'/teams/new-season', 
+						state: { title: initialValues.name, subtitle: 'New Season', seasons}}} >
+						Create a new season?
+					</Link>	
 				</div>	
 			</div>	
 			<div className="btn-group">

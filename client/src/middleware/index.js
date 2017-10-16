@@ -1,6 +1,7 @@
 import fetchBasicInfo from './fetchPlayerInfo';
 import getPlayerDetails from './getPlayerDetail';
 import updateTeam from './updateTeam';
+import updateTeamSeason from './updateTeamSeason';
 import updateBasicInfo from './updatePlayerInfo';
 import { addPayment, editPayment } from './payments';
 import { editSuspension, addSuspension } from './suspensions';
@@ -26,6 +27,8 @@ export default function({ dispatch, getState }) {
 			return editSuspension(action, dispatch, getState);
 		case 'UPDATE_TEAM':
 			return updateTeam(action, dispatch, getState);
+		case 'UPDATE_TEAM_SEASON':
+			return updateTeamSeason(action, dispatch, getState);	
 		default:
 			return next(action);	
 		}

@@ -26,13 +26,14 @@ class Content extends Component {
 	render(){
 		const { menuOpen, location } = this.props
 		const selectedCategory = location.pathname.length > 1;
+		const gameView = /\/games/.test(location.pathname);
 		return(
 			<div style={{paddingBottom:20}}>
 				<Route path="/" component={Nav}/>
 				<div className={menuOpen? 'content-wrapper': 'content-wrapper-expanded'}>
 					<div style={style} >
 						{
-							selectedCategory && 
+							selectedCategory && !gameView &&
 								<Route path='/' component={NavigationArrows}/>
 						}
 						<TeamPage/>

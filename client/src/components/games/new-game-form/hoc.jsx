@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
-
+import { Redirect } from 'react-router-dom';
 
 export default function(ComposedComponent) {
 
@@ -17,7 +17,7 @@ export default function(ComposedComponent) {
       )
 		}
 		else if (props.gameId) {
-			return history.push('/games')
+			return <Redirect to='/games'/>
 		} else {
 			return <ComposedComponent {...routerProps}/>
 		}

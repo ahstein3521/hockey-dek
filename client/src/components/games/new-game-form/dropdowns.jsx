@@ -41,10 +41,16 @@ const SeasonSelectFields = props => {
 				name='year'
 			>
 				{
+					props.showNextYear && 
+					<MenuItem primaryText={yearList[0] + 1} value={yearList[0] + 1}/>
+				}
+
+				{
 					yearList.map(year => 
 						<MenuItem key={year} primaryText={year} value={year}/>
 					)
 				}
+
 			</Field>
 		</div>
 	)
