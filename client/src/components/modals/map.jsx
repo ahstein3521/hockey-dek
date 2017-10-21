@@ -9,6 +9,7 @@ import PaymentHistory from '../common/paymentHistory.jsx';
 import { AddCreditForm, EditCreditForm } from './AddCreditForm.jsx';
 import CreditHistory from './CreditHistory.jsx';
 import RemovePlayer from './removePlayerFromTeam.jsx';
+import PaymentReceived from './PaymentReceived.jsx';
 
 const mappings = {
 	default: {
@@ -83,6 +84,11 @@ const mappings = {
 		Children: RemovePlayer,
 		onSubmit:'removePlayerFromGame',
 		closeOnSubmit: true
+	},
+	PaymentReceived: {
+		title: 'Payment has been processed',
+		hideActions: true,
+		Children: PaymentReceived
 	}		
 };
 

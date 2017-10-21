@@ -92,7 +92,8 @@ Router.route('/record/:playerId').get((req, res) => {
     Player.findById(playerId).exec().then(x => res.send(x))
 })  
 
-Router.route('/receipt').get(downloadReceipt)  
+Router.route('/receipt').get(downloadReceipt.paymentList); 
+Router.route('/receipt/:paymentId').get(downloadReceipt.singlePayment); 
 Router.route('/fetch/:playerId').get(getBasicInfo);
 Router.route('/fetch/:playerId/suspensions').get(getSuspensions);
 Router.route('/fetch/:playerId/payments').get(getPayments);

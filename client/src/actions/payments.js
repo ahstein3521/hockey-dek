@@ -13,7 +13,7 @@ export function processPayment(kind) {
 			return newPayment(values, dispatch, kind);
 		}
 
-		const url = `${ROOT_URL}/player/update`;
+		const url = `${ROOT_URL}/player/payment/${values._id}`;
 
 		const { _id, season, context } = values; 
 		const { quarter, year, team } = season;
@@ -32,14 +32,26 @@ export function processPayment(kind) {
 			payment.reason = values.reason;
 		}
 
-		const query = { _id };
-		const update = {
-			$push: { payments: payment }
-		}
-				
-		dispatch({type: 'CLOSE_MODAL'});
+		if (kind !== 'payment') {
+			dispatch({type: 'CLOSE_MODAL'});
+		}		
+		
 
-		axios.put(url, { query, update })
+		axios.put(url, payment)
+			.then(({data}) => {
+				console.log({ payment });
+				if (kind === 'payment') {
+					return dispatch({
+						type: 'OPEN_MODAL',
+						payload: {
+							view: 'PaymentReceived',
+							data: { paymentId: data._id}
+						}
+					})
+				} else {
+					return 1;
+				}
+			})
 			.then(() => axios.get(url2))
 			.then(res => {
 				const { players, totalComped, totalPaid } = res.data[0];
@@ -51,20 +63,9 @@ export function processPayment(kind) {
 						totalPaid,
 						totalComped
 					}
-				})
+				});
 			})
 			.catch(e => console.log({error: e}))
-			// .then(() => {
-			// 	if (context === 'game') {
-			// 		dispatch({
-			// 			type: 'GAMETIME_PAYMENT',
-			// 			category: kind === 'payment'? 'paid' : 'comped',
-			// 			playerId: _id,
-			// 			team,
-			// 			payment
-			// 		})
-			// 	}			
-			// })
 	}
 }
 
